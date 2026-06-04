@@ -498,14 +498,78 @@ function pedirSkip(){{
     overlay.classList.remove('activo');
   }}
 }}
-document.getElementById('btnAvanzar').addEventListener('mousedown',()=>{{
+document.getElementById('btnAvanzar').addEventListener('mousedown',()=>{
   if(faseEnProceso) pedirSkip();
-}});
-document.addEventListener('touchstart',e=>{{
-  if(faseEnProceso && !e.target.closest('.btn-reiniciar')){{
+});
+document.addEventListener('touchstart',e=>{
+  if(faseEnProceso && !e.target.closest('.btn-reiniciar')){
     pedirSkip();
-  }}
-}},{{passive:true}});
+  }
+},{passive:true});
+
+
+function construirFasesEvento() {
+  const fases = [];
+  const dañoNombre = RONDA.dañoEq === RONDA.mayoria.nombre ? 'Mayoría' : 'Minoría';
+  const comparaT = RONDA.sumaM > RONDA.vivos
+    ? '<strong>' + RONDA.sumaM + '</strong> supera los <strong>' + RONDA.vivos + '</strong> jugadores — daño a la <strong>Mayoría</strong>.'
+    : '<strong>' + RONDA.sumaM + '</strong> no supera los <strong>' + RONDA.vivos + '</strong> jugadores — daño a la <strong>Minoría</strong>.';
+
+  function revS(eq,val,sign) {
+    const n = JJ.length;
+    return {
+      eq: Array(n).fill(eq),
+      val: Array(n).fill(val),
+      sign: Array(n).fill(sign)
+    };
+  }
+
+  if (RONDA.marea) {
+    fases.push({
+      nar: 'La suma de la Mayoría es <strong>0</strong>.<br><em>Algo se equilibra… aunque sea por un instante.</em>',
+      rev: revS(1,1,1), glowJ: [],
+      extras: '<div class="evento-box marea"><div class="evento-nombre">Marea</div><div class="evento-desc">La Minoría recupera 2 HP. Es la única forma de recuperar vida.</div></div>',
+      btn: null, snd: sonarMarea
+    });
+  } else if (RONDA.tornado) {
+    fases.push({
+      nar: 'La suma de la Minoría (<strong>' + RONDA.sumam + '</strong>) supera a la Mayoría (<strong>' + RONDA.sumaM + '</strong>). El daño se <strong>invierte</strong>.',
+      rev: revS(1,1,1),
+      glowJ: JJ.map((j,i) => j.equipo === RONDA.minoria.nombre ? {idx:i,clase:'glow-corales'} : {idx:i,clase:'dim'}),
+      extras: '<div class="evento-box tornado"><div class="evento-nombre">Tornado</div><div class="evento-desc">Un grupo más chico puede cambiar completamente el resultado.</div></div>'
+            + '<div class="resultado-box"><div class="resultado-titulo">Resultado final</div><div class="resultado-valor">' + RONDA.sumaM + '</div><div class="resultado-desc">de daño para <em>' + RONDA.dañoEq + ' — ' + dañoNombre + '</em></div></div>',
+      btn: 'aplicar el daño', snd: sonarTornado
+    });
+  } else {
+    fases.push({
+      nar: 'Hay <strong>' + RONDA.vivos + '</strong> jugadores vivos. ' + comparaT,
+      rev: revS(1,1,1),
+      glowJ: JJ.map((j,i) => j.equipo === RONDA.dañoEq ? {idx:i,clase:'glow-daño'} : {idx:i,clase:'dim'}),
+      extras: '<div class="resultado-box"><div class="resultado-titulo">Resultado final</div><div class="resultado-valor">' + RONDA.sumaM + '</div><div class="resultado-desc">de daño para <em>' + RONDA.dañoEq + ' — ' + dañoNombre + '</em></div></div>',
+      btn: 'aplicar el daño', snd: sonarDaño
+    });
+  }
+
+  if (!RONDA.marea) {
+    fases.push({
+      nar: 'El daño se aplica a cada jugador de <strong>' + RONDA.dañoEq + '</strong>.<br><em>Todo vuelve a empezar… pero nadie es el mismo después de lo que vio.</em>',
+      rev: revS(1,1,1),
+      glowJ: JJ.map((j,i) => j.equipo === RONDA.dañoEq ? {idx:i,clase:'glow-daño'} : {idx:i,clase:'glow-salvo'}),
+      hpFinal: RONDA.hpFinal,
+      extras: '<div class="daño-summary">' + JJ.map((j,i) => {
+        const rec = j.equipo === RONDA.dañoEq;
+        return '<div class="daño-card ' + (rec?'recibe':'salvo') + '">'
+          + '<div class="daño-card-nombre">' + j.nombre + ' · ' + j.equipo + '</div>'
+          + '<div class="daño-card-hp"><span class="antes">' + j.hp + '</span>'
+          + '<span class="despues ' + (rec?'rojo':'verde') + '">' + RONDA.hpFinal[i] + ' HP</span></div>'
+          + '</div>';
+      }).join('') + '</div>',
+      btn: null,
+      snd: () => setTimeout(sonarDaño, 300)
+    });
+  }
+  return fases;
+}
 
 function construirFases(){
   const n=JJ.length;
