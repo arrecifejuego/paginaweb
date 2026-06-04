@@ -238,7 +238,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:44px;letter-
   <div class="sub">observá cómo funciona el juego</div>
   <div class="progreso" id="progreso"></div>
   <div id="fase-wrap"></div>
-  <div class="btn-wrap">
+  <div class="btn-wrap" id="btnWrap">
     <button class="btn-avanzar" id="btnAvanzar">continuar</button>
     <button class="btn-reiniciar" id="btnReiniciar">nueva ronda</button>
   </div>
@@ -498,13 +498,15 @@ function pedirSkip(){{
     overlay.classList.remove('activo');
   }}
 }}
-document.getElementById('btnAvanzar').addEventListener('mousedown',()=>{
+// Skip: click en el área del botón o en cualquier parte de la pantalla durante animación
+document.getElementById('btnWrap').addEventListener('click',()=>{
   if(faseEnProceso) pedirSkip();
 });
+document.addEventListener('click',e=>{
+  if(faseEnProceso && !e.target.closest('#btnReiniciar')) pedirSkip();
+});
 document.addEventListener('touchstart',e=>{
-  if(faseEnProceso && !e.target.closest('.btn-reiniciar')){
-    pedirSkip();
-  }
+  if(faseEnProceso && !e.target.closest('#btnReiniciar')) pedirSkip();
 },{passive:true});
 
 
