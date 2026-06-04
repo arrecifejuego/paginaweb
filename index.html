@@ -42,7 +42,7 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 
 /* LOGO */
 .logo-img{
-  width:clamp(160px,22vw,260px);
+  width:clamp(220px,30vw,360px);
   opacity:0;animation:fadeDown 1s ease 0.2s forwards;
   filter:invert(1);
   margin-bottom:6px;
@@ -53,7 +53,7 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
   font-size:clamp(11px,1.4vw,14px);
   opacity:0;letter-spacing:3px;
   color:rgba(255,255,255,0.3);
-  margin-bottom:clamp(24px,3vh,40px);
+  margin-bottom:2px;
   animation:fadeDown 1s ease 0.45s forwards;
   pointer-events:none;
 }
@@ -235,7 +235,7 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 }
 
 /* PECES NADANDO */
-.pez-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+.pez-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;width:100%!important;height:100%!important;}
 
 /* PEZ ESPECIAL — clickeable */
 #pez-especial{
@@ -570,8 +570,8 @@ function tryPlay(){
     },80);
   }).catch(()=>{});
 }
-// Arrancar inmediatamente, con fallback al primer gesto si el browser bloquea
-tryPlay();
+// Autoplay: intentar inmediatamente y también al primer gesto
+window.addEventListener('load', ()=>{ setTimeout(tryPlay, 300); });
 document.addEventListener('click',tryPlay,{once:true});
 document.addEventListener('touchstart',tryPlay,{once:true,passive:true});
 
@@ -630,6 +630,158 @@ document.querySelectorAll('.carta').forEach(carta=>{
     }
   });
 });
+
+
+/* ============================
+   PECES NADANDO
+============================ */
+const pezCanvas = document.createElement('canvas');
+pezCanvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none;width:100%;height:100%;';
+document.body.insertBefore(pezCanvas, document.body.firstChild);
+const pctx = pezCanvas.getContext('2d');
+let PW = pezCanvas.width = window.innerWidth;
+let PH = pezCanvas.height = window.innerHeight;
+window.addEventListener('resize', ()=>{ PW=pezCanvas.width=window.innerWidth; PH=pezCanvas.height=window.innerHeight; });
+
+function crearPez(init) {
+  const dir = Math.random()<0.5?1:-1;
+  return {
+    x: init ? Math.random()*window.innerWidth : (dir>0?-40:window.innerWidth+40),
+    y: Math.random()*window.innerHeight*0.9+window.innerHeight*0.05,
+    dir,
+    speed: Math.random()*0.35+0.12,
+    size: Math.random()*9+6,
+    op: Math.random()*0.16+0.07,
+    vy: (Math.random()-0.5)*0.1,
+    wobble: Math.random()*Math.PI*2,
+    wobbleSpeed: Math.random()*0.022+0.008,
+    brillo: Math.random()<0.28,
+    brilloPhase: Math.random()*Math.PI*2,
+  };
+}
+
+const peces = [];
+for(let i=0;i<30;i++) peces.push(crearPez(true));
+
+(function loopPeces(){
+  requestAnimationFrame(loopPeces);
+  pctx.clearRect(0,0,PW,PH);
+  peces.forEach((p,idx)=>{
+    p.wobble += p.wobbleSpeed;
+    p.brilloPhase += 0.025;
+    p.x += p.speed * p.dir;
+    p.y += p.vy + Math.sin(p.wobble)*0.28;
+    if(p.x > PW+60 || p.x < -60) peces[idx] = crearPez(false);
+    const op = p.brillo ? p.op*(0.6+0.6*Math.sin(p.brilloPhase)) : p.op;
+    pctx.save();
+    pctx.translate(p.x, p.y);
+    if(p.dir < 0) pctx.scale(-1,1);
+    pctx.shadowBlur = p.brillo ? 10 : 2;
+    pctx.shadowColor = p.brillo ? 'rgba(140,240,255,0.9)' : 'rgba(100,215,235,0.3)';
+    pctx.fillStyle = `rgba(100,215,235,${op})`;
+    pctx.beginPath();
+    pctx.ellipse(0,0,p.size,p.size*0.42,0,0,Math.PI*2);
+    pctx.fill();
+    pctx.beginPath();
+    pctx.moveTo(-p.size*0.85,0);
+    pctx.lineTo(-p.size*1.45,-p.size*0.38);
+    pctx.lineTo(-p.size*1.45,p.size*0.38);
+    pctx.closePath();
+    pctx.fill();
+    pctx.restore();
+  });
+})();
+
+/* ============================
+   PEZ ESPECIAL
+============================ */
+const pezEl = document.getElementById('pez-especial');
+const pezContEl = document.getElementById('pez-contador');
+let pezX = window.innerWidth*0.2;
+let pezY = window.innerHeight*0.6;
+let pezVx = 0.55+Math.random()*0.3;
+let pezVy = (Math.random()-0.5)*0.3;
+let pezToques = 0;
+let pezResetTimer = null;
+const TOQUES_MAX = 10;
+
+(function moverPezEspecial(){
+  requestAnimationFrame(moverPezEspecial);
+  pezVy += (Math.random()-0.5)*0.012;
+  pezVy = Math.max(-0.7, Math.min(0.7, pezVy));
+  pezX += pezVx;
+  pezY += pezVy;
+  if(pezX > window.innerWidth-28){ pezVx *= -1; pezX = window.innerWidth-28; }
+  if(pezX < 10){ pezVx *= -1; pezX = 10; }
+  if(pezY > window.innerHeight-28){ pezVy *= -1; pezY = window.innerHeight-28; }
+  if(pezY < 10){ pezVy *= -1; pezY = 10; }
+  pezEl.style.left = pezX+'px';
+  pezEl.style.top = pezY+'px';
+  pezEl.style.transform = pezVx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+})();
+
+// Titila cada 5 segundos
+setInterval(()=>{
+  pezEl.style.filter = 'drop-shadow(0 0 14px rgba(255,220,80,1)) drop-shadow(0 0 6px rgba(100,210,230,0.8))';
+  pezEl.style.transform = (pezVx<0?'scaleX(-1) ':'scaleX(1) ')+'scale(1.4)';
+  setTimeout(()=>{
+    pezEl.style.filter = 'drop-shadow(0 0 6px rgba(100,210,230,0.7))';
+    pezEl.style.transform = pezVx<0?'scaleX(-1)':'scaleX(1)';
+  }, 500);
+}, 5000);
+
+pezEl.addEventListener('click', e=>{
+  e.stopPropagation();
+  if(aC.state==='suspended') aC.resume();
+  pezToques++;
+  // flash
+  pezEl.style.filter = 'drop-shadow(0 0 20px rgba(255,220,80,1))';
+  setTimeout(()=>pezEl.style.filter='drop-shadow(0 0 6px rgba(100,210,230,0.7))',250);
+  // sonido
+  const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+  o.type='sine'; o.frequency.value=380+pezToques*45;
+  g.gain.setValueAtTime(0,n); g.gain.linearRampToValueAtTime(0.016,n+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,n+0.22);
+  o.connect(g); g.connect(aC.destination); o.start(n); o.stop(n+0.22);
+  // contador
+  pezContEl.textContent = pezToques+' / '+TOQUES_MAX;
+  pezContEl.style.left = (pezX+28)+'px';
+  pezContEl.style.top = (pezY-16)+'px';
+  pezContEl.style.opacity = '1';
+  clearTimeout(pezResetTimer);
+  pezResetTimer = setTimeout(()=>{
+    pezContEl.style.opacity='0';
+    if(pezToques < TOQUES_MAX) pezToques=0;
+  }, 2000);
+  if(pezToques >= TOQUES_MAX){
+    pezToques=0;
+    pezContEl.style.opacity='0';
+    setTimeout(abrirEasterEgg, 350);
+  }
+});
+
+/* EASTER EGG */
+function abrirEasterEgg(){
+  [440,550,660,880].forEach((f,i)=>setTimeout(()=>{
+    const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+    o.type='sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(0,n); g.gain.linearRampToValueAtTime(0.022,n+0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001,n+0.7);
+    o.connect(g); g.connect(aC.destination); o.start(n); o.stop(n+0.7);
+  },i*130));
+  document.getElementById('easter-overlay').classList.add('visible');
+  document.getElementById('easter-contenido').scrollTop=0;
+  document.body.style.overflow='hidden';
+}
+function cerrarEasterEgg(){
+  document.getElementById('easter-overlay').classList.remove('visible');
+  document.body.style.overflow='';
+}
+document.getElementById('easter-cerrar').addEventListener('click', cerrarEasterEgg);
+document.getElementById('easter-overlay').addEventListener('click', e=>{
+  if(e.target===document.getElementById('easter-overlay')) cerrarEasterEgg();
+});
+
 </script>
 </body>
 </html>
