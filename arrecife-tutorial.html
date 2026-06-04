@@ -32,6 +32,16 @@ body{font-family:'Tenor Sans',sans-serif;}
   display:flex;align-items:center;gap:8px;
 }
 .btn-volver:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
+.btn-audio-tut{
+  position:fixed;top:24px;right:24px;z-index:10;
+  background:transparent;border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.4);width:36px;height:36px;
+  border-radius:50%;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;
+}
+.btn-audio-tut:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
+.btn-audio-tut.muted{opacity:0.3;}
 
 /* LAYOUT */
 .container{position:relative;z-index:2;max-width:780px;margin:0 auto;padding:80px 24px 120px;min-height:100vh;}
@@ -222,10 +232,14 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:44px;letter-
 </style>
 </head>
 <body>
+<audio id="audio-tutorial" loop>
+  <source src="Tibetan-bowl-meditation-music.mp3" type="audio/mpeg"/>
+</audio>
 <canvas id="bg-canvas"></canvas>
 <div class="ocean"><div class="wave"></div><div class="wave wave2"></div><div class="wave wave3"></div></div>
 
 <a class="btn-volver" href="index.html"><span>←</span><span>Volver</span></a>
+<button class="btn-audio-tut" id="btnAudioTut" title="Música">♪</button>
 
 <!-- OVERLAY DE TENSIÓN -->
 <div id="tension-overlay">
@@ -742,6 +756,42 @@ document.getElementById('btnAvanzar').addEventListener('click',()=>{
 });
 document.getElementById('btnReiniciar').addEventListener('click',iniciarRonda);
 iniciarRonda();
+
+/* AUDIO TUTORIAL */
+const audioTut = document.getElementById('audio-tutorial');
+const btnAudioTut = document.getElementById('btnAudioTut');
+let audioTutActivo = false;
+audioTut.volume = 0;
+
+function tryPlayTut() {
+  if(audioTutActivo) return;
+  audioTut.play().then(() => {
+    audioTutActivo = true;
+    btnAudioTut.classList.remove('muted');
+    let vol = 0;
+    const fade = setInterval(() => {
+      vol = Math.min(0.28, vol + 0.007);
+      audioTut.volume = vol;
+      if(vol >= 0.28) clearInterval(fade);
+    }, 100);
+  }).catch(() => {});
+}
+
+// Arrancar al primer gesto
+document.addEventListener('click', tryPlayTut, {once: true});
+document.addEventListener('touchstart', tryPlayTut, {once: true, passive: true});
+
+btnAudioTut.addEventListener('click', e => {
+  e.stopPropagation();
+  if(!audioTutActivo) { tryPlayTut(); return; }
+  if(audioTut.paused) {
+    audioTut.play();
+    btnAudioTut.classList.remove('muted');
+  } else {
+    audioTut.pause();
+    btnAudioTut.classList.add('muted');
+  }
+});
 </script>
 </body>
 </html>
