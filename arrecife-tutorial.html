@@ -486,6 +486,26 @@ async function revelarGrupo(jIdxArr, tipoArr, mensajeTension){
 
 /* FASES */
 let RONDA,JJ,FASES,actual=0;
+let skipPedido=false;  // si el usuario tocó para acelerar
+let faseEnProceso=false; // si hay una fase animándose
+
+// Skip: si se toca durante animación, acelera/salta
+function pedirSkip(){{
+  skipPedido=true;
+  // también cerrar tension overlay si está abierto
+  const overlay=document.getElementById('tension-overlay');
+  if(overlay.classList.contains('activo')){{
+    overlay.classList.remove('activo');
+  }}
+}}
+document.getElementById('btnAvanzar').addEventListener('mousedown',()=>{{
+  if(faseEnProceso) pedirSkip();
+}});
+document.addEventListener('touchstart',e=>{{
+  if(faseEnProceso && !e.target.closest('.btn-reiniciar')){{
+    pedirSkip();
+  }}
+}},{{passive:true}});
 
 function construirFases(){
   const n=JJ.length;
