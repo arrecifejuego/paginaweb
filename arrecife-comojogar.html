@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cómo se juega — Arrecife</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#050a0d;--cyan:rgba(100,210,230,1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;min-height:100%;background:var(--bg);color:white;overflow-x:hidden;}
+body{font-family:'Tenor Sans',sans-serif;}
+
+/* FONDO */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.ocean{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
+.wave{position:absolute;width:200%;height:200%;left:-50%;top:-50%;
+  background:radial-gradient(circle at center,rgba(80,180,200,0.03),transparent 60%);
+  animation:rotateWave 55s linear infinite;}
+.wave2{animation-duration:85s;opacity:0.5;transform:scale(1.25);}
+.wave3{animation-duration:120s;opacity:0.2;transform:scale(1.45);}
+@keyframes rotateWave{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* BOTÓN VOLVER */
+.btn-volver{
+  position:fixed;top:24px;left:24px;z-index:10;
+  background:transparent;border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.4);font-family:'Tenor Sans',sans-serif;
+  font-size:10px;letter-spacing:3px;padding:8px 16px;cursor:pointer;
+  text-decoration:none;text-transform:uppercase;transition:all 0.3s;
+  display:flex;align-items:center;gap:8px;
+}
+.btn-volver:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
+
+/* CONTENEDOR */
+.main{
+  position:relative;z-index:2;
+  max-width:720px;margin:0 auto;
+  padding:100px 24px 100px;
+  min-height:100vh;
+}
+
+/* ANIMACIÓN PEZ */
+.pez-container{
+  width:100%;height:80px;
+  position:relative;overflow:hidden;
+  margin-bottom:60px;
+}
+.pez{
+  position:absolute;
+  top:50%;left:-60px;
+  transform:translateY(-50%);
+  font-size:28px;
+  animation:nadaPez 2.2s cubic-bezier(0.4,0,0.2,1) forwards;
+  filter:drop-shadow(0 0 8px rgba(100,210,230,0.4));
+}
+@keyframes nadaPez{
+  0%{left:-60px;opacity:0;}
+  15%{opacity:1;}
+  100%{left:calc(100% + 60px);opacity:0.3;}
+}
+.ola-trail{
+  position:absolute;top:50%;left:0;right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(100,210,230,0.3),transparent);
+  transform:translateY(-50%);
+  animation:fadeOla 2.2s ease forwards;
+}
+@keyframes fadeOla{
+  0%{opacity:0;clip-path:inset(0 100% 0 0);}
+  20%{opacity:1;}
+  60%{clip-path:inset(0 0% 0 0);}
+  100%{opacity:0.15;}
+}
+
+/* CONTENIDO — aparece después del pez */
+.contenido{
+  opacity:0;
+  transform:translateY(16px);
+  animation:aparecer 0.8s ease 2s forwards;
+}
+@keyframes aparecer{
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* HEADER */
+.logo{font-size:10px;letter-spacing:10px;opacity:0.3;text-align:center;margin-bottom:24px;text-transform:uppercase;}
+h1{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(32px,6vw,48px);letter-spacing:2px;
+  text-align:center;margin-bottom:10px;
+}
+.sub{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:14px;opacity:0.35;text-align:center;
+  margin-bottom:52px;letter-spacing:1px;
+}
+
+/* INTRO VIDEO */
+.video-intro{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:17px;font-weight:300;opacity:0.65;
+  text-align:center;margin-bottom:24px;letter-spacing:1px;
+  line-height:1.7;
+}
+
+/* VIDEO */
+.video-wrap{
+  position:relative;width:100%;padding-bottom:56.25%;
+  margin-bottom:56px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.video-wrap iframe{
+  position:absolute;inset:0;width:100%;height:100%;border:none;
+}
+
+/* SEPARADOR */
+.sep{width:60px;height:1px;background:rgba(100,210,230,0.2);margin:0 auto 48px;}
+
+/* BOTÓN REGLAMENTO */
+.btn-reglamento{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;background:transparent;
+  border:1px solid rgba(255,255,255,0.12);
+  color:white;padding:18px 24px;
+  font-family:'Tenor Sans',sans-serif;
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.35s;
+  position:relative;overflow:hidden;
+}
+.btn-reglamento::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(100,210,230,0.05);
+  opacity:0;transition:opacity 0.3s;
+}
+.btn-reglamento:hover::before{opacity:1;}
+.btn-reglamento:hover{border-color:rgba(100,210,230,0.35);box-shadow:0 0 24px rgba(100,210,230,0.08);}
+.btn-reglamento-arrow{
+  font-size:16px;opacity:0.5;
+  transition:transform 0.4s ease, opacity 0.3s;
+}
+.btn-reglamento.abierto .btn-reglamento-arrow{transform:rotate(180deg);opacity:0.8;}
+
+/* REGLAMENTO DESPLEGABLE */
+.reglamento-wrap{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.9s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+  opacity:0;
+  border:1px solid transparent;
+  border-top:none;
+}
+.reglamento-wrap.abierto{
+  max-height:9999px;
+  opacity:1;
+  border-color:rgba(255,255,255,0.07);
+  border-top:none;
+}
+
+/* CONTENIDO REGLAMENTO */
+.reglamento-contenido{
+  padding:36px 28px 40px;
+}
+
+/* OLA ANIMADA al abrir */
+.ola-apertura{
+  width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(100,210,230,0.4),transparent);
+  margin-bottom:32px;
+  animation:olaAbre 1s ease forwards;
+  transform-origin:left;
+}
+@keyframes olaAbre{
+  from{transform:scaleX(0);opacity:0;}
+  to{transform:scaleX(1);opacity:1;}
+}
+
+/* TIPOGRAFÍA REGLAMENTO */
+.reg-titulo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(28px,4vw,38px);font-weight:300;
+  letter-spacing:3px;text-align:center;
+  margin-bottom:8px;opacity:0.9;
+}
+.reg-subtitulo{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:14px;opacity:0.35;text-align:center;
+  margin-bottom:48px;letter-spacing:2px;
+}
+.reg-seccion{
+  margin-bottom:40px;
+}
+.reg-seccion h2{
+  font-family:'Tenor Sans',sans-serif;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  opacity:0.3;margin-bottom:16px;padding-bottom:8px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.reg-seccion p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:300;line-height:1.9;
+  opacity:0.75;margin-bottom:10px;
+}
+.reg-seccion p em{
+  font-style:italic;opacity:0.6;
+}
+.reg-flecha{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;opacity:0.5;
+  padding-left:8px;line-height:2;display:block;
+}
+.reg-highlight{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:17px;font-weight:300;
+  color:rgba(100,210,230,0.7);
+  text-align:center;padding:20px 0;
+  line-height:1.8;display:block;
+}
+.reg-numero{
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px;letter-spacing:2px;opacity:0.3;
+  margin-bottom:6px;text-transform:uppercase;
+}
+.reg-cierre{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:18px;font-weight:300;
+  text-align:center;opacity:0.55;
+  padding:32px 0 8px;line-height:1.9;
+  border-top:1px solid rgba(255,255,255,0.06);
+  margin-top:32px;
+}
+
+@media(max-width:540px){
+  .main{padding:80px 18px 80px;}
+  .reglamento-contenido{padding:24px 18px 32px;}
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="ocean"><div class="wave"></div><div class="wave wave2"></div><div class="wave wave3"></div></div>
+
+<a class="btn-volver" href="index.html"><span>←</span><span>Volver</span></a>
+
+<div class="main">
+
+  <!-- ANIMACIÓN PEZ -->
+  <div class="pez-container">
+    <div class="ola-trail"></div>
+    <div class="pez">🐟</div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="contenido">
+    <div class="logo">Arrecife</div>
+    <h1>Cómo se juega</h1>
+    <div class="sub">todo lo que necesitás saber antes de entrar al mar</div>
+
+    <!-- VIDEO -->
+    <div class="video-intro">
+      Te dejo un video explicativo sobre cómo jugar Arrecife
+    </div>
+    <div class="video-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/CcP3lMhOzkA"
+        title="¿Cómo jugar ARRECIFE?"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- BOTÓN REGLAMENTO -->
+    <button class="btn-reglamento" id="btnReglamento">
+      <span>Reglamento entero</span>
+      <span class="btn-reglamento-arrow">↓</span>
+    </button>
+
+    <!-- REGLAMENTO DESPLEGABLE -->
+    <div class="reglamento-wrap" id="reglamentoWrap">
+      <div class="reglamento-contenido">
+        <div class="ola-apertura" id="olaApertura" style="display:none"></div>
+
+        <div class="reg-titulo">ARRECIFE</div>
+        <div class="reg-subtitulo">👥 De 3 a 7 jugadores</div>
+
+        <div class="reg-seccion">
+          <h2>¿Qué es Arrecife?</h2>
+          <p>Arrecife es un juego de lectura social. No se trata de ganar por estrategia pura, sino de entender cómo se mueve el grupo.</p>
+          <span class="reg-highlight">En este mar, sobrevive quien mejor interpreta a los demás.</span>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Introducción</h2>
+          <p>El objetivo del juego es ser el último jugador con vida.</p>
+          <p>Cada jugador comienza con <strong>30 puntos de vida (HP)</strong>. Se recomienda llevar el conteo visible para todos.</p>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Regla importante</h2>
+          <p>Durante la partida no está permitido coordinar jugadas:</p>
+          <span class="reg-flecha">→ no hablar sobre sus elecciones</span>
+          <span class="reg-flecha">→ no hacer señas</span>
+          <span class="reg-flecha">→ no acordar estrategias</span>
+          <p style="margin-top:16px"><em>Gran parte del juego aparece en ese espacio donde nadie puede confirmar nada. Todo lo que hagas… va a ser interpretado.</em></p>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Componentes</h2>
+          <p>El juego contiene <strong>66 cartas</strong>, distribuidas de la siguiente manera:</p>
+          <span class="reg-flecha">→ 7 Cartas de Equipo</span>
+          <span class="reg-flecha">→ 7 Cartas de cada Valor</span>
+          <span class="reg-flecha">→ 7 Cartas de Signo</span>
+          <span class="reg-flecha">→ 2 Cartas de Habilidad</span>
+          <span class="reg-flecha">→ 1 Carta de ayuda</span>
+          <span class="reg-flecha">→ 1 ficha "Amuleto del mar"</span>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Preparación</h2>
+          <p>Cada jugador recibe un kit de cartas inicial: Equipos (Algas / Corales), Valores (Números) y Signos (+ / –).</p>
+          <p>Valores disponibles según jugadores vivos:</p>
+          <span class="reg-flecha">→ 3–4 jugadores: números del 1 al 4</span>
+          <span class="reg-flecha">→ 5–7 jugadores: números del 1 al 5</span>
+          <p style="margin-top:12px">Se coloca el amuleto frente a un jugador al azar.</p>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Una ronda</h2>
+          <p>Cada ronda se divide en <strong>3 revelaciones simultáneas</strong>. En cada una, cada jugador elige en secreto qué carta jugar — y todos revelan al mismo tiempo.</p>
+
+          <div class="reg-numero" style="margin-top:20px">Primera revelación</div>
+          <p>Cada jugador elige una carta en secreto y la acerca boca abajo. Cuando todos están listos, se revela al mismo tiempo.</p>
+
+          <div class="reg-numero" style="margin-top:16px">Segunda revelación</div>
+          <p>Con lo que ya saben, eligen otra carta. Vuelven a revelar en simultáneo.</p>
+
+          <div class="reg-numero" style="margin-top:16px">Revelación final</div>
+          <p>La última carta. Todos la revelan al mismo tiempo.</p>
+          <p style="margin-top:12px"><em>Recién acá se puede entender lo que pasó.</em></p>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Resolución</h2>
+
+          <div class="reg-numero">1 — Mayoría y Minoría</div>
+          <p>Se cuentan los equipos. Más jugadores → Mayoría. Menos jugadores → Minoría. Si hay empate, el amuleto decide.</p>
+          <span class="reg-highlight">"No hay conflicto si todos están del mismo lado."</span>
+
+          <div class="reg-numero" style="margin-top:20px">2 — Las sumas</div>
+          <p>Cada jugador aporta su valor × su signo. Se suman por equipo. El resultado se toma en valor absoluto.</p>
+
+          <div class="reg-numero" style="margin-top:16px">3 — El daño</div>
+          <p>Se compara la suma de la Mayoría con la cantidad de jugadores vivos.</p>
+          <span class="reg-flecha">→ Si la suma es mayor: el daño va a la Mayoría</span>
+          <span class="reg-flecha">→ Si es menor o igual: el daño va a la Minoría</span>
+          <p style="margin-top:12px"><em>No siempre el grupo más grande está en ventaja.</em></p>
+
+          <div class="reg-numero" style="margin-top:20px">4 — Marea</div>
+          <p>Si la suma de la Mayoría da 0, la Minoría recupera 2 HP. Es la única forma de recuperar vida.</p>
+          <span class="reg-highlight">Algo se equilibra… aunque sea por un instante.</span>
+
+          <div class="reg-numero" style="margin-top:20px">5 — Tornado</div>
+          <p>Si la suma de la Minoría supera a la de la Mayoría, el daño se invierte y lo recibe la Mayoría.</p>
+          <p><em>Esto permite que un grupo más chico cambie completamente el resultado.</em></p>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>El Gusano</h2>
+          <p>Cuando un jugador llega a 0 HP, se convierte en el Gusano. Deja su kit de cartas y toma las 2 cartas de habilidad.</p>
+          <p>El Gusano no busca sobrevivir. <em>Busca intervenir.</em></p>
+          <p style="margin-top:12px">Al inicio de cada ronda, elige una habilidad, selecciona un jugador vivo y coloca la carta boca abajo frente a él.</p>
+          <span class="reg-flecha" style="margin-top:8px">→ Chocar: invierte el signo del jugador</span>
+          <span class="reg-flecha">→ Morder: suma 2 de daño, solo si ese jugador recibió daño</span>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Amuleto</h2>
+          <p>Comienza en un jugador al azar y rota en sentido antihorario en cada ronda.</p>
+          <p>En caso de empate de equipos, el equipo del jugador con el amuleto se considera Mayoría.</p>
+        </div>
+
+        <div class="reg-seccion">
+          <h2>Duelo Final</h2>
+          <p>Cuando quedan 2 jugadores con vida, el último eliminado vuelve como Gusano con un kit de cartas completo.</p>
+          <p>Si el daño debería aplicarse solo al Gusano, ese daño se redirige a los jugadores vivos.</p>
+          <p style="margin-top:12px"><em>El daño nunca se pierde. Siempre vuelve.</em></p>
+        </div>
+
+        <div class="reg-cierre">
+          No sobrevivieron entre sí.<br>
+          Fueron consumidos por el mar.
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- fin contenido -->
+</div><!-- fin main -->
+
+<script>
+/* CANVAS */
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let W,H; const bgR=[];
+function resC(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resC(); window.addEventListener('resize',resC);
+function addR(x,y){bgR.push({x,y,r:0,a:0.6,s:2+Math.random()});}
+document.addEventListener('click',e=>addR(e.clientX,e.clientY));
+(function loop(){requestAnimationFrame(loop);ctx.clearRect(0,0,W,H);
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#010d14');g.addColorStop(1,'#000608');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  const luz=ctx.createRadialGradient(W*.5,-H*.05,0,W*.5,H*.35,W*.65);
+  luz.addColorStop(0,'rgba(40,100,140,0.06)');luz.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=luz;ctx.fillRect(0,0,W,H);
+  for(let i=bgR.length-1;i>=0;i--){const r=bgR[i];r.r+=r.s;r.a-=0.004;
+    ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(100,210,230,${r.a*0.22})`;ctx.lineWidth=1.2;ctx.stroke();
+    if(r.a<=0)bgR.splice(i,1);}})();
+
+/* AUDIO */
+const aC=new(window.AudioContext||window.webkitAudioContext)();
+function sonarOpen(){
+  if(aC.state==='suspended')aC.resume();
+  const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+  o.type='sine';o.frequency.setValueAtTime(280,n);o.frequency.linearRampToValueAtTime(420,n+0.4);
+  g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(0.015,n+0.05);
+  g.gain.exponentialRampToValueAtTime(0.0001,n+0.8);
+  o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.8);
+}
+function sonarClose(){
+  if(aC.state==='suspended')aC.resume();
+  const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+  o.type='sine';o.frequency.setValueAtTime(420,n);o.frequency.linearRampToValueAtTime(280,n+0.3);
+  g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(0.012,n+0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001,n+0.5);
+  o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.5);
+}
+
+/* REGLAMENTO */
+const btn = document.getElementById('btnReglamento');
+const wrap = document.getElementById('reglamentoWrap');
+const ola = document.getElementById('olaApertura');
+let abierto = false;
+
+btn.addEventListener('click',()=>{
+  abierto = !abierto;
+  btn.classList.toggle('abierto', abierto);
+  wrap.classList.toggle('abierto', abierto);
+  if(abierto){
+    sonarOpen();
+    // mostrar ola animada
+    setTimeout(()=>{
+      ola.style.display='block';
+      // reiniciar animación
+      ola.style.animation='none';
+      ola.offsetHeight;
+      ola.style.animation='olaAbre 1s ease forwards';
+    },100);
+    setTimeout(()=>{
+      wrap.scrollIntoView({behavior:'smooth',block:'start'});
+    },200);
+  } else {
+    sonarClose();
+    ola.style.display='none';
+  }
+});
+</script>
+</body>
+</html>
