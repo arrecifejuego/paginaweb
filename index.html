@@ -442,6 +442,8 @@ function tryPlay(){
     },80);
   }).catch(()=>{});
 }
+// Arrancar inmediatamente, con fallback al primer gesto si el browser bloquea
+tryPlay();
 document.addEventListener('click',tryPlay,{once:true});
 document.addEventListener('touchstart',tryPlay,{once:true,passive:true});
 
