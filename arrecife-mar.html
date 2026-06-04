@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>El Mar — Arrecife</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;}
+canvas{display:block;touch-action:none;}
+.overlay{position:fixed;inset:0;pointer-events:none;}
+.logo{
+  position:absolute;top:32px;left:50%;
+  transform:translateX(-50%);
+  color:white;font-family:'Tenor Sans',sans-serif;
+  letter-spacing:10px;font-size:10px;opacity:0.25;text-transform:uppercase;
+}
+.indicacion{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  color:white;font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-weight:300;
+  opacity:0.18;letter-spacing:3px;font-size:15px;
+  transition:opacity 3s ease;text-align:center;
+  pointer-events:none;
+}
+.frase{
+  position:absolute;bottom:52px;left:50%;
+  transform:translateX(-50%);
+  color:white;font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-weight:300;
+  font-size:14px;letter-spacing:1.5px;line-height:2;
+  text-align:center;opacity:0;
+  width:440px;max-width:88vw;
+  transition:opacity 1.8s ease;
+  pointer-events:none;
+}
+/* GUSANO hint */
+.gusano-hint{
+  position:absolute;bottom:90px;left:50%;
+  transform:translateX(-50%);
+  color:white;font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-weight:300;
+  font-size:12px;letter-spacing:2px;
+  opacity:0;transition:opacity 2s ease;
+  pointer-events:none;text-align:center;
+  color:rgba(180,100,255,0.7);
+}
+.gusano-hint.visible{opacity:1;}
+/* PANTALLA EXPLOSION */
+#explosion-screen{
+  position:fixed;inset:0;z-index:100;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.5s;
+  background:rgba(0,0,0,0);
+}
+#explosion-screen.visible{opacity:1;pointer-events:auto;}
+.explosion-texto{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-weight:300;
+  font-size:22px;letter-spacing:2px;
+  color:rgba(255,255,255,0.85);
+  text-align:center;line-height:2;
+  opacity:0;transform:translateY(10px);
+  transition:opacity 1.2s ease 0.8s, transform 1.2s ease 0.8s;
+  max-width:80vw;
+}
+#explosion-screen.visible .explosion-texto{opacity:1;transform:translateY(0);}
+.explosion-btn{
+  margin-top:40px;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.2);
+  color:rgba(255,255,255,0.5);
+  padding:12px 36px;
+  font-family:'Tenor Sans',sans-serif;
+  font-size:10px;letter-spacing:3px;
+  cursor:pointer;text-transform:uppercase;
+  transition:all 0.3s;
+  opacity:0;transition:opacity 1s ease 2s;
+}
+#explosion-screen.visible .explosion-btn{opacity:1;}
+.explosion-btn:hover{border-color:rgba(180,100,255,0.5);color:white;}
+
+/* BOTÓN VOLVER */
+.btn-volver{
+  position:fixed;top:24px;left:24px;z-index:10;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.4);
+  font-family:'Tenor Sans',sans-serif;
+  font-size:10px;letter-spacing:3px;
+  padding:8px 16px;cursor:pointer;
+  text-decoration:none;
+  text-transform:uppercase;
+  transition:all 0.3s;
+  display:flex;align-items:center;gap:8px;
+}
+.btn-volver:hover{
+  border-color:rgba(100,210,230,0.4);
+  color:rgba(100,210,230,0.8);
+}
+.btn-volver-arrow{font-size:14px;line-height:1;}
+
+</style>
+</head>
+<body>
+<a class="btn-volver" href="index.html">
+  <span class="btn-volver-arrow">←</span>
+  <span>Volver</span>
+</a>
+<canvas id="canvas"></canvas>
+<div class="overlay">
+  <div class="logo">Arrecife</div>
+  <div class="indicacion" id="indicacion">tocá el mar</div>
+  <div class="frase" id="frase"></div>
+  <div class="gusano-hint" id="gusano-hint">mové el gusano</div>
+</div>
+
+<div id="explosion-screen">
+  <div class="explosion-texto" id="explosion-texto"></div>
+  <button class="explosion-btn" onclick="resetScene()">volver al mar</button>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+
+/* ============================
+   FRASES
+============================ */
+const frases = [
+  "El mar recuerda cada movimiento.",
+  "Todo lo que hacés\nva a ser interpretado.",
+  "No hay conflicto\nsi todos están del mismo lado.",
+  "Algo se equilibra…\naunque sea por un instante.",
+  "Nadie es el mismo\ndespués de lo que vio.",
+  "No siempre el grupo más grande\nestá en ventaja.",
+  "El daño nunca se pierde.\nSiempre vuelve.",
+  "En este mar, sobrevive\nquien mejor interpreta a los demás."
+];
+let fraseIndex = 0;
+let fraseTimeout = null;
+const fraseEl = document.getElementById('frase');
+const indicacionEl = document.getElementById('indicacion');
+const gusanoHint = document.getElementById('gusano-hint');
+let interactions = 0;
+let ultimaFrase = 0;
+const FRASE_COOLDOWN = 7000;
+
+function mostrarFrase(){
+  const ahora = Date.now();
+  if(ahora - ultimaFrase < FRASE_COOLDOWN) return;
+  ultimaFrase = ahora;
+  fraseEl.style.opacity = '0';
+  clearTimeout(fraseTimeout);
+  fraseTimeout = setTimeout(()=>{
+    const lineas = frases[fraseIndex % frases.length].split('\n');
+    fraseEl.innerHTML = lineas.map(l=>`<span style="display:block">${l}</span>`).join('');
+    fraseEl.style.opacity = '0.42';
+    fraseIndex++;
+  }, 500);
+}
+
+/* ============================
+   AUDIO
+============================ */
+const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+
+function playOceanSound(){
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  const now=audioCtx.currentTime;
+  const pitch=95+Math.random()*85;
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(), filter=audioCtx.createBiquadFilter();
+  osc.type='sine'; osc.frequency.setValueAtTime(pitch,now);
+  filter.type='lowpass'; filter.frequency.value=460;
+  gain.gain.setValueAtTime(0,now); gain.gain.linearRampToValueAtTime(0.025,now+0.025);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+2.2);
+  osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(now); osc.stop(now+2.2);
+  const osc2=audioCtx.createOscillator(), gain2=audioCtx.createGain();
+  osc2.type='triangle'; osc2.frequency.value=pitch*0.5;
+  gain2.gain.setValueAtTime(0,now); gain2.gain.linearRampToValueAtTime(0.01,now+0.2);
+  gain2.gain.exponentialRampToValueAtTime(0.0001,now+3.5);
+  osc2.connect(gain2); gain2.connect(audioCtx.destination);
+  osc2.start(now); osc2.stop(now+3.5);
+}
+
+function whaleSound(){
+  if(audioCtx.state==='suspended') return;
+  const now=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+  osc.type='sine';
+  osc.frequency.setValueAtTime(72,now); osc.frequency.linearRampToValueAtTime(35,now+5);
+  gain.gain.setValueAtTime(0,now); gain.gain.linearRampToValueAtTime(0.008,now+1.5);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+6);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(now); osc.stop(now+6);
+}
+
+function gusanoSound(){
+  if(audioCtx.state==='suspended') return;
+  const now=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+  osc.type='sawtooth'; osc.frequency.value=60+Math.random()*20;
+  gain.gain.setValueAtTime(0,now); gain.gain.linearRampToValueAtTime(0.015,now+0.03);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+0.4);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(now); osc.stop(now+0.4);
+}
+
+function explosionSound(){
+  if(audioCtx.state==='suspended') return;
+  const now=audioCtx.currentTime;
+  // boom grave
+  const osc1=audioCtx.createOscillator(), g1=audioCtx.createGain();
+  osc1.type='sine'; osc1.frequency.setValueAtTime(80,now); osc1.frequency.exponentialRampToValueAtTime(20,now+1.5);
+  g1.gain.setValueAtTime(0,now); g1.gain.linearRampToValueAtTime(0.08,now+0.05);
+  g1.gain.exponentialRampToValueAtTime(0.0001,now+2);
+  osc1.connect(g1); g1.connect(audioCtx.destination);
+  osc1.start(now); osc1.stop(now+2);
+  // ruido distorsionado
+  const bufferSize=audioCtx.sampleRate*0.8;
+  const buffer=audioCtx.createBuffer(1,bufferSize,audioCtx.sampleRate);
+  const data=buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/bufferSize,2);
+  const source=audioCtx.createBufferSource();
+  source.buffer=buffer;
+  const gNoise=audioCtx.createGain();
+  gNoise.gain.value=0.3;
+  source.connect(gNoise); gNoise.connect(audioCtx.destination);
+  source.start(now);
+  // tono alto que sube
+  const osc3=audioCtx.createOscillator(), g3=audioCtx.createGain();
+  osc3.type='sine'; osc3.frequency.setValueAtTime(200,now+0.05); osc3.frequency.exponentialRampToValueAtTime(1200,now+0.8);
+  g3.gain.setValueAtTime(0,now+0.05); g3.gain.linearRampToValueAtTime(0.04,now+0.1);
+  g3.gain.exponentialRampToValueAtTime(0.0001,now+1.2);
+  osc3.connect(g3); g3.connect(audioCtx.destination);
+  osc3.start(now+0.05); osc3.stop(now+1.2);
+}
+
+setInterval(()=>{ if(Math.random()>0.6) whaleSound(); }, 22000);
+
+/* ============================
+   RESIZE
+============================ */
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+  if(criatura1) criatura1.orbitCX = w/2;
+  if(criatura1) criatura1.orbitCY = h/2;
+  if(criatura2) criatura2.orbitCX = w/2;
+  if(criatura2) criatura2.orbitCY = h/2;
+}
+window.addEventListener('resize', resize);
+
+/* ============================
+   ONDAS
+============================ */
+const ripples=[];
+let lastRippleTime=0;
+
+function crearOnda(x, y, fromDrag){
+  const ahora=Date.now();
+  if(fromDrag && ahora-lastRippleTime<40) return;
+  lastRippleTime=ahora;
+  interactions++;
+  if(interactions===1) indicacionEl.style.opacity='0';
+  if(interactions===4||(interactions>4&&(interactions-4)%6===0)) mostrarFrase();
+  ripples.push({x, y, radius:0, alpha:0.85, speed:1.6+Math.random()*1.0});
+  setTimeout(()=>{ ripples.push({x, y, radius:0, alpha:0.38, speed:1.2+Math.random()*0.6}); }, 200);
+  if(!fromDrag) playOceanSound();
+}
+
+canvas.addEventListener('click', e=>{
+  const r=canvas.getBoundingClientRect();
+  crearOnda(e.clientX-r.left, e.clientY-r.top, false);
+});
+let mouseDown=false;
+canvas.addEventListener('mousedown', ()=>mouseDown=true);
+window.addEventListener('mouseup', ()=>mouseDown=false);
+canvas.addEventListener('mousemove', e=>{
+  if(!mouseDown || gusanoDragging) return;
+  const r=canvas.getBoundingClientRect();
+  crearOnda(e.clientX-r.left, e.clientY-r.top, true);
+});
+canvas.addEventListener('touchstart', e=>{
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect();
+  crearOnda(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top, false);
+},{passive:false});
+canvas.addEventListener('touchmove', e=>{
+  if(gusanoDragging) return;
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect();
+  crearOnda(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top, true);
+},{passive:false});
+
+/* ============================
+   CRIATURAS ORBITANTES
+============================ */
+class CriaturaOrbitante {
+  constructor(orbitRadius, orbitSpeed, color, tentaculos){
+    this.orbitCX = window.innerWidth/2;
+    this.orbitCY = window.innerHeight/2;
+    this.orbitRadius = orbitRadius;
+    this.orbitSpeed = orbitSpeed;
+    this.angle = Math.random()*Math.PI*2;
+    this.x = this.orbitCX + Math.cos(this.angle)*this.orbitRadius;
+    this.y = this.orbitCY + Math.sin(this.angle)*this.orbitRadius;
+    this.color = color;
+    this.tentaculos = tentaculos;
+    this.size = 18+Math.random()*8;
+    this.bodyAngle = 0;
+    this.wavePhase = Math.random()*Math.PI*2;
+    this.glowPhase = Math.random()*Math.PI*2;
+    // distorsión aplicada por el gusano
+    this.distX = 0;
+    this.distY = 0;
+  }
+  update(gusanoX, gusanoY, distortionForce){
+    this.angle += this.orbitSpeed;
+    this.wavePhase += 0.04;
+    this.glowPhase += 0.025;
+    this.bodyAngle += 0.02;
+    // posición base en órbita
+    const bx = this.orbitCX + Math.cos(this.angle)*this.orbitRadius;
+    const by = this.orbitCY + Math.sin(this.angle)*this.orbitRadius;
+    // atracción/repulsión por el gusano
+    const dx = bx - gusanoX;
+    const dy = by - gusanoY;
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    if(dist < 200 && dist > 0){
+      // solo distorsiona si el gusano se mueve activamente
+      if(distortionForce > 0.15){
+        const force = (200-dist)/200 * distortionForce * 0.6;
+        this.distX += (dx/dist)*force;
+        this.distY += (dy/dist)*force;
+      }
+    }
+    this.distX *= 0.85;
+    this.distY *= 0.85;
+    this.x = bx + this.distX;
+    this.y = by + this.distY;
+  }
+  draw(alpha){
+    ctx.save();
+    const glow = 0.5+0.5*Math.sin(this.glowPhase);
+    ctx.shadowBlur = 20*glow;
+    ctx.shadowColor = this.color;
+    // cuerpo
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, Math.max(0.01,this.size), 0, Math.PI*2);
+    ctx.strokeStyle = this.color.replace('1)', `${alpha*0.7})`);
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    // relleno suave
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, Math.max(0.01,this.size), 0, Math.PI*2);
+    ctx.fillStyle = this.color.replace('1)', `${alpha*0.08}`);
+    ctx.fill();
+    // tentáculos
+    for(let i=0;i<this.tentaculos;i++){
+      const a = this.bodyAngle + i*(Math.PI*2/this.tentaculos);
+      const wave = Math.sin(this.wavePhase + i)*0.4;
+      const len = this.size*1.8;
+      const cx1 = this.x + Math.cos(a+wave)*this.size*1.1;
+      const cy1 = this.y + Math.sin(a+wave)*this.size*1.1;
+      const cx2 = this.x + Math.cos(a-wave*0.5)*len*0.8;
+      const cy2 = this.y + Math.sin(a-wave*0.5)*len*0.8;
+      const ex  = this.x + Math.cos(a)*len;
+      const ey  = this.y + Math.sin(a)*len;
+      ctx.beginPath();
+      ctx.moveTo(this.x + Math.cos(a)*this.size, this.y + Math.sin(a)*this.size);
+      ctx.bezierCurveTo(cx1,cy1,cx2,cy2,ex,ey);
+      ctx.strokeStyle = this.color.replace('1)', `${alpha*0.45})`);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    // ojo
+    ctx.beginPath();
+    ctx.arc(this.x + Math.cos(this.bodyAngle)*this.size*0.35,
+            this.y + Math.sin(this.bodyAngle)*this.size*0.35,
+            this.size*0.18, 0, Math.PI*2);
+    ctx.fillStyle = this.color.replace('1)', `${alpha*0.9})`);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ============================
+   GUSANO
+============================ */
+class Gusano {
+  constructor(){
+    this.x = window.innerWidth/2;
+    this.y = window.innerHeight/2;
+    this.targetX = this.x;
+    this.targetY = this.y;
+    this.segments = 10;
+    this.history = Array.from({length:this.segments+1}, ()=>({x:this.x, y:this.y}));
+    this.angle = 0;
+    this.smoothAngle = 0;
+    this.wavePhase = 0;
+    this.vibratePhase = 0;
+    this.thickness = 3.5;
+    this.dragging = false;
+    this.dragOffX = 0;
+    this.dragOffY = 0;
+    this.force = 0; // cuánto está distorsionando
+  }
+  update(){
+    this.wavePhase += 0.08;
+    this.vibratePhase += 0.25;
+    // moverse suavemente hacia target
+    const dx = this.targetX - this.x;
+    const dy = this.targetY - this.y;
+    this.x += dx*0.08;
+    this.y += dy*0.08;
+    if(Math.abs(dx)>0.5||Math.abs(dy)>0.5){
+      const targetAngle = Math.atan2(dy, dx);
+      // interpolación angular suave — evita saltos bruscos
+      let diff = targetAngle - this.smoothAngle;
+      while(diff > Math.PI) diff -= Math.PI*2;
+      while(diff < -Math.PI) diff += Math.PI*2;
+      this.smoothAngle += diff * 0.06;
+      this.angle = this.smoothAngle;
+    }
+    // historial
+    this.history.unshift({x:this.x, y:this.y});
+    if(this.history.length>this.segments+1) this.history.pop();
+    // fuerza de distorsión basada en velocidad
+    const speed = Math.sqrt(dx*dx+dy*dy);
+    this.force = Math.min(1, speed/8);
+  }
+  draw(){
+    ctx.save();
+    const vib = Math.sin(this.vibratePhase)*1.8*this.force;
+    ctx.shadowBlur = 12+8*this.force;
+    ctx.shadowColor = `rgba(180,100,255,0.6)`;
+
+    // Cola siempre visible — segmentos artificiales desde la posición actual
+    const COLA_SEGS = 10;
+    const SEG_LEN = 7;
+    for(let i=0;i<COLA_SEGS;i++){
+      const t = i/COLA_SEGS;
+      const t2 = (i+1)/COLA_SEGS;
+      // cada segmento se desplaza hacia atrás según el ángulo
+      const backX = this.x - Math.cos(this.angle)*i*SEG_LEN;
+      const backY = this.y - Math.sin(this.angle)*i*SEG_LEN;
+      const backX2 = this.x - Math.cos(this.angle)*(i+1)*SEG_LEN;
+      const backY2 = this.y - Math.sin(this.angle)*(i+1)*SEG_LEN;
+      // ondulación lateral siempre activa — más amplia en la cola
+      const waveAmp = 3.5 + t*6;
+      const wave  = Math.sin(this.wavePhase - i*0.7)*waveAmp;
+      const wave2 = Math.sin(this.wavePhase - (i+1)*0.7)*waveAmp;
+      const perpX = -Math.sin(this.angle);
+      const perpY =  Math.cos(this.angle);
+      const x1 = backX  + perpX*wave  + (Math.random()-0.5)*vib;
+      const y1 = backY  + perpY*wave  + (Math.random()-0.5)*vib;
+      const x2 = backX2 + perpX*wave2 + (Math.random()-0.5)*vib*0.5;
+      const y2 = backY2 + perpY*wave2 + (Math.random()-0.5)*vib*0.5;
+      const thick = this.thickness*(1-t2*0.75);
+      const alpha = 0.85*(1-t*0.65);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = `rgba(200,130,255,${alpha})`;
+      ctx.lineWidth = Math.max(0.3, thick);
+      ctx.lineCap='round';
+      ctx.stroke();
+    }
+    // cabeza
+    ctx.beginPath();
+    ctx.arc(this.x+vib*0.3, this.y+vib*0.3, this.thickness*1.2, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(220,160,255,0.9)`;
+    ctx.fill();
+    // ojitos
+    const eyeOff = this.thickness*0.8;
+    [-1,1].forEach(side=>{
+      ctx.beginPath();
+      ctx.arc(
+        this.x + Math.cos(this.angle+side*0.5)*eyeOff,
+        this.y + Math.sin(this.angle+side*0.5)*eyeOff,
+        1.2, 0, Math.PI*2
+      );
+      ctx.fillStyle='rgba(255,255,255,0.9)';
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+}
+
+/* ============================
+   DISTORSIÓN DEL ENTORNO
+============================ */
+let distortionLevel = 0; // 0-1
+
+function drawDistortedBackground(level){
+  if(level < 0.01) return;
+  ctx.save();
+  // líneas de distorsión irradiando desde el gusano
+  const numLines = Math.floor(level*30);
+  for(let i=0;i<numLines;i++){
+    const a = (i/numLines)*Math.PI*2 + performance.now()*0.001;
+    const len = 60 + level*120 + Math.random()*40;
+    const gx = gusano.x, gy = gusano.y;
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+    ctx.lineTo(gx + Math.cos(a)*len, gy + Math.sin(a)*len);
+    ctx.strokeStyle = `rgba(180,100,255,${level*0.06})`;
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+  // campo de distorsión — círculos concéntricos pulsantes
+  const pulseR = (performance.now()*0.1 % 200)*level;
+  for(let ring=0;ring<3;ring++){
+    const r = pulseR + ring*60;
+    ctx.beginPath();
+    ctx.arc(gusano.x, gusano.y, r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(160,80,255,${level*0.08*(1-r/300)})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ============================
+   EXPLOSIÓN
+============================ */
+let exploding = false;
+let explosionParticles = [];
+let explosionTime = 0;
+let sceneReset = false;
+
+const FRASES_EXPLOSION = [
+  "Fueron consumidos por el mar."
+];
+
+function triggerExplosion(){
+  exploding = true;
+  explosionTime = performance.now();
+  explosionSound();
+  // crear partículas desde el punto de fusión
+  const cx = (criatura1.x+criatura2.x)/2;
+  const cy = (criatura1.y+criatura2.y)/2;
+  for(let i=0;i<120;i++){
+    const a = Math.random()*Math.PI*2;
+    const speed = 2+Math.random()*8;
+    const col = Math.random()<0.5 ? criatura1.color : criatura2.color;
+    explosionParticles.push({
+      x:cx, y:cy,
+      vx:Math.cos(a)*speed,
+      vy:Math.sin(a)*speed,
+      r:2+Math.random()*4,
+      alpha:1,
+      color:col,
+      life:1,
+      decay:0.008+Math.random()*0.015
+    });
+  }
+  // mostrar pantalla de explosión
+  setTimeout(()=>{
+    const screen = document.getElementById('explosion-screen');
+    const texto = document.getElementById('explosion-texto');
+    const frase = FRASES_EXPLOSION[0];
+    texto.innerHTML = frase.split('\n').map(l=>`<span style="display:block">${l}</span>`).join('');
+    screen.style.background = 'rgba(0,0,0,0.85)';
+    screen.classList.add('visible');
+  }, 800);
+}
+
+function resetScene(){
+  exploding = false;
+  explosionParticles = [];
+  sceneReset = true;
+  document.getElementById('explosion-screen').classList.remove('visible');
+  document.getElementById('explosion-screen').style.background = 'rgba(0,0,0,0)';
+  // reiniciar órbitas
+  criatura1.angle = Math.random()*Math.PI*2;
+  criatura2.angle = criatura1.angle + Math.PI;
+  criatura1.distX = criatura1.distY = 0;
+  criatura2.distX = criatura2.distY = 0;
+  setTimeout(()=>sceneReset=false, 100);
+}
+
+/* ============================
+   CRIATURAS ORGÁNICAS DE FONDO
+============================ */
+class CriaturaFondo {
+  constructor(){ this.reset(true); }
+  reset(init){
+    this.x = Math.random()*(w||window.innerWidth);
+    this.y = init ? Math.random()*(h||window.innerHeight) : (h||window.innerHeight)+30;
+    this.baseSpeed = Math.random()*0.3+0.07;
+    this.angle = Math.random()*Math.PI*2;
+    this.targetAngle = this.angle;
+    this.speed = this.baseSpeed;
+    this.segments = Math.floor(Math.random()*5)+5;
+    this.thickness = Math.random()*1.9+0.5;
+    this.opacity = Math.random()*0.15+0.04;
+    this.wave = Math.random()*Math.PI*2;
+    this.waveSpeed = Math.random()*0.022+0.008;
+    this.waveAmp = Math.random()*0.6+0.18;
+    this.history = [];
+    for(let i=0;i<this.segments+1;i++) this.history.push({x:this.x, y:this.y});
+  }
+  update(){
+    this.wave += this.waveSpeed;
+    ripples.forEach(r=>{
+      const dx=r.x-this.x, dy=r.y-this.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<200&&dist>0){
+        const force=(200-dist)/200;
+        if(dist<r.radius+22&&dist>r.radius-22){
+          this.targetAngle=Math.atan2(-dy,-dx)+(Math.random()-0.5)*1.4;
+          this.speed=this.baseSpeed*4;
+        }
+      }
+    });
+    this.speed += (this.baseSpeed - this.speed)*0.05;
+    let diff=this.targetAngle-this.angle;
+    while(diff>Math.PI) diff-=Math.PI*2;
+    while(diff<-Math.PI) diff+=Math.PI*2;
+    this.angle+=diff*0.035;
+    this.x+=Math.cos(this.angle)*this.speed;
+    this.y+=Math.sin(this.angle)*this.speed;
+    if(Math.random()<0.012) this.targetAngle+=(Math.random()-0.5)*0.9;
+    const m=50;
+    if(this.x<m) this.targetAngle+=0.07;
+    if(this.x>w-m) this.targetAngle-=0.07;
+    if(this.y<m) this.targetAngle+=0.07;
+    if(this.y>h-m) this.targetAngle-=0.07;
+    this.history.unshift({x:this.x, y:this.y});
+    if(this.history.length>this.segments+1) this.history.pop();
+  }
+  draw(){
+    if(this.history.length<2) return;
+    ctx.save();
+    ctx.shadowBlur=8; ctx.shadowColor=`rgba(100,220,240,${this.opacity*0.5})`;
+    for(let i=0;i<this.history.length-1;i++){
+      const p1=this.history[i], p2=this.history[i+1];
+      const t=i/(this.history.length-1);
+      const waveOffset=Math.sin(this.wave-i*0.65)*this.waveAmp*(1-t*0.5);
+      const perpX=-Math.sin(this.angle)*waveOffset;
+      const perpY= Math.cos(this.angle)*waveOffset;
+      ctx.beginPath();
+      ctx.moveTo(p1.x+perpX*(1-t), p1.y+perpY*(1-t));
+      ctx.lineTo(p2.x+perpX*(1-t)*0.82, p2.y+perpY*(1-t)*0.82);
+      ctx.strokeStyle=`rgba(100,215,235,${this.opacity*(1-t*0.55)})`;
+      ctx.lineWidth=this.thickness*(1-t*0.78); ctx.lineCap='round'; ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.thickness*0.9, 0, Math.PI*2);
+    ctx.fillStyle=`rgba(150,230,245,${this.opacity*1.5})`; ctx.fill();
+    ctx.restore();
+  }
+}
+
+class Alga {
+  constructor(){
+    this.x=Math.random()*(w||window.innerWidth);
+    this.y=(h||window.innerHeight)*(0.7+Math.random()*0.35);
+    this.segments=Math.floor(Math.random()*5)+4;
+    this.segH=Math.random()*12+8;
+    this.sway=Math.random()*Math.PI*2;
+    this.swaySpeed=Math.random()*0.008+0.003;
+    this.swayAmp=Math.random()*18+8;
+    this.thickness=Math.random()*1.4+0.4;
+    this.opacity=Math.random()*0.12+0.04;
+    this.color=Math.random()<0.5?'rgba(60,180,140,':'rgba(80,160,200,';
+  }
+  update(){ this.sway+=this.swaySpeed; }
+  draw(){
+    ctx.save(); ctx.shadowBlur=6; ctx.shadowColor='rgba(60,200,160,0.1)';
+    let px=this.x, py=this.y;
+    for(let i=0;i<this.segments;i++){
+      const t=i/this.segments;
+      const swayX=Math.sin(this.sway+i*0.6)*this.swayAmp*t;
+      const nx=this.x+swayX, ny=this.y-i*this.segH;
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(nx,ny);
+      ctx.strokeStyle=`${this.color}${this.opacity*(1-t*0.4)})`;
+      ctx.lineWidth=this.thickness*(1-t*0.7); ctx.lineCap='round'; ctx.stroke();
+      px=nx; py=ny;
+    }
+    ctx.restore();
+  }
+}
+
+class Biolum {
+  constructor(){ this.reset(true); }
+  reset(init){
+    this.x=Math.random()*(w||window.innerWidth);
+    this.y=init?Math.random()*(h||window.innerHeight):(h||window.innerHeight)+5;
+    this.vy=-(Math.random()*0.18+0.04);
+    this.vx=(Math.random()-0.5)*0.08;
+    this.r=Math.random()*1.8+0.3;
+    this.baseOpacity=Math.random()*0.18+0.04;
+    this.opacity=this.baseOpacity;
+    this.phase=Math.random()*Math.PI*2;
+    this.phaseSpeed=Math.random()*0.04+0.01;
+    this.wobble=Math.random()*Math.PI*2;
+    this.wobbleSpeed=Math.random()*0.015+0.005;
+  }
+  update(){
+    this.phase+=this.phaseSpeed; this.wobble+=this.wobbleSpeed;
+    this.opacity=this.baseOpacity*(0.5+0.5*Math.sin(this.phase));
+    this.x+=this.vx+Math.sin(this.wobble)*0.15; this.y+=this.vy;
+    if(this.y<-8) this.reset(false);
+  }
+  draw(){
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(120,230,255,${this.opacity})`;
+    ctx.shadowBlur=6; ctx.shadowColor=`rgba(100,220,255,${this.opacity*0.8})`;
+    ctx.fill();
+  }
+}
+
+/* ============================
+   INSTANCIAS
+============================ */
+// Se inicializan después del primer resize
+let criatura1, criatura2, gusano;
+const criaturasFondo = [];
+const algas = [];
+const biolums = [];
+
+function initEntities(){
+  const cx = w/2, cy = h/2;
+  const orbitR = Math.min(w,h)*0.28;
+
+  criatura1 = new CriaturaOrbitante(orbitR, 0.0015, 'rgba(80,200,160,1)', 6);
+  criatura1.angle = 0;
+  criatura2 = new CriaturaOrbitante(orbitR, -0.0013, 'rgba(220,120,90,1)', 5);
+  criatura2.angle = Math.PI;
+
+  gusano = new Gusano();
+  gusano.x = gusano.targetX = cx;
+  gusano.y = gusano.targetY = cy - 60;
+
+  criaturasFondo.length = 0;
+  for(let i=0;i<20;i++) criaturasFondo.push(new CriaturaFondo());
+  algas.length = 0;
+  for(let i=0;i<18;i++) algas.push(new Alga());
+  biolums.length = 0;
+  for(let i=0;i<60;i++) biolums.push(new Biolum());
+}
+
+/* resize con init */
+function resizeFull(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+  if(!criatura1) initEntities();
+  else {
+    criatura1.orbitCX=criatura2.orbitCX=w/2;
+    criatura1.orbitCY=criatura2.orbitCY=h/2;
+    const orbitR=Math.min(w,h)*0.28;
+    criatura1.orbitRadius=criatura2.orbitRadius=orbitR;
+  }
+}
+window.removeEventListener('resize', resize);
+window.addEventListener('resize', resizeFull);
+resizeFull();
+
+/* ============================
+   ARRASTRE DEL GUSANO
+============================ */
+let gusanoDragging = false;
+let gusanoOffX=0, gusanoOffY=0;
+let lastGusanoSound = 0;
+
+function isNearGusano(x, y){
+  const dx=x-gusano.x, dy=y-gusano.y;
+  return Math.sqrt(dx*dx+dy*dy) < 30;
+}
+
+canvas.addEventListener('mousedown', e=>{
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  const r=canvas.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  if(isNearGusano(mx,my)){
+    gusanoDragging=true;
+    gusanoOffX=gusano.x-mx; gusanoOffY=gusano.y-my;
+    gusanoHint.classList.remove('visible');
+    e.stopPropagation();
+  }
+});
+canvas.addEventListener('mousemove', e=>{
+  if(!gusanoDragging) return;
+  const r=canvas.getBoundingClientRect();
+  gusano.targetX=e.clientX-r.left+gusanoOffX;
+  gusano.targetY=e.clientY-r.top+gusanoOffY;
+  const now=Date.now();
+  if(now-lastGusanoSound>120){ gusanoSound(); lastGusanoSound=now; }
+  e.stopPropagation(); // no crear ondas mientras arrastra el gusano
+});
+window.addEventListener('mouseup', ()=>{ gusanoDragging=false; });
+
+canvas.addEventListener('touchstart', e=>{
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  const r=canvas.getBoundingClientRect();
+  const tx=e.touches[0].clientX-r.left, ty=e.touches[0].clientY-r.top;
+  if(isNearGusano(tx,ty)){
+    gusanoDragging=true;
+    gusanoOffX=gusano.x-tx; gusanoOffY=gusano.y-ty;
+    gusanoHint.classList.remove('visible');
+    e.preventDefault();
+  }
+},{passive:false});
+canvas.addEventListener('touchmove', e=>{
+  if(!gusanoDragging){ return; }
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect();
+  gusano.targetX=e.touches[0].clientX-r.left+gusanoOffX;
+  gusano.targetY=e.touches[0].clientY-r.top+gusanoOffY;
+  const now=Date.now();
+  if(now-lastGusanoSound>120){ gusanoSound(); lastGusanoSound=now; }
+  // no propagar al touchmove del canvas para evitar ondas
+},{passive:false});
+window.addEventListener('touchend', ()=>{ gusanoDragging=false; });
+
+// mostrar hint del gusano después de 2s
+setTimeout(()=>{ if(!exploding) gusanoHint.classList.add('visible'); }, 2000);
+
+/* ============================
+   LOOP PRINCIPAL
+============================ */
+let fusionTriggered = false;
+
+function animate(){
+  requestAnimationFrame(animate);
+  if(!gusano || !criatura1 || !criatura2) return;
+  ctx.clearRect(0,0,w,h);
+
+  // fondo oceánico
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'#010d14'); grad.addColorStop(0.4,'#020f18');
+  grad.addColorStop(0.75,'#010b12'); grad.addColorStop(1,'#000608');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
+
+  // luz desde arriba
+  const luz=ctx.createRadialGradient(w*.5,-h*.1,0,w*.5,h*.3,w*.7);
+  luz.addColorStop(0,'rgba(40,100,140,0.07)'); luz.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=luz; ctx.fillRect(0,0,w,h);
+
+  if(exploding){
+    // fondo oscurece progresivamente
+    const t=(performance.now()-explosionTime)/1000;
+    ctx.fillStyle=`rgba(0,0,0,${Math.min(0.7,t*0.3)})`;
+    ctx.fillRect(0,0,w,h);
+    // partículas
+    for(let i=explosionParticles.length-1;i>=0;i--){
+      const p=explosionParticles[i];
+      p.x+=p.vx; p.y+=p.vy;
+      p.vy+=0.05; // gravedad suave
+      p.vx*=0.98; p.vy*=0.98;
+      p.life-=p.decay;
+      p.alpha=p.life;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,Math.max(0.01,p.r*p.life),0,Math.PI*2);
+      ctx.fillStyle=p.color.replace('1)',`${p.alpha})`);
+      ctx.shadowBlur=8; ctx.shadowColor=p.color;
+      ctx.fill();
+      if(p.life<=0) explosionParticles.splice(i,1);
+    }
+    // el gusano queda solo, quieto
+    gusano.force=0;
+    gusano.draw();
+    return;
+  }
+
+  // algas fondo
+  algas.forEach(a=>{ a.update(); a.draw(); });
+  // bioluminiscencia
+  biolums.forEach(b=>{ b.update(); b.draw(); });
+  // criaturas de fondo
+  criaturasFondo.forEach(c=>{ c.update(); c.draw(); });
+
+  // ondas
+  for(let i=ripples.length-1;i>=0;i--){
+    const r=ripples[i];
+    r.radius+=r.speed; r.alpha-=0.0028;
+    // intersecciones
+    for(let j=i+1;j<ripples.length;j++){
+      const r2=ripples[j];
+      const dx=r.x-r2.x, dy=r.y-r2.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(Math.abs(r.radius+r2.radius-dist)<8){
+        const ix=(r.x*r2.radius+r2.x*r.radius)/(r.radius+r2.radius);
+        const iy=(r.y*r2.radius+r2.y*r.radius)/(r.radius+r2.radius);
+        ctx.beginPath(); ctx.arc(ix,iy,2.5,0,Math.PI*2);
+        ctx.fillStyle=`rgba(180,245,255,${Math.min(r.alpha,r2.alpha)*0.5})`; ctx.fill();
+      }
+    }
+    ctx.beginPath(); ctx.arc(r.x,r.y,r.radius,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(100,210,230,${r.alpha*0.28})`; ctx.lineWidth=1.2; ctx.stroke();
+    if(r.alpha<=0) ripples.splice(i,1);
+  }
+
+  // actualizar gusano
+  gusano.update();
+  distortionLevel = gusano.force;
+
+  // distorsión del entorno
+  drawDistortedBackground(distortionLevel);
+
+  // actualizar y dibujar criaturas orbitantes
+  criatura1.update(gusano.x, gusano.y, distortionLevel*2.5);
+  criatura2.update(gusano.x, gusano.y, distortionLevel*2.5);
+
+  // comprobar fusión
+  const dx12=criatura1.x-criatura2.x, dy12=criatura1.y-criatura2.y;
+  const dist12=Math.sqrt(dx12*dx12+dy12*dy12);
+  const fusionUmbral = (criatura1.size+criatura2.size)*1.4;
+
+  // intensidad de la proximidad — modifica alpha y tamaño
+  const proximidad = Math.max(0, 1-(dist12/(fusionUmbral*3)));
+
+  // línea de tensión entre criaturas cuando se acercan
+  if(proximidad>0.1){
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(criatura1.x, criatura1.y);
+    ctx.lineTo(criatura2.x, criatura2.y);
+    ctx.strokeStyle=`rgba(255,220,150,${proximidad*0.3})`;
+    ctx.lineWidth=proximidad*3;
+    ctx.setLineDash([4,8]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  criatura1.draw(0.6+proximidad*0.4);
+  criatura2.draw(0.6+proximidad*0.4);
+
+  // gusano encima de todo
+  gusano.draw();
+
+  // FUSIÓN
+  if(dist12 < fusionUmbral && !fusionTriggered && gusano.force > 0.1){
+    fusionTriggered=true;
+    setTimeout(()=>{
+      triggerExplosion();
+      setTimeout(()=>{ fusionTriggered=false; },3000);
+    }, 80);
+  }
+}
+
+animate();
+</script>
+</body>
+</html>
