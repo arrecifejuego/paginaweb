@@ -294,34 +294,34 @@ function tone(f,d,t,v,dl=0){
 }
 // Flip por equipo — Algas: cristalino agudo, Corales: cálido grave
 function sonarFlipAlgas(delay){
-  tone(520,0.22,'sine',0.018,delay);
-  tone(780,0.18,'sine',0.007,delay+0.06);
+  tone(520,0.22,'sine',0.045,delay);
+  tone(780,0.18,'sine',0.018,delay+0.06);
 }
 function sonarFlipCorales(delay){
-  tone(280,0.25,'sine',0.018,delay);
-  tone(420,0.2,'sine',0.008,delay+0.07);
+  tone(280,0.25,'sine',0.045,delay);
+  tone(420,0.2,'sine',0.02,delay+0.07);
 }
 function sonarFlipNumero(delay){
-  tone(400,0.15,'triangle',0.012,delay);
+  tone(400,0.15,'triangle',0.03,delay);
 }
 function sonarFlipSigno(delay){
-  tone(600,0.12,'sine',0.01,delay);
-  tone(300,0.1,'sine',0.006,delay+0.05);
+  tone(600,0.12,'sine',0.025,delay);
+  tone(300,0.1,'sine',0.015,delay+0.05);
 }
 function sonarTension(){
   if(aC.state==='suspended')aC.resume();
   // latido grave
-  tone(60,0.3,'sine',0.02);
-  tone(60,0.25,'sine',0.015,0.35);
+  tone(60,0.3,'sine',0.05);
+  tone(60,0.25,'sine',0.038,0.35);
 }
 function sonarReveal(){
-  tone(340,0.2,'sine',0.018);tone(520,0.25,'sine',0.01,0.12);tone(680,0.3,'sine',0.006,0.26);
+  tone(340,0.2,'sine',0.045);tone(520,0.25,'sine',0.025,0.12);tone(680,0.3,'sine',0.015,0.26);
 }
-function sonarPaso(){tone(320,0.1,'sine',0.011);}
-function sonarDaño(){tone(100,0.5,'sawtooth',0.018);tone(70,0.6,'triangle',0.01,0.12);}
-function sonarTornado(){tone(80,0.6,'sawtooth',0.02);tone(55,0.8,'triangle',0.012,0.15);}
-function sonarMarea(){tone(480,0.8,'sine',0.018);tone(640,1,'sine',0.01,0.18);tone(820,0.9,'sine',0.006,0.38);}
-function sonarFin(){tone(440,0.35,'sine',0.022);tone(660,0.45,'sine',0.013,0.2);tone(880,0.4,'sine',0.007,0.42);}
+function sonarPaso(){tone(320,0.1,'sine',0.028);}
+function sonarDaño(){tone(100,0.5,'sawtooth',0.045);tone(70,0.6,'triangle',0.025,0.12);}
+function sonarTornado(){tone(80,0.6,'sawtooth',0.05);tone(55,0.8,'triangle',0.03,0.15);}
+function sonarMarea(){tone(480,0.8,'sine',0.045);tone(640,1,'sine',0.025,0.18);tone(820,0.9,'sine',0.015,0.38);}
+function sonarFin(){tone(440,0.35,'sine',0.055);tone(660,0.45,'sine',0.032,0.2);tone(880,0.4,'sine',0.018,0.42);}
 
 /* IMÁGENES */
 const IMGS = {
@@ -770,14 +770,15 @@ function tryPlayTut() {
     btnAudioTut.classList.remove('muted');
     let vol = 0;
     const fade = setInterval(() => {
-      vol = Math.min(0.28, vol + 0.007);
+      vol = Math.min(0.12, vol + 0.004);
       audioTut.volume = vol;
-      if(vol >= 0.28) clearInterval(fade);
+      if(vol >= 0.12) clearInterval(fade);
     }, 100);
   }).catch(() => {});
 }
 
-// Arrancar al primer gesto
+// Arrancar inmediatamente, con fallback al primer gesto si el browser bloquea
+tryPlayTut();
 document.addEventListener('click', tryPlayTut, {once: true});
 document.addEventListener('touchstart', tryPlayTut, {once: true, passive: true});
 
