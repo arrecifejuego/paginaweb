@@ -104,11 +104,6 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 #easter-overlay.visible .easter-cerrar{opacity:1;pointer-events:auto;}
 .easter-cerrar:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
 
-/* OLA DE TRANSICIÓN */
-#ola-transicion{position:fixed;inset:0;z-index:200;pointer-events:none;overflow:hidden;}
-#ola-canvas{position:absolute;inset:0;width:100%;height:100%;}
-#seccion-wrap{position:fixed;inset:0;z-index:150;background:var(--bg);opacity:0;pointer-events:none;overflow-y:auto;}
-#seccion-wrap.visible{opacity:1;pointer-events:auto;}
 
 @media(max-width:600px){
   .cartas{gap:8px;}
@@ -127,7 +122,6 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 <!-- OLA TRANSICIÓN -->
 <div id="ola-transicion"><canvas id="ola-canvas"></canvas></div>
 <!-- SECCIÓN -->
-<div id="seccion-wrap"></div>
 
 <!-- EASTER EGG -->
 <div id="easter-overlay">
@@ -269,109 +263,26 @@ function cerrarEasterEgg(){document.getElementById('easter-overlay').classList.r
 document.getElementById('easter-cerrar').addEventListener('click',cerrarEasterEgg);
 document.getElementById('easter-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('easter-overlay'))cerrarEasterEgg();});
 
-/* OLA DE TRANSICIÓN */
-const olaCanvas=document.getElementById('ola-canvas');
-const olaCtx=olaCanvas.getContext('2d');
-let olaAnimFrame=null,olaActive=false;
-function resizeOla(){olaCanvas.width=window.innerWidth;olaCanvas.height=window.innerHeight;}
-resizeOla();window.addEventListener('resize',resizeOla);
-
-function animarOlaSubida(onMitad,onFin){
-  olaActive=true;const W=olaCanvas.width,H=olaCanvas.height;
-  let progress=0;const duration=900,start=performance.now();
-  function frame(now){
-    progress=Math.min(1,(now-start)/duration);
-    const ease=1-Math.pow(1-progress,3);
-    olaCtx.clearRect(0,0,W,H);
-    const waterY=H-H*ease;
-    const waveAmp=22*Math.sin(progress*Math.PI)+6;
-    const waveOff=now*0.0025;
-    const grad=olaCtx.createLinearGradient(0,waterY,0,H);
-    grad.addColorStop(0,'rgba(8,40,65,0.98)');grad.addColorStop(0.4,'rgba(4,22,40,0.99)');grad.addColorStop(1,'rgba(1,8,18,1)');
-    olaCtx.beginPath();olaCtx.moveTo(0,H);
-    for(let x=0;x<=W;x+=3){const y=waterY+Math.sin(x*0.01+waveOff)*waveAmp+Math.sin(x*0.022+waveOff*1.6)*waveAmp*0.45+Math.sin(x*0.005+waveOff*0.7)*waveAmp*0.3;olaCtx.lineTo(x,y);}
-    olaCtx.lineTo(W,H);olaCtx.closePath();olaCtx.fillStyle=grad;olaCtx.fill();
-    olaCtx.beginPath();
-    for(let x=0;x<=W;x+=3){const y=waterY+Math.sin(x*0.01+waveOff)*waveAmp+Math.sin(x*0.022+waveOff*1.6)*waveAmp*0.45+Math.sin(x*0.005+waveOff*0.7)*waveAmp*0.3;x===0?olaCtx.moveTo(x,y):olaCtx.lineTo(x,y);}
-    olaCtx.strokeStyle=`rgba(60,160,200,${0.3*Math.sin(progress*Math.PI)})`;olaCtx.lineWidth=1.5;olaCtx.stroke();
-    if(progress>=0.5&&onMitad){onMitad();onMitad=null;}
-    if(progress<1){olaAnimFrame=requestAnimationFrame(frame);}else{if(onFin)onFin();}
-  }
-  olaAnimFrame=requestAnimationFrame(frame);
-}
-
-function animarOlaBajada(onFin){
-  const W=olaCanvas.width,H=olaCanvas.height;
-  let progress=0;const duration=800,start=performance.now();
-  function frame(now){
-    progress=Math.min(1,(now-start)/duration);
-    const ease=Math.pow(progress,2);
-    olaCtx.clearRect(0,0,W,H);
-    const waterY=H*ease;
-    const waveAmp=20*Math.sin((1-progress)*Math.PI*0.8)+4;
-    const waveOff=now*0.0025;
-    const grad=olaCtx.createLinearGradient(0,0,0,waterY);
-    grad.addColorStop(0,'rgba(1,8,18,1)');grad.addColorStop(0.6,'rgba(4,22,40,0.99)');grad.addColorStop(1,'rgba(8,40,65,0.97)');
-    olaCtx.beginPath();olaCtx.moveTo(0,0);olaCtx.lineTo(0,waterY);
-    for(let x=0;x<=W;x+=3){const y=waterY+Math.sin(x*0.01+waveOff)*waveAmp+Math.sin(x*0.021+waveOff*1.5)*waveAmp*0.4+Math.sin(x*0.006+waveOff*0.8)*waveAmp*0.25;olaCtx.lineTo(x,y);}
-    olaCtx.lineTo(W,0);olaCtx.closePath();olaCtx.fillStyle=grad;olaCtx.fill();
-    if(progress<1){olaAnimFrame=requestAnimationFrame(frame);}else{olaCtx.clearRect(0,0,W,H);olaActive=false;if(onFin)onFin();}
-  }
-  olaAnimFrame=requestAnimationFrame(frame);
-}
-
-async function navegarA(url,titulo){
-  if(olaActive)return;
-  cancelAnimationFrame(olaAnimFrame);
-  const seccionWrap=document.getElementById('seccion-wrap');
-  let htmlCargado=null;
-  fetch(url).then(r=>r.text()).then(h=>{htmlCargado=h;}).catch(()=>{htmlCargado='<p style="color:white;padding:40px">Error cargando.</p>';});
-  animarOlaSubida(
-    ()=>{
-      function esperarYmostrar(){
-        if(htmlCargado===null){setTimeout(esperarYmostrar,50);return;}
-        seccionWrap.innerHTML=htmlCargado;
-        seccionWrap.classList.add('visible');
-        history.pushState({url,titulo},titulo,url.replace('.html','').replace('arrecife-',''));
-        document.title=titulo+' — Arrecife';
-        reinicializarSeccion(seccionWrap);
-        document.querySelector('.ui').style.opacity='0';
-        document.querySelector('.ui').style.pointerEvents='none';
-      }
-      esperarYmostrar();
-    },
-    ()=>animarOlaBajada(null)
-  );
-}
-
-function volverAlIndex(){
-  if(olaActive)return;
-  const seccionWrap=document.getElementById('seccion-wrap');
-  animarOlaSubida(
-    ()=>{seccionWrap.classList.remove('visible');seccionWrap.innerHTML='';document.querySelector('.ui').style.opacity='1';document.querySelector('.ui').style.pointerEvents='auto';history.pushState({},'Arrecife','/');document.title='Arrecife — Juego de mesa de lectura social';},
-    ()=>animarOlaBajada(null)
-  );
-}
-
-function reinicializarSeccion(wrap){
-  wrap.querySelectorAll('script').forEach(oldScript=>{const newScript=document.createElement('script');if(oldScript.src){newScript.src=oldScript.src;}else{newScript.textContent=oldScript.textContent;}document.head.appendChild(newScript);setTimeout(()=>newScript.remove(),1000);});
-  setTimeout(()=>{const btnVolver=wrap.querySelector('.btn-volver');if(btnVolver){btnVolver.addEventListener('click',e=>{e.preventDefault();volverAlIndex();});}},200);
-}
 
 document.querySelectorAll('.carta').forEach(carta=>{
   carta.addEventListener('mouseenter',sonarHover);
   carta.addEventListener('click',e=>{
     const href=carta.getAttribute('href');
     if(!href||href==='#')return;
-    const titulos={'arrecife-comojugar.html':'Cómo se juega','arrecife-tutorial.html':'Tutorial','arrecife-conseguir.html':'Conseguir el juego','arrecife-extras.html':'Extras'};
+    sonarClick();
+    addRipple(e.clientX,e.clientY);
     if(window.matchMedia('(hover:none)').matches){
-      if(!carta.classList.contains('flipped')){e.preventDefault();document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));carta.classList.add('flipped');addRipple(carta.getBoundingClientRect().left+carta.getBoundingClientRect().width/2,carta.getBoundingClientRect().top+carta.getBoundingClientRect().height/2);return;}
+      if(!carta.classList.contains('flipped')){
+        e.preventDefault();
+        document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));
+        carta.classList.add('flipped');
+        return;
+      }
     }
     window.location.href=href;
   });
 });
 
-window.addEventListener('popstate',e=>{const sw=document.getElementById('seccion-wrap');if(sw.classList.contains('visible'))volverAlIndex();});
 </script>
 </body>
 </html>
