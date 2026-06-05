@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.arrecifejuego.com.ar/sitemap.xml
