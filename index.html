@@ -71,11 +71,43 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 #easter-overlay.visible .easter-cerrar{opacity:1;pointer-events:auto;}
 .easter-cerrar:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
 @media(max-width:600px){.cartas{gap:8px;}.carta{width:calc(46vw - 14px);}.frase{font-size:10px;white-space:normal;text-align:center;width:86vw;}.logo-img{width:65vw;}}
+
+/* OLA DE TRANSICIÓN */
+#ola-transicion{
+  position:fixed;inset:0;z-index:200;
+  pointer-events:none;
+  overflow:hidden;
+}
+#ola-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+}
+/* contenedor donde se inyecta la sección */
+#seccion-wrap{
+  position:fixed;inset:0;z-index:150;
+  background:var(--bg);
+  opacity:0;
+  pointer-events:none;
+  overflow-y:auto;
+  transition:none;
+}
+#seccion-wrap.visible{
+  opacity:1;
+  pointer-events:auto;
+}
 </style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
+
+<!-- OLA DE TRANSICIÓN -->
+<div id="ola-transicion">
+  <canvas id="ola-canvas"></canvas>
+</div>
+<!-- CONTENEDOR DE SECCIÓN -->
+<div id="seccion-wrap"></div>
+
 <audio id="audio-bg" loop><source src="savfk-the-ocean.mp3" type="audio/mpeg"/></audio>
 <button class="btn-audio muted" id="btnAudio" title="Música">♪</button>
 
@@ -387,6 +419,228 @@ function cerrarEasterEgg(){
 }
 document.getElementById('easter-cerrar').addEventListener('click',cerrarEasterEgg);
 document.getElementById('easter-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('easter-overlay'))cerrarEasterEgg();});
+
+/* ============================
+   TRANSICIÓN OLA
+============================ */
+const olaCanvas = document.getElementById('ola-canvas');
+const olaCtx = olaCanvas.getContext('2d');
+let olaAnimFrame = null;
+let olaActive = false;
+
+function resizeOla(){
+  olaCanvas.width = window.innerWidth;
+  olaCanvas.height = window.innerHeight;
+}
+resizeOla();
+window.addEventListener('resize', resizeOla);
+
+// Ola que sube cubriendo la pantalla
+function animarOlaSubida(color, onMitad, onFin){
+  olaActive = true;
+  const W = olaCanvas.width, H = olaCanvas.height;
+  let progress = 0; // 0 → 1
+  const duration = 900; // ms
+  const start = performance.now();
+
+  function frame(now){
+    progress = Math.min(1, (now - start) / duration);
+    const ease = 1 - Math.pow(1 - progress, 3); // ease out cubic
+
+    olaCtx.clearRect(0,0,W,H);
+
+    // nivel del agua
+    const waterY = H - H * ease;
+    const waveAmp = 18 * (1 - ease * 0.7);
+    const waveFreq = 0.012;
+    const waveOff = now * 0.003;
+
+    olaCtx.beginPath();
+    olaCtx.moveTo(0, H);
+    // ola superior
+    for(let x=0; x<=W; x+=4){
+      const y = waterY + Math.sin(x * waveFreq + waveOff) * waveAmp
+                       + Math.sin(x * waveFreq * 2.3 + waveOff * 1.4) * waveAmp * 0.4;
+      olaCtx.lineTo(x, y);
+    }
+    olaCtx.lineTo(W, H);
+    olaCtx.closePath();
+    olaCtx.fillStyle = color;
+    olaCtx.fill();
+
+    if(progress >= 0.5 && onMitad){ onMitad(); onMitad = null; }
+    if(progress < 1){
+      olaAnimFrame = requestAnimationFrame(frame);
+    } else {
+      if(onFin) onFin();
+    }
+  }
+  olaAnimFrame = requestAnimationFrame(frame);
+}
+
+// Ola que baja revelando la pantalla
+function animarOlaBajada(color, onFin){
+  const W = olaCanvas.width, H = olaCanvas.height;
+  let progress = 0;
+  const duration = 800;
+  const start = performance.now();
+
+  function frame(now){
+    progress = Math.min(1, (now - start) / duration);
+    const ease = Math.pow(progress, 2); // ease in
+
+    olaCtx.clearRect(0,0,W,H);
+
+    const waterY = H * ease;
+    const waveAmp = 14 * (1 - ease * 0.8);
+    const waveFreq = 0.012;
+    const waveOff = now * 0.003;
+
+    olaCtx.beginPath();
+    olaCtx.moveTo(0, 0);
+    olaCtx.lineTo(0, waterY);
+    for(let x=0; x<=W; x+=4){
+      const y = waterY + Math.sin(x * waveFreq + waveOff) * waveAmp
+                       + Math.sin(x * waveFreq * 2.1 + waveOff * 1.2) * waveAmp * 0.35;
+      olaCtx.lineTo(x, y);
+    }
+    olaCtx.lineTo(W, 0);
+    olaCtx.closePath();
+    olaCtx.fillStyle = color;
+    olaCtx.fill();
+
+    if(progress < 1){
+      olaAnimFrame = requestAnimationFrame(frame);
+    } else {
+      olaCtx.clearRect(0,0,W,H);
+      olaActive = false;
+      if(onFin) onFin();
+    }
+  }
+  olaAnimFrame = requestAnimationFrame(frame);
+}
+
+// Navegar a una sección
+async function navegarA(url, titulo){
+  if(olaActive) return;
+  cancelAnimationFrame(olaAnimFrame);
+
+  const color = 'rgba(4,16,28,0.97)';
+  const seccionWrap = document.getElementById('seccion-wrap');
+
+  // subida de la ola — en paralelo cargamos el HTML
+  let htmlCargado = null;
+  fetch(url)
+    .then(r => r.text())
+    .then(h => { htmlCargado = h; })
+    .catch(() => { htmlCargado = '<p style="color:white;padding:40px">Error cargando la sección.</p>'; });
+
+  animarOlaSubida(color,
+    // a la mitad: inyectar contenido y cambiar URL
+    ()=>{
+      // esperar que haya cargado
+      function esperarYmostrar(){
+        if(htmlCargado === null){ setTimeout(esperarYmostrar, 50); return; }
+        // inyectar en el wrap
+        seccionWrap.innerHTML = htmlCargado;
+        seccionWrap.classList.add('visible');
+        // cambiar URL sin recargar
+        history.pushState({url, titulo}, titulo, url.replace('.html','').replace('arrecife-',''));
+        document.title = titulo + ' — Arrecife';
+        // reinicializar scripts de la sección
+        reinicializarSeccion(seccionWrap);
+        // ocultar el index
+        document.querySelector('.ui').style.opacity = '0';
+        document.querySelector('.ui').style.pointerEvents = 'none';
+      }
+      esperarYmostrar();
+    },
+    // al terminar la subida: bajar la ola
+    ()=>{
+      animarOlaBajada(color, null);
+    }
+  );
+}
+
+// Volver al index
+function volverAlIndex(){
+  if(olaActive) return;
+  const color = 'rgba(4,16,28,0.97)';
+  const seccionWrap = document.getElementById('seccion-wrap');
+
+  animarOlaSubida(color,
+    ()=>{
+      seccionWrap.classList.remove('visible');
+      seccionWrap.innerHTML = '';
+      document.querySelector('.ui').style.opacity = '1';
+      document.querySelector('.ui').style.pointerEvents = 'auto';
+      history.pushState({}, 'Arrecife', '/');
+      document.title = 'Arrecife — Juego de lectura social';
+    },
+    ()=>{ animarOlaBajada(color, null); }
+  );
+}
+
+// Reinicializar scripts dentro de la sección cargada
+function reinicializarSeccion(wrap){
+  // ejecutar todos los scripts inline del HTML cargado
+  wrap.querySelectorAll('script').forEach(oldScript => {
+    const newScript = document.createElement('script');
+    if(oldScript.src){
+      newScript.src = oldScript.src;
+    } else {
+      newScript.textContent = oldScript.textContent;
+    }
+    document.head.appendChild(newScript);
+    setTimeout(()=>newScript.remove(), 1000);
+  });
+  // interceptar el botón volver de la sección
+  setTimeout(()=>{
+    const btnVolver = wrap.querySelector('.btn-volver');
+    if(btnVolver){
+      btnVolver.addEventListener('click', e=>{
+        e.preventDefault();
+        volverAlIndex();
+      });
+    }
+  }, 200);
+}
+
+// Interceptar clicks en las cartas
+document.querySelectorAll('.carta').forEach(carta => {
+  carta.addEventListener('click', e => {
+    // en desktop el hover ya volteó la carta — en mobile hay flip
+    const href = carta.getAttribute('href');
+    if(!href || href === '#') return;
+    // mapear href a título
+    const titulos = {
+      'arrecife-comojogar.html': 'Cómo se juega',
+      'arrecife-tutorial.html': 'Tutorial',
+      'arrecife-conseguir.html': 'Conseguir el juego',
+      'arrecife-extras.html': 'Extras',
+    };
+    // en mobile: primer tap voltea, segundo navega con ola
+    if(window.matchMedia('(hover:none)').matches){
+      if(!carta.classList.contains('flipped')){
+        e.preventDefault();
+        document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));
+        carta.classList.add('flipped');
+        return;
+      }
+    }
+    e.preventDefault();
+    navegarA(href, titulos[href] || 'Arrecife');
+  });
+});
+
+// Manejar botón atrás del browser
+window.addEventListener('popstate', e => {
+  const seccionWrap = document.getElementById('seccion-wrap');
+  if(seccionWrap.classList.contains('visible')){
+    volverAlIndex();
+  }
+});
+
 </script>
 </body>
 </html>
