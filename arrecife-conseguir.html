@@ -48,18 +48,20 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   flex-shrink:0;
 }
 .precio-contenido{flex:1;}
-.precio-intro{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:15px;opacity:0.45;line-height:1.8;
-  margin-bottom:28px;letter-spacing:0.5px;
+
+.precio-display{
+  display:flex;align-items:center;gap:1px;
+  margin-bottom:6px;height:72px;
+  position:relative;
 }
-.precio-num{
-  font-family:'Cormorant Garamond',serif;font-weight:300;
-  font-size:clamp(48px,7vw,72px);line-height:1;
-  letter-spacing:-1px;margin-bottom:6px;
+.digito{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,7vw,72px);font-weight:300;line-height:1;
+  display:inline-block;
   color:rgba(255,255,255,0.9);
+  transition:transform 0.12s,opacity 0.2s;
 }
-.precio-num sup{font-size:0.45em;opacity:0.6;vertical-align:super;letter-spacing:0;}
+.digito.prefijo{font-size:0.45em;opacity:0.6;align-self:flex-start;margin-top:10px;}
 .precio-moneda{font-size:9px;letter-spacing:4px;opacity:0.3;text-transform:uppercase;margin-bottom:32px;}
 
 /* BARRA DE EQUILIBRIO */
@@ -153,12 +155,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   <div class="precio-wrap">
     <img class="eze-linterna-img" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="Eze"/>
     <div class="precio-contenido">
-      <div class="precio-intro">
-        Esto no es solo un juego.<br>
-        Es una excusa para ver a las personas de otra manera.<br>
-        <em>Y una vez que las ves, no podés dejar de verlas.</em>
-      </div>
-      <div class="precio-num"><sup>$</sup>49600</div>
+      <div class="precio-display" id="precio-display"></div>
       <div class="precio-moneda">pesos argentinos · envío a coordinar</div>
 
       <div class="barra-label">encontrá el equilibrio para continuar</div>
@@ -192,7 +189,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
 </div>
 
 <script>
-/* CANVAS */
+/* ── CANVAS ── */
 const canvas=document.getElementById('bg-canvas');
 const ctx=canvas.getContext('2d');
 let W,H; const bgR=[];
@@ -211,7 +208,51 @@ document.addEventListener('click',e=>addR(e.clientX,e.clientY));
     ctx.strokeStyle=`rgba(100,210,230,${r.a*0.22})`;ctx.lineWidth=1.2;ctx.stroke();
     if(r.a<=0)bgR.splice(i,1);}})();
 
-/* BARRA DE EQUILIBRIO */
+/* ── PRECIO CAÓTICO ── */
+const PRECIO_STR = ['4','9','6','0','0'];
+const display = document.getElementById('precio-display');
+const pref = document.createElement('span');
+pref.className='digito prefijo'; pref.textContent='$';
+display.appendChild(pref);
+const digitoEls = [];
+PRECIO_STR.forEach(d=>{
+  const s=document.createElement('span');
+  s.className='digito'; s.textContent=d;
+  display.appendChild(s); digitoEls.push(s);
+});
+
+let caosLevel = 1.0; // 1=caos total, 0=equilibrado
+
+setInterval(()=>{
+  digitoEls.forEach((el,i)=>{
+    if(caosLevel > 0.05){
+      if(Math.random() < caosLevel * 0.75)
+        el.textContent = String(Math.floor(Math.random()*10));
+      else
+        el.textContent = PRECIO_STR[i];
+      const tx=(Math.random()-0.5)*caosLevel*20;
+      const ty=(Math.random()-0.5)*caosLevel*16;
+      const rot=(Math.random()-0.5)*caosLevel*14;
+      el.style.transform=`translate(${tx}px,${ty}px) rotate(${rot}deg)`;
+      el.style.opacity = String(0.5+(1-caosLevel)*0.5);
+      // color caótico
+      const r=Math.round(160+Math.sin(Date.now()*0.003)*80);
+      const g=Math.round(160+Math.cos(Date.now()*0.002)*80);
+      const b=Math.round(200+Math.sin(Date.now()*0.005)*55);
+      el.style.color=`rgb(${r},${g},${b})`;
+    } else {
+      el.textContent=PRECIO_STR[i];
+      el.style.transform='translate(0,0) rotate(0deg)';
+      el.style.opacity='1';
+      el.style.color='rgba(255,255,255,0.9)';
+    }
+  });
+  pref.style.transform = caosLevel>0.05
+    ? `translateY(${(Math.random()-0.5)*caosLevel*8}px)` : 'translateY(0)';
+  pref.style.opacity = String(0.4+(1-caosLevel)*0.25);
+}, 80);
+
+/* ── BARRA DE EQUILIBRIO ── */
 const barraWrap=document.getElementById('barra-wrap');
 const barraFill=document.getElementById('barra-fill');
 const olaEl=document.getElementById('barra-ola');
@@ -219,47 +260,74 @@ const equilibrioMsg=document.getElementById('equilibrio-msg');
 const formulario=document.getElementById('formulario');
 
 const BARRA_W=()=>barraWrap.offsetWidth;
-let olaX=0; // -1 a 1
+let olaX=0.8;
 let dragging=false,dragStartX=0,dragStartY=0,olaStartX=0;
 let equilibrado=false;
-const ZONA=0.08;
+let progreso=0;
+let completado=false;
+const ZONA=0.12;
+const FILL_SPEED=1/(4*60);
+const DRAIN_SPEED=1/(8*60);
 
-function actualizarBarra(){
-  const pct=((olaX+1)/2)*100;
-  barraFill.style.width=pct+'%';
+let olaAngle=Math.PI*0.5, oscAmplitud=1.0, olaVel=0;
+
+function olaLoop(){
+  requestAnimationFrame(olaLoop);
+  if(!dragging){
+    olaAngle+=0.036;
+    const wave=Math.sin(olaAngle)*oscAmplitud;
+    const diff=wave-olaX;
+    olaVel+=diff*0.022; olaVel*=0.90; olaX+=olaVel;
+  }
+  const maxX=(BARRA_W()-36)/(BARRA_W());
+  olaX=Math.max(-maxX,Math.min(maxX,olaX));
+
   const left=((olaX+1)/2)*(BARRA_W()-36);
   olaEl.style.left=left+'px';
   olaEl.style.transform='translateY(-50%)';
   olaEl.style.top='50%';
-  const cerca=Math.abs(olaX)<ZONA;
-  if(cerca&&!equilibrado){
-    equilibrado=true;
-    equilibrioMsg.classList.add('visible');
-    formulario.classList.add('visible');
-    formulario.scrollIntoView({behavior:'smooth',block:'start'});
-    // sonido
-    try{const aC=new(window.AudioContext||window.webkitAudioContext)();
-    [480,640,820].forEach((f,i)=>setTimeout(()=>{const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(0.015,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.6);o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.6);},i*180));}catch(e){}
-  } else if(!cerca&&equilibrado){
-    equilibrado=false;
-    equilibrioMsg.classList.remove('visible');
-    formulario.classList.remove('visible');
+
+  const dist=Math.abs(olaX);
+  const estaEq=dist<ZONA;
+
+  if(estaEq&&!completado){
+    const bonus=1-(dist/ZONA);
+    progreso=Math.min(1,progreso+FILL_SPEED*(1+bonus));
+    barraFill.style.width=(progreso*100)+'%';
+    caosLevel=Math.max(0,dist/ZONA)*(1-progreso*0.85);
+    if(progreso>=1){
+      completado=true; equilibrado=true;
+      caosLevel=0; oscAmplitud=0.02;
+      equilibrioMsg.classList.add('visible');
+      formulario.classList.add('visible');
+      formulario.scrollIntoView({behavior:'smooth',block:'start'});
+      try{const aC=new(window.AudioContext||window.webkitAudioContext)();
+        [440,660,880].forEach((f,i)=>setTimeout(()=>{const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+        o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n);
+        g.gain.linearRampToValueAtTime(0.015,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.6);
+        o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.6);},i*180));}catch(e){}
+    }
+  } else if(!estaEq){
+    progreso=Math.max(0,progreso-DRAIN_SPEED);
+    barraFill.style.width=(progreso*100)+'%';
+    if(completado){
+      completado=false; equilibrado=false; caosLevel=1; oscAmplitud=1.0;
+      equilibrioMsg.classList.remove('visible');
+      formulario.classList.remove('visible');
+    }
+    caosLevel=Math.min(1,dist/0.3);
   }
 }
+olaLoop();
 
-// Mouse
-olaEl.addEventListener('mousedown',e=>{dragging=true;dragStartX=e.clientX;olaStartX=olaX;e.preventDefault();});
-window.addEventListener('mousemove',e=>{if(!dragging)return;const dx=(e.clientX-dragStartX)/(BARRA_W()/2);olaX=Math.max(-1,Math.min(1,olaStartX+dx));actualizarBarra();});
+olaEl.addEventListener('mousedown',e=>{dragging=true;dragStartX=e.clientX;olaStartX=olaX;oscAmplitud=0.7;e.preventDefault();});
+window.addEventListener('mousemove',e=>{if(!dragging)return;const dx=(e.clientX-dragStartX)/(BARRA_W()/2);olaX=Math.max(-1,Math.min(1,olaStartX+dx));});
 window.addEventListener('mouseup',()=>{dragging=false;});
-
-// Touch
-olaEl.addEventListener('touchstart',e=>{dragging=true;dragStartX=e.touches[0].clientX;dragStartY=e.touches[0].clientY;olaStartX=olaX;},{passive:true});
-olaEl.addEventListener('touchmove',e=>{if(!dragging)return;const dx=e.touches[0].clientX-dragStartX;const dy=e.touches[0].clientY-dragStartY;if(Math.abs(dx)>Math.abs(dy)){e.preventDefault();olaX=Math.max(-1,Math.min(1,olaStartX+dx/(BARRA_W()/2)));actualizarBarra();}else{dragging=false;}},{passive:false});
+olaEl.addEventListener('touchstart',e=>{dragging=true;dragStartX=e.touches[0].clientX;dragStartY=e.touches[0].clientY;olaStartX=olaX;oscAmplitud=0.7;},{passive:true});
+olaEl.addEventListener('touchmove',e=>{if(!dragging)return;const dx=e.touches[0].clientX-dragStartX;const dy=e.touches[0].clientY-dragStartY;if(Math.abs(dx)>Math.abs(dy)){e.preventDefault();olaX=Math.max(-1,Math.min(1,olaStartX+dx/(BARRA_W()/2)));}else{dragging=false;}},{passive:false});
 window.addEventListener('touchend',()=>{dragging=false;});
 
-actualizarBarra();
-
-/* FORMULARIO */
+/* ── FORMULARIO ── */
 document.getElementById('btn-enviar').addEventListener('click',()=>{
   const nombre=document.getElementById('inp-nombre').value.trim();
   const ubicacion=document.getElementById('inp-ubicacion').value.trim();
@@ -269,8 +337,74 @@ document.getElementById('btn-enviar').addEventListener('click',()=>{
   if(!ubicacion){document.getElementById('err-ubicacion').style.display='block';ok=false;}else{document.getElementById('err-ubicacion').style.display='none';}
   if(!ok)return;
   const txt=`Hola! Me interesa Arrecife 🌊%0ANombre: ${nombre}%0AUbicación: ${ubicacion}${mensaje?`%0AMensaje: ${mensaje}`:''}&text=`;
-  window.open(`https://wa.me/5493564242625?text=${txt}`,'_blank');
+  triggerDesintegracion(()=>window.open(`https://wa.me/5493564242625?text=${txt}`,'_blank'));
 });
+
+/* ── DESINTEGRACIÓN TRIANGULAR ── */
+function triggerDesintegracion(onDone){
+  const main=document.querySelector('.main');
+  const rect=main.getBoundingClientRect();
+  const cvs=document.createElement('canvas');
+  cvs.style.cssText='position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;pointer-events:none;';
+  cvs.width=window.innerWidth; cvs.height=window.innerHeight;
+  document.body.appendChild(cvs);
+  const c=cvs.getContext('2d');
+  const COLS=20,ROWS=12;
+  const tw=rect.width/COLS, th=rect.height/ROWS;
+  const tris=[];
+  for(let r=0;r<ROWS;r++) for(let col=0;col<COLS;col++){
+    const lx=rect.left+col*tw, ly=rect.top+r*th;
+    for(let t=0;t<2;t++){
+      const pts=t===0
+        ?[{x:lx,y:ly},{x:lx+tw,y:ly},{x:lx,y:ly+th}]
+        :[{x:lx+tw,y:ly},{x:lx+tw,y:ly+th},{x:lx,y:ly+th}];
+      const cx=(pts[0].x+pts[1].x+pts[2].x)/3;
+      const cy=(pts[0].y+pts[1].y+pts[2].y)/3;
+      const ang=Math.atan2(cy-window.innerHeight/2,cx-window.innerWidth/2);
+      const spd=2.5+Math.random()*5;
+      tris.push({pts,cx,cy,
+        vx:Math.cos(ang)*spd*(0.7+Math.random()),
+        vy:Math.sin(ang)*spd*(0.7+Math.random()),
+        rotSpd:(Math.random()-0.5)*0.2,
+        delay:Math.random()*350,
+        born:performance.now(),
+        cyan:Math.random()<0.3
+      });
+    }
+  }
+  main.style.opacity='0';
+  const DUR=1100;
+  function draw(now){
+    c.clearRect(0,0,cvs.width,cvs.height);
+    let allDone=true;
+    tris.forEach(tri=>{
+      const el=now-tri.born-tri.delay;
+      if(el<0){allDone=false;return;}
+      const p=Math.min(el/DUR,1);
+      if(p<1)allDone=false;
+      const alpha=Math.max(0,1-p*p);
+      const dx=tri.vx*el*0.042, dy=tri.vy*el*0.042;
+      const rot=tri.rotSpd*el*0.042;
+      c.save();
+      c.translate(tri.cx+dx,tri.cy+dy);
+      c.rotate(rot); c.scale(1+p*0.25,1+p*0.25);
+      c.globalAlpha=alpha;
+      c.beginPath();
+      c.moveTo(tri.pts[0].x-tri.cx,tri.pts[0].y-tri.cy);
+      c.lineTo(tri.pts[1].x-tri.cx,tri.pts[1].y-tri.cy);
+      c.lineTo(tri.pts[2].x-tri.cx,tri.pts[2].y-tri.cy);
+      c.closePath();
+      const col=tri.cyan?'rgba(100,210,230,':'rgba(255,255,255,';
+      c.fillStyle=col+(0.08+Math.random()*0.1)+')';
+      c.strokeStyle=col+(alpha*0.5)+')';
+      c.lineWidth=0.6; c.fill(); c.stroke();
+      c.restore();
+    });
+    if(!allDone)requestAnimationFrame(draw);
+    else{cvs.remove();if(onDone)onDone();}
+  }
+  requestAnimationFrame(draw);
+}
 </script>
 </body>
 </html>
