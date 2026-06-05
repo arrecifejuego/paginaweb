@@ -367,14 +367,7 @@ document.querySelectorAll('.carta').forEach(carta=>{
     if(window.matchMedia('(hover:none)').matches){
       if(!carta.classList.contains('flipped')){e.preventDefault();document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));carta.classList.add('flipped');addRipple(carta.getBoundingClientRect().left+carta.getBoundingClientRect().width/2,carta.getBoundingClientRect().top+carta.getBoundingClientRect().height/2);return;}
     }
-    sonarClick();
-    // Tutorial pesa mucho — navegar directo sin SPA
-    if(href === 'arrecife-tutorial.html'){
-      window.location.href = href;
-      return;
-    }
-    e.preventDefault();
-    navegarA(href,titulos[href]||'Arrecife');
+    e.preventDefault();sonarClick();navegarA(href,titulos[href]||'Arrecife');
   });
 });
 
