@@ -251,8 +251,50 @@ btnAudio.addEventListener('click',e=>{e.stopPropagation();if(!audioActivo){tryPl
 
 /* AUDIO EFECTOS */
 const aC=new(window.AudioContext||window.webkitAudioContext)();
-function sonarHover(){if(aC.state==='suspended')return;const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;o.type='sine';o.frequency.value=300;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(0.008,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.22);o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.22);}
-function sonarClick(){if(aC.state==='suspended')aC.resume();const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;o.type='sine';o.frequency.value=440;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(0.018,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.4);o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.4);}
+function sonarMar(vol, dur){
+  if(aC.state==='suspended') return;
+  const n=aC.currentTime;
+  // ruido blanco filtrado = sonido de ola
+  const buf=aC.createBuffer(1,aC.sampleRate*dur,aC.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1);
+  const src=aC.createBufferSource();
+  src.buffer=buf;
+  // filtro paso-bajo para suavizar (ola)
+  const filt=aC.createBiquadFilter();
+  filt.type='lowpass';
+  filt.frequency.value=600;
+  filt.Q.value=0.8;
+  // segundo filtro para más calidez
+  const filt2=aC.createBiquadFilter();
+  filt2.type='peaking';
+  filt2.frequency.value=200;
+  filt2.gain.value=8;
+  const g=aC.createGain();
+  g.gain.setValueAtTime(0,n);
+  g.gain.linearRampToValueAtTime(vol,n+0.04);
+  g.gain.exponentialRampToValueAtTime(0.0001,n+dur);
+  src.connect(filt); filt.connect(filt2); filt2.connect(g); g.connect(aC.destination);
+  src.start(n); src.stop(n+dur);
+}
+function sonarHover(){
+  if(aC.state==='suspended') return;
+  sonarMar(0.06, 0.35);
+}
+function sonarClick(){
+  if(aC.state==='suspended') aC.resume();
+  // ola más larga y pronunciada al hacer click
+  sonarMar(0.12, 0.7);
+  // más un tono suave de resonancia submarina
+  setTimeout(()=>{
+    if(aC.state==='suspended') return;
+    const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+    o.type='sine'; o.frequency.setValueAtTime(180,n); o.frequency.exponentialRampToValueAtTime(120,n+0.5);
+    g.gain.setValueAtTime(0,n); g.gain.linearRampToValueAtTime(0.012,n+0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001,n+0.5);
+    o.connect(g); g.connect(aC.destination); o.start(n); o.stop(n+0.5);
+  },30);
+}
 document.querySelectorAll('.carta').forEach(carta=>{carta.addEventListener('mouseenter',sonarHover);carta.addEventListener('click',e=>{sonarClick();const r=carta.getBoundingClientRect();addRipple(r.left+r.width/2,r.top+r.height/2);if(window.matchMedia('(hover:none)').matches){if(!carta.classList.contains('flipped')){e.preventDefault();document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));carta.classList.add('flipped');}}}  );});
 
 /* EASTER EGG */
