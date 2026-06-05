@@ -370,7 +370,8 @@ document.querySelectorAll('.carta').forEach(carta=>{
     if(window.matchMedia('(hover:none)').matches){
       if(!carta.classList.contains('flipped')){e.preventDefault();document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));carta.classList.add('flipped');addRipple(carta.getBoundingClientRect().left+carta.getBoundingClientRect().width/2,carta.getBoundingClientRect().top+carta.getBoundingClientRect().height/2);return;}
     }
-    e.preventDefault();sonarClick();navegarA(href,titulos[href]||'Arrecife');
+    sonarClick();
+    window.location.href = href;
   });
 });
 
