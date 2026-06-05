@@ -445,28 +445,46 @@ function animarOlaSubida(color, onMitad, onFin){
 
   function frame(now){
     progress = Math.min(1, (now - start) / duration);
-    const ease = 1 - Math.pow(1 - progress, 3); // ease out cubic
+    const ease = 1 - Math.pow(1 - progress, 3);
 
     olaCtx.clearRect(0,0,W,H);
 
-    // nivel del agua
     const waterY = H - H * ease;
-    const waveAmp = 18 * (1 - ease * 0.7);
-    const waveFreq = 0.012;
-    const waveOff = now * 0.003;
+    const waveAmp = 22 * Math.sin(progress * Math.PI) + 6;
+    const waveOff = now * 0.0025;
+
+    // gradiente oceánico en la ola
+    const grad = olaCtx.createLinearGradient(0, waterY, 0, H);
+    grad.addColorStop(0, 'rgba(8,40,65,0.98)');
+    grad.addColorStop(0.4, 'rgba(4,22,40,0.99)');
+    grad.addColorStop(1, 'rgba(1,8,18,1)');
 
     olaCtx.beginPath();
     olaCtx.moveTo(0, H);
-    // ola superior
-    for(let x=0; x<=W; x+=4){
-      const y = waterY + Math.sin(x * waveFreq + waveOff) * waveAmp
-                       + Math.sin(x * waveFreq * 2.3 + waveOff * 1.4) * waveAmp * 0.4;
+    for(let x=0; x<=W; x+=3){
+      const y = waterY
+        + Math.sin(x * 0.01 + waveOff) * waveAmp
+        + Math.sin(x * 0.022 + waveOff * 1.6) * waveAmp * 0.45
+        + Math.sin(x * 0.005 + waveOff * 0.7) * waveAmp * 0.3;
       olaCtx.lineTo(x, y);
     }
     olaCtx.lineTo(W, H);
     olaCtx.closePath();
-    olaCtx.fillStyle = color;
+    olaCtx.fillStyle = grad;
     olaCtx.fill();
+
+    // brillo en la cresta de la ola
+    olaCtx.beginPath();
+    for(let x=0; x<=W; x+=3){
+      const y = waterY
+        + Math.sin(x * 0.01 + waveOff) * waveAmp
+        + Math.sin(x * 0.022 + waveOff * 1.6) * waveAmp * 0.45
+        + Math.sin(x * 0.005 + waveOff * 0.7) * waveAmp * 0.3;
+      x===0 ? olaCtx.moveTo(x,y) : olaCtx.lineTo(x,y);
+    }
+    olaCtx.strokeStyle = `rgba(60,160,200,${0.3 * Math.sin(progress * Math.PI)})`;
+    olaCtx.lineWidth = 1.5;
+    olaCtx.stroke();
 
     if(progress >= 0.5 && onMitad){ onMitad(); onMitad = null; }
     if(progress < 1){
@@ -487,27 +505,46 @@ function animarOlaBajada(color, onFin){
 
   function frame(now){
     progress = Math.min(1, (now - start) / duration);
-    const ease = Math.pow(progress, 2); // ease in
+    const ease = Math.pow(progress, 2);
 
     olaCtx.clearRect(0,0,W,H);
 
     const waterY = H * ease;
-    const waveAmp = 14 * (1 - ease * 0.8);
-    const waveFreq = 0.012;
-    const waveOff = now * 0.003;
+    const waveAmp = 20 * Math.sin((1-progress) * Math.PI * 0.8) + 4;
+    const waveOff = now * 0.0025;
+
+    const grad = olaCtx.createLinearGradient(0, 0, 0, waterY);
+    grad.addColorStop(0, 'rgba(1,8,18,1)');
+    grad.addColorStop(0.6, 'rgba(4,22,40,0.99)');
+    grad.addColorStop(1, 'rgba(8,40,65,0.97)');
 
     olaCtx.beginPath();
     olaCtx.moveTo(0, 0);
     olaCtx.lineTo(0, waterY);
-    for(let x=0; x<=W; x+=4){
-      const y = waterY + Math.sin(x * waveFreq + waveOff) * waveAmp
-                       + Math.sin(x * waveFreq * 2.1 + waveOff * 1.2) * waveAmp * 0.35;
+    for(let x=0; x<=W; x+=3){
+      const y = waterY
+        + Math.sin(x * 0.01 + waveOff) * waveAmp
+        + Math.sin(x * 0.021 + waveOff * 1.5) * waveAmp * 0.4
+        + Math.sin(x * 0.006 + waveOff * 0.8) * waveAmp * 0.25;
       olaCtx.lineTo(x, y);
     }
     olaCtx.lineTo(W, 0);
     olaCtx.closePath();
-    olaCtx.fillStyle = color;
+    olaCtx.fillStyle = grad;
     olaCtx.fill();
+
+    // brillo en la cresta bajando
+    olaCtx.beginPath();
+    for(let x=0; x<=W; x+=3){
+      const y = waterY
+        + Math.sin(x * 0.01 + waveOff) * waveAmp
+        + Math.sin(x * 0.021 + waveOff * 1.5) * waveAmp * 0.4
+        + Math.sin(x * 0.006 + waveOff * 0.8) * waveAmp * 0.25;
+      x===0 ? olaCtx.moveTo(x,y) : olaCtx.lineTo(x,y);
+    }
+    olaCtx.strokeStyle = `rgba(60,160,200,${0.25 * (1-progress)})`;
+    olaCtx.lineWidth = 1.5;
+    olaCtx.stroke();
 
     if(progress < 1){
       olaAnimFrame = requestAnimationFrame(frame);
@@ -525,7 +562,7 @@ async function navegarA(url, titulo){
   if(olaActive) return;
   cancelAnimationFrame(olaAnimFrame);
 
-  const color = 'rgba(4,16,28,0.97)';
+  const color = 'rgba(3,18,32,0.96)';
   const seccionWrap = document.getElementById('seccion-wrap');
 
   // subida de la ola — en paralelo cargamos el HTML
@@ -565,7 +602,7 @@ async function navegarA(url, titulo){
 // Volver al index
 function volverAlIndex(){
   if(olaActive) return;
-  const color = 'rgba(4,16,28,0.97)';
+  const color = 'rgba(3,18,32,0.96)';
   const seccionWrap = document.getElementById('seccion-wrap');
 
   animarOlaSubida(color,
