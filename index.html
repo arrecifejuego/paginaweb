@@ -183,7 +183,7 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
         <div class="carta-frente"><div class="carta-acento"></div><div class="carta-num">03</div><div class="carta-num-br">03</div><div class="carta-linea"></div><div class="carta-linea-br"></div><div class="carta-simbolo">⬡</div><div class="carta-nombre">Conseguir<br>el juego</div></div>
       </div>
     </a>
-    <a class="carta carta-4" href="arrecife-extras.html">
+    <a class="carta carta-4" href="extras">
       <div class="carta-flipper">
         <div class="carta-dorso"><img src="Dorso_de_cartas.jpeg" alt="dorso"/></div>
         <div class="carta-frente"><div class="carta-acento"></div><div class="carta-num">04</div><div class="carta-num-br">04</div><div class="carta-linea"></div><div class="carta-linea-br"></div><div class="carta-simbolo">⟡</div><div class="carta-nombre">Extras</div></div>
@@ -363,7 +363,7 @@ document.querySelectorAll('.carta').forEach(carta=>{
   carta.addEventListener('click',e=>{
     const href=carta.getAttribute('href');
     if(!href||href==='#')return;
-    const titulos={'arrecife-comojugar.html':'Cómo se juega','arrecife-tutorial.html':'Tutorial','arrecife-conseguir.html':'Conseguir el juego','arrecife-extras.html':'Extras'};
+    const titulos={'arrecife-comojugar.html':'Cómo se juega','arrecife-tutorial.html':'Tutorial','arrecife-conseguir.html':'Conseguir el juego','extras':'Extras'};
     if(window.matchMedia('(hover:none)').matches){
       if(!carta.classList.contains('flipped')){e.preventDefault();document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));carta.classList.add('flipped');addRipple(carta.getBoundingClientRect().left+carta.getBoundingClientRect().width/2,carta.getBoundingClientRect().top+carta.getBoundingClientRect().height/2);return;}
     }
