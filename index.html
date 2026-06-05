@@ -30,8 +30,8 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
   opacity:0;animation:fadeDown 1s ease 0.2s forwards;
   filter:invert(1);pointer-events:none;user-select:none;
   display:block;
-  margin-bottom:-85px;
-  margin-top:-55px;
+  margin-bottom:-72px;
+  margin-top:-40px;
 }
 
 /* SUBTÍTULO — pegado visualmente al logo */
@@ -325,10 +325,7 @@ async function navegarA(url,titulo){
   cancelAnimationFrame(olaAnimFrame);
   const seccionWrap=document.getElementById('seccion-wrap');
   let htmlCargado=null;
-  fetch(url).then(r=>{
-    if(!r.ok) throw new Error('404');
-    return r.text();
-  }).then(h=>{htmlCargado=h;}).catch(()=>{htmlCargado='<p style="color:white;padding:40px;font-family:sans-serif">Error cargando la sección.</p>';});
+  fetch(url).then(r=>r.text()).then(h=>{htmlCargado=h;}).catch(()=>{htmlCargado='<p style="color:white;padding:40px">Error cargando.</p>';});
   animarOlaSubida(
     ()=>{
       function esperarYmostrar(){
@@ -370,8 +367,7 @@ document.querySelectorAll('.carta').forEach(carta=>{
     if(window.matchMedia('(hover:none)').matches){
       if(!carta.classList.contains('flipped')){e.preventDefault();document.querySelectorAll('.carta').forEach(c=>c.classList.remove('flipped'));carta.classList.add('flipped');addRipple(carta.getBoundingClientRect().left+carta.getBoundingClientRect().width/2,carta.getBoundingClientRect().top+carta.getBoundingClientRect().height/2);return;}
     }
-    sonarClick();
-    window.location.href = href;
+    window.location.href=href;
   });
 });
 
