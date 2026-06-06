@@ -87,6 +87,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   display:flex;align-items:center;justify-content:center;
   font-size:18px;cursor:grab;opacity:0.6;
   transition:opacity 0.3s;user-select:none;
+  /* área de touch ampliada sin cambiar visual */
+  padding:18px;
+  margin:-18px;
+  touch-action:none;
 }
 .barra-ola:active{cursor:grabbing;opacity:1;}
 .barra-labels{display:flex;justify-content:space-between;font-size:8px;letter-spacing:2px;opacity:0.2;margin-top:6px;text-transform:uppercase;}
@@ -138,8 +142,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   filter:drop-shadow(0 0 22px rgba(255,165,40,1)) drop-shadow(0 0 55px rgba(255,110,20,0.7)) brightness(1.2) !important;
 }
 @media(max-width:540px){
-  .precio-wrap{flex-direction:column;align-items:flex-start;gap:16px;}
-  .eze-linterna-img{width:90px;}
+  .precio-wrap{flex-direction:column;align-items:center;gap:12px;}
+  .eze-linterna-img{width:80px;align-self:center;}
+  .precio-contenido{width:100%;text-align:center;}
+  .precio-display{justify-content:center;}
+  .barra-wrap{max-width:100%;}
   .galeria{grid-template-columns:1fr 1fr;gap:4px;}
 }
 </style>
