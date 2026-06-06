@@ -455,7 +455,8 @@ document.getElementById('btn-enviar').addEventListener('click',()=>{
   if(!nombre){document.getElementById('err-nombre').style.display='block';ok=false;}else{document.getElementById('err-nombre').style.display='none';}
   if(!ubicacion){document.getElementById('err-ubicacion').style.display='block';ok=false;}else{document.getElementById('err-ubicacion').style.display='none';}
   if(!ok)return;
-  const txt=`Hola! Me interesa Arrecife 🌊%0ANombre: ${nombre}%0AUbicación: ${ubicacion}${mensaje?`%0AMensaje: ${mensaje}`:''}&text=`;
+  const extra = mensaje ? `%0A%0A"${mensaje}"` : '';
+  const txt = `Hola Eze! 🌊%0A%0AEl mar me trajo hasta acá.%0AMi nombre es ${nombre} y llego desde ${ubicacion}.${extra}%0A%0AQuiero conseguir Arrecife.`;
   triggerDesintegracion(()=>{ window.location.href=`https://wa.me/5493564242625?text=${txt}`; });
 });
 
