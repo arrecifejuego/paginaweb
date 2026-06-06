@@ -532,6 +532,52 @@ function triggerDesintegracion(onDone){
   }
   requestAnimationFrame(draw);
 }
+
+/* MENSAJE PROFUNDO */
+function mostrarMensajeProfundo(){
+  const wrap=document.getElementById('mensaje-profundo');
+  const el=document.getElementById('msg-texto');
+  const texto='No querés comprar un juego.\nQuerés una excusa para conectar con tus seres queridos.\n\nPor eso el mar te trajo hasta acá.';
+  wrap.style.display='block';
+  setTimeout(()=>wrap.classList.add('visible'),50);
+  let i=0; el.innerHTML='';
+  function step(){
+    if(i<=texto.length){
+      const visible=texto.substring(0,i).replace(/\n/g,'<br>');
+      el.innerHTML=visible+'<span class="msg-cursor"></span>';
+      if(i>0&&texto[i-1]!=='\n') sonarVozMsg(texto.charCodeAt(i-1));
+      i++;
+      setTimeout(step,texto[i-2]==='\n'?600:38);
+    } else {
+      el.innerHTML=texto.replace(/\n/g,'<br>');
+      setTimeout(()=>{
+        formulario.classList.add('visible');
+        formulario.scrollIntoView({behavior:'smooth',block:'start'});
+      },1800);
+    }
+  }
+  setTimeout(step,400);
+}
+
+let vozMsgLast=0;
+let _aCMsg=null;
+function sonarVozMsg(cc){
+  try{
+    if(!_aCMsg) _aCMsg=new(window.AudioContext||window.webkitAudioContext)();
+    const ctx=_aCMsg;
+    if(ctx.state==='suspended') ctx.resume();
+    const now=ctx.currentTime;
+    if(now-vozMsgLast<0.06) return;
+    vozMsgLast=now;
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.value=220+(cc%5)*12-24;
+    g.gain.setValueAtTime(0,now);
+    g.gain.linearRampToValueAtTime(0.008,now+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,now+0.08);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(now); o.stop(now+0.08);
+  }catch(e){}
+}
 </script>
 </body>
 </html>
