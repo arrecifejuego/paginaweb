@@ -106,10 +106,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   touch-action:none;
 }
 .barra-ola:active{cursor:grabbing;opacity:1;}
-.barra-labels{display:flex;justify-content:space-between;font-size:8px;letter-spacing:2px;opacity:0.2;margin-top:6px;text-transform:uppercase;}
+.barra-labels{display:flex;justify-content:space-between;font-size:8px;letter-spacing:2px;opacity:0.2;margin-top:6px;text-transform:uppercase;width:100%;max-width:420px;box-sizing:border-box;padding:0 2px;}
 .equilibrio-msg{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:13px;opacity:0;letter-spacing:1px;margin-top:8px;
+  font-size:13px;opacity:0;letter-spacing:1px;margin-top:20px;
+  text-align:center;
   color:rgba(100,210,230,0.7);transition:opacity 0.5s;
 }
 .equilibrio-msg.visible{opacity:1;}
