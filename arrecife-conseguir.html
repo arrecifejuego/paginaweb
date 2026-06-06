@@ -456,7 +456,7 @@ document.getElementById('btn-enviar').addEventListener('click',()=>{
   if(!ubicacion){document.getElementById('err-ubicacion').style.display='block';ok=false;}else{document.getElementById('err-ubicacion').style.display='none';}
   if(!ok)return;
   const txt=`Hola! Me interesa Arrecife 🌊%0ANombre: ${nombre}%0AUbicación: ${ubicacion}${mensaje?`%0AMensaje: ${mensaje}`:''}&text=`;
-  triggerDesintegracion(()=>window.open(`https://wa.me/5493564242625?text=${txt}`,'_blank'));
+  triggerDesintegracion(()=>{ window.location.href=`https://wa.me/5493564242625?text=${txt}`; });
 });
 
 /* ── DESINTEGRACIÓN TRIANGULAR ── */
