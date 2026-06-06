@@ -430,18 +430,10 @@ function olaLoop(){
         o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.6);},i*180));}catch(e){}
     }
   } else if(!estaEq){
+    // si ya completó, no resetear — la barra queda fija
+    if(completado) return;
     progreso=Math.max(0,progreso-DRAIN_SPEED);
     barraFill.style.width=(progreso*100)+'%';
-    if(completado){
-      completado=false; equilibrado=false; caosLevel=1; oscAmplitud=1.0;
-      equilibrioMsg.classList.remove('visible');
-      formulario.classList.remove('visible');
-      const mp=document.getElementById('mensaje-profundo');
-      mp.classList.remove('visible');
-      setTimeout(()=>{mp.style.display='none'; document.getElementById('msg-texto').innerHTML='';},400);
-      document.getElementById('lampara-luz').classList.remove('activa');
-      document.querySelector('.eze-linterna-img').classList.remove('encendida');
-    }
     caosLevel=Math.min(1,dist/0.3);
   }
 }
