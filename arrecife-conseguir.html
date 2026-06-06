@@ -455,9 +455,9 @@ document.getElementById('btn-enviar').addEventListener('click',()=>{
   if(!nombre){document.getElementById('err-nombre').style.display='block';ok=false;}else{document.getElementById('err-nombre').style.display='none';}
   if(!ubicacion){document.getElementById('err-ubicacion').style.display='block';ok=false;}else{document.getElementById('err-ubicacion').style.display='none';}
   if(!ok)return;
-  const extra = mensaje ? `%0A%0A"${mensaje}"` : '';
-  const txt = `Hola Eze! 🌊%0A%0AEl mar me trajo hasta acá.%0AMi nombre es ${nombre} y llego desde ${ubicacion}.${extra}%0A%0AQuiero conseguir Arrecife.`;
-  triggerDesintegracion(()=>{ window.location.href=`https://wa.me/5493564242625?text=${txt}`; });
+  const mensajeExtra = mensaje ? `\n\n"${mensaje}"` : '';
+  const txt = `Hola Eze! 🌊\n\nEl mar me trajo hasta acá.\nMi nombre es ${nombre} y llego desde ${ubicacion}.${mensajeExtra}\n\nQuiero conseguir Arrecife.`;
+  triggerDesintegracion(()=>{ window.location.href='https://wa.me/5493564242625?text='+encodeURIComponent(txt); });
 });
 
 /* ── DESINTEGRACIÓN TRIANGULAR ── */
