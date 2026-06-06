@@ -141,6 +141,37 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
 .btn-enviar:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
 .form-error{font-size:10px;color:rgba(220,80,80,0.7);margin-top:4px;letter-spacing:1px;display:none;}
 
+/* MENSAJE PROFUNDO */
+#mensaje-profundo{
+  display:none;
+  max-width:480px;
+  margin:0 auto 40px;
+  text-align:center;
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity 1.2s ease, transform 1.2s ease;
+}
+#mensaje-profundo.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.msg-texto{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:clamp(17px,2.5vw,21px);
+  font-weight:300;
+  line-height:1.95;
+  color:rgba(255,255,255,0.78);
+  letter-spacing:0.4px;
+}
+.msg-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:rgba(100,210,230,0.7);
+  vertical-align:text-bottom;
+  animation:blink 0.8s step-end infinite;
+  margin-left:2px;
+}
+
 /* EFECTO LÁMPARA */
 #lampara-luz{
   position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -198,6 +229,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
       <div class="barra-labels"><span>← demasiado</span><span>equilibrio</span><span>demasiado →</span></div>
       <div class="equilibrio-msg" id="equilibrio-msg">algo se equilibró — ya podés continuar</div>
     </div>
+  </div>
+
+  <!-- MENSAJE PROFUNDO -->
+  <div id="mensaje-profundo">
+    <div class="msg-texto" id="msg-texto"></div>
   </div>
 
   <!-- FORMULARIO -->
@@ -382,10 +418,10 @@ function olaLoop(){
       completado=true; equilibrado=true;
       caosLevel=0; oscAmplitud=0.02;
       equilibrioMsg.classList.add('visible');
-      formulario.classList.add('visible');
-      formulario.scrollIntoView({behavior:'smooth',block:'start'});
       document.getElementById('lampara-luz').classList.add('activa');
       document.querySelector('.eze-linterna-img').classList.add('encendida');
+      // mostrar mensaje profundo primero
+      mostrarMensajeProfundo();
       try{const aC=new(window.AudioContext||window.webkitAudioContext)();
         [440,660,880].forEach((f,i)=>setTimeout(()=>{const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
         o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n);
@@ -399,6 +435,9 @@ function olaLoop(){
       completado=false; equilibrado=false; caosLevel=1; oscAmplitud=1.0;
       equilibrioMsg.classList.remove('visible');
       formulario.classList.remove('visible');
+      const mp=document.getElementById('mensaje-profundo');
+      mp.classList.remove('visible');
+      setTimeout(()=>{mp.style.display='none'; document.getElementById('msg-texto').innerHTML='';},400);
       document.getElementById('lampara-luz').classList.remove('activa');
       document.querySelector('.eze-linterna-img').classList.remove('encendida');
     }
