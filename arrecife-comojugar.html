@@ -75,9 +75,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 @keyframes olaAbre{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
 
 .reg-cartas{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0;align-items:flex-end;justify-content:center;}
-.reg-carta-img{border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);width:66px;transition:transform 0.2s;}
+.reg-carta-img{border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);width:58px;transition:transform 0.2s;}
 .reg-carta-img:hover{transform:translateY(-4px);}
-.reg-carta-img.sm{width:48px;}
+.reg-carta-img.sm{width:58px;}
 .reg-carta-grupo{display:flex;flex-direction:column;align-items:center;gap:6px;}
 .reg-carta-fila{display:flex;gap:8px;align-items:flex-end;}
 .reg-carta-label{font-size:8px;letter-spacing:2px;opacity:0.3;text-transform:uppercase;}
@@ -339,16 +339,6 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
       </div>
 
       <div class="reg-seccion">
-        <h2>El Amuleto</h2>
-        <p>Empieza frente a un jugador al azar y rota en sentido antihorario al inicio de cada ronda.</p>
-        <p>Tiene tres funciones dentro del juego:</p>
-        <span class="reg-flecha">Si hay empate de equipos → el equipo del jugador con el amuleto es la <span class="r-may">Mayoría</span></span>
-        <span class="reg-flecha">Si todos eligieron el mismo equipo → ese jugador pasa a la <span class="r-min">Minoría</span> solo</span>
-        <span class="reg-flecha">Si dos jugadores caen en la misma ronda → el más cercano en sentido antihorario se convierte en el Gusano</span>
-        <span class="reg-highlight">El amuleto siempre resuelve la ambigüedad de la mesa.</span>
-      </div>
-
-      <div class="reg-seccion">
         <h2>El Gusano</h2>
         <p>Cuando un jugador llega a 0 HP cae eliminado y se convierte en el Gusano. Deja su kit y toma las 2 cartas de habilidad. Ya no tiene vida — pero sigue en el juego.</p>
         <span class="reg-highlight">No busca sobrevivir. Busca intervenir.</span>
@@ -368,13 +358,23 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
         <span class="reg-flecha">Morder — si ese jugador recibió daño, recibe 2 HP menos adicionales. Si no recibió daño, no tiene efecto</span>
       </div>
 
+
+      <div class="reg-seccion">
+        <h2>El Amuleto</h2>
+        <p>Empieza frente a un jugador al azar y rota en sentido antihorario al inicio de cada ronda.</p>
+        <p>Tiene tres funciones dentro del juego:</p>
+        <span class="reg-flecha">Si hay empate de equipos → el equipo del jugador con el amuleto es la <span class="r-may">Mayoría</span></span>
+        <span class="reg-flecha">Si todos eligieron el mismo equipo → ese jugador pasa a la <span class="r-min">Minoría</span> solo</span>
+        <span class="reg-flecha">Si dos jugadores caen en la misma ronda → el más cercano en sentido antihorario se convierte en el Gusano</span>
+        <span class="reg-highlight">El amuleto siempre resuelve la ambigüedad de la mesa.</span>
+      </div>
+
       <div class="reg-seccion">
         <h2>El Duelo Final</h2>
         <p>Cuando quedan 2 jugadores con vida, el último eliminado vuelve como Gusano pero esta vez con un kit de cartas completo. No tiene vida ni puede recibir daño. Juega sus cartas normalmente y se cuenta como jugador vivo para el cálculo del daño.</p>
         <p>Si el daño debería aplicarse solo al Gusano, ese daño se revierte y va a los jugadores vivos.</p>
         <p>El duelo termina cuando queda un único sobreviviente. Pero si los dos caen en la misma ronda, el Gusano gana.</p>
         <span class="reg-highlight">En el duelo final, el Gusano no juega para ganar. Juega para que el daño que iba a ser suyo termine siendo de los demás — y busca que ambos jugadores caigan a la vez.</span>
-        <span class="reg-highlight">El daño nunca se pierde. Siempre vuelve.</span>
         <p style="margin-top:24px;opacity:0.4;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;text-align:center;line-height:1.9">No sobrevivieron entre sí.<br>Fueron consumidos por el mar.</p>
       </div>
     </div>
