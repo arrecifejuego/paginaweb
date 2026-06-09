@@ -70,6 +70,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .reg-highlight{display:block;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(100,210,230,0.65);margin:16px 0;padding:12px 16px;border-left:1px solid rgba(100,210,230,0.2);letter-spacing:0.5px;line-height:1.7;}
 .reg-numero{font-size:11px;letter-spacing:3px;opacity:0.4;text-transform:uppercase;margin-bottom:10px;margin-top:8px;}
 .reg-deco{display:block;text-align:center;font-size:18px;opacity:0.08;margin:8px 0;letter-spacing:12px;user-select:none;}
+.r-may{color:rgba(100,220,240,0.9);font-style:normal;}
+.r-min{color:rgba(255,140,60,0.9);font-style:normal;}
+.r-torn{color:rgba(210,100,255,0.9);font-style:normal;}
+.r-marea{color:rgba(80,255,150,0.9);font-style:normal;}
 .ola-apertura{width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(100,210,230,0.4),transparent);margin-bottom:32px;transform-origin:left;animation:olaAbre 1s ease forwards;}
 @keyframes olaAbre{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
 @media(max-width:600px){
@@ -117,97 +121,120 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
   </button>
   <div class="reglamento-wrap" id="reglamentoWrap">
     <div class="reglamento-contenido">
-      <div class="ola-apertura" id="olaApertura" style="display:none"></div>
+            <div class="ola-apertura" id="olaApertura" style="display:none"></div>
       <div class="reg-titulo">ARRECIFE</div>
       <div class="reg-subtitulo">De 3 a 7 jugadores</div>
+
       <div class="reg-seccion">
-        <h2>¿Qué es Arrecife?</h2>
-        <p>Arrecife es un juego de lectura social. No se trata de ganar por estrategia pura, sino de entender cómo se mueve el grupo.</p>
-        <span class="reg-highlight">En este mar, sobrevive quien mejor interpreta a los demás.</span>
-      </div>
-      <div class="reg-seccion">
-        <h2>Introduccion</h2>
-        <p>El objetivo del juego es ser el último jugador con vida.</p>
-        <p>Cada jugador comienza con <strong>30 puntos de vida (HP)</strong>. Se recomienda llevar el conteo visible para todos.</p>
-        <span class="reg-deco">-- -- --</span>
-      </div>
-      <div class="reg-seccion">
-        <h2>Regla importante</h2>
+        <h2>Introducción</h2>
+        <p>Arrecife es un juego de lectura social. Cada partida te muestra cómo funciona un grupo.</p>
+        <p>Es importante leer todas las reglas antes de comenzar.</p>
+        <span class="reg-highlight">En este mar, sobrevive quien mejor entiende su dinámica.</span>
         <p>Durante la partida no está permitido coordinar jugadas:</p>
         <span class="reg-flecha">no hablar sobre sus elecciones</span>
         <span class="reg-flecha">no hacer señas</span>
         <span class="reg-flecha">no acordar estrategias</span>
         <span class="reg-highlight">Gran parte del juego aparece en ese espacio donde nadie puede confirmar nada. Todo lo que hagas… va a ser interpretado.</span>
       </div>
+
+      <div class="reg-seccion">
+        <h2>Objetivo</h2>
+        <p>Ser el último jugador con vida.</p>
+        <p>Cada jugador comienza con <strong>30 puntos de vida (HP)</strong>. Se recomienda llevar el conteo visible para todos los jugadores.</p>
+      </div>
+
       <div class="reg-seccion">
         <h2>Componentes</h2>
         <p>El juego contiene <strong>66 cartas</strong>, distribuidas así:</p>
-        <span class="reg-flecha">7 Cartas de Equipo</span>
-        <span class="reg-flecha">7 Cartas de cada Valor</span>
-        <span class="reg-flecha">7 Cartas de Signo</span>
-        <span class="reg-flecha">2 Cartas de Habilidad</span>
+        <span class="reg-flecha">7 Cartas de Equipo (Algas x7, Corales x7)</span>
+        <span class="reg-flecha">7 Cartas de cada Valor (1 al 5)</span>
+        <span class="reg-flecha">7 Cartas de Signo (+ x7, – x7)</span>
+        <span class="reg-flecha">2 Cartas de Habilidad (Chocar, Morder)</span>
         <span class="reg-flecha">1 Carta de ayuda</span>
         <span class="reg-flecha">1 ficha "Amuleto del mar"</span>
       </div>
+
       <div class="reg-seccion">
         <h2>Preparación</h2>
-        <p>Cada jugador recibe un kit de cartas inicial: Equipos (Algas / Corales), Valores (Números) y Signos (+ / -).</p>
+        <p>Cada jugador recibe un kit de cartas inicial que conservará en mano hasta ser eliminado: Equipos (Algas / Corales), Valores (Números) y Signos (+ / –).</p>
         <p>Valores disponibles según jugadores vivos:</p>
-        <span class="reg-flecha">3–4 jugadores: números del 1 al 4</span>
-        <span class="reg-flecha">5–7 jugadores: números del 1 al 5</span>
-        <p style="margin-top:12px">Se coloca el amuleto frente a un jugador al azar.</p>
+        <span class="reg-flecha">3–4 jugadores vivos: números del 1 al 4</span>
+        <span class="reg-flecha">5 o más jugadores vivos: números del 1 al 5</span>
+        <p style="margin-top:12px">Se coloca el amuleto frente a un jugador al azar antes de la primera ronda.</p>
       </div>
+
       <div class="reg-seccion">
-        <h2>Una ronda</h2>
-        <p>Cada ronda se divide en <strong>3 revelaciones simultáneas</strong>. En cada una, cada jugador elige en secreto qué carta jugar y todos revelan al mismo tiempo.</p>
-        <div class="reg-numero" style="margin-top:24px">Primera revelación</div>
-        <p>Cada jugador elige una carta en secreto y la acerca boca abajo. Cuando todos están listos, se revela al mismo tiempo.</p>
+        <h2>Desarrollo de una ronda</h2>
+        <p>Cada ronda se divide en <strong>3 revelaciones simultáneas</strong>. Las cartas jugadas quedan fijas en la mesa hasta el final de la ronda.</p>
+        <div class="reg-numero" style="margin-top:20px">Primera revelación</div>
+        <p>Cada jugador elige en secreto una carta de cualquier tipo (Equipo, Valor o Signo) y la coloca boca abajo. Cuando todos están listos, se revelan al mismo tiempo.</p>
         <div class="reg-numero" style="margin-top:20px">Segunda revelación</div>
-        <p>Con lo que ya saben, eligen otra carta. Vuelven a revelar en simultaneo.</p>
+        <p>Cada jugador elige una nueva carta entre los dos tipos que aún no eligió. Se repite la revelación simultánea.</p>
         <div class="reg-numero" style="margin-top:20px">Revelación final</div>
-        <p>La última carta. Todos la revelan al mismo tiempo.</p>
+        <p>Cada jugador elige y revela su última carta del tipo restante. Al terminar, cada jugador debe tener sus tres cartas visibles: Equipo, Valor y Signo.</p>
         <span class="reg-highlight">Recién acá se puede entender lo que pasó.</span>
       </div>
+
       <div class="reg-seccion">
-        <h2>Resolución</h2>
-        <div class="reg-numero">1 — Mayoría y Minoría</div>
-        <p>Se cuentan los equipos. Más jugadores: Mayoría. Menos jugadores: Minoría. Si hay empate, el amuleto decide.</p>
-        <span class="reg-highlight">No hay conflicto si todos estan del mismo lado.</span>
+        <h2>Resolución de la ronda</h2>
+
+        <div class="reg-numero">1 — <span class="r-may">Mayoría</span> y <span class="r-min">Minoría</span></div>
+        <p>Se cuentan los equipos. El equipo con más jugadores es la <span class="r-may">Mayoría</span>. El equipo con menos jugadores es la <span class="r-min">Minoría</span>.</p>
+        <span class="reg-flecha">Empate de equipos → el equipo del jugador con el amuleto es la <span class="r-may">Mayoría</span></span>
+        <span class="reg-flecha">Todos eligen el mismo equipo → el jugador con el amuleto pasa a la <span class="r-min">Minoría</span></span>
+        <span class="reg-highlight">El amuleto siempre resuelve la ambigüedad — no existe la ronda sin conflicto.</span>
+
         <div class="reg-numero" style="margin-top:24px">2 — Las sumas</div>
-        <p>Cada jugador aporta su valor × su signo. Se suman por equipo. El resultado se toma en valor absoluto.</p>
-        <div class="reg-numero" style="margin-top:20px">3 — El daño</div>
-        <p>Se compara la suma de la Mayoria con la cantidad de jugadores vivos.</p>
-        <span class="reg-flecha">Si la suma es mayor: el daño va a la Mayoría</span>
-        <span class="reg-flecha">Si es menor o igual: el daño va a la Minoría</span>
+        <p>Se calculan dos sumas independientes: la Suma de la <span class="r-may">Mayoría</span> y la Suma de la <span class="r-min">Minoría</span>.</p>
+        <p>En cada equipo, cada jugador aporta su valor × su signo, y se suman todos los resultados. El resultado final se toma en <strong>valor absoluto</strong> (un –2 y un +2 dan igual 2).</p>
+        <span class="reg-highlight">Siempre se analiza primero la Suma de la Mayoría. La suma de la Minoría solo puede alterar el resultado mediante un Tornado.</span>
+
+        <div class="reg-numero" style="margin-top:24px">3 — El daño</div>
+        <p>La Suma de la <span class="r-may">Mayoría</span> determina el daño de la ronda y a quién va:</p>
+        <span class="reg-flecha">Suma <span class="r-may">Mayoría</span> <strong>&gt;</strong> jugadores vivos → el daño va a la <span class="r-may">Mayoría</span></span>
+        <span class="reg-flecha">Suma <span class="r-may">Mayoría</span> <strong>≤</strong> jugadores vivos → el daño va a la <span class="r-min">Minoría</span></span>
+        <p style="margin-top:12px">El daño se aplica de forma individual a cada jugador del equipo afectado.</p>
         <span class="reg-highlight">No siempre el grupo más grande está en ventaja.</span>
-        <div class="reg-numero" style="margin-top:24px">4 — Marea</div>
-        <p>Si la suma de la Mayoría da 0, la Minoría recupera 2 HP. Es la unica forma de recuperar vida.</p>
-        <span class="reg-highlight">Algo se equilibra... aunque sea por un instante.</span>
-        <div class="reg-numero" style="margin-top:24px">5 — Tornado</div>
-        <p>Si la suma de la Minoría supera a la de la Mayoría, el daño se invierte y lo recibe la Mayoría.</p>
-        <span class="reg-highlight">Esto permite que un grupo más chico cambie completamente el resultado.</span>
+
+        <div class="reg-numero" style="margin-top:24px">4 — <span class="r-marea">Marea</span></div>
+        <p>Si el valor absoluto de la Suma de la <span class="r-may">Mayoría</span> es 0, todos los jugadores de la <span class="r-min">Minoría</span> recuperan 2 HP. Ningún jugador puede superar sus HP iniciales.</p>
+        <span class="reg-highlight">Esta es la única manera de recuperar vida en el juego.</span>
+
+        <div class="reg-numero" style="margin-top:24px">5 — <span class="r-torn">Tornado</span></div>
+        <p>Si el valor absoluto de la Suma de la <span class="r-min">Minoría</span> supera al de la Suma de la <span class="r-may">Mayoría</span>, el daño que sufriría la <span class="r-min">Minoría</span> se aplica a la <span class="r-may">Mayoría</span>.</p>
+        <span class="reg-highlight">Esto permite que un grupo más chico cambie completamente el resultado de la ronda.</span>
       </div>
+
       <div class="reg-seccion">
         <h2>El Gusano</h2>
-        <p>Cuando un jugador llega a 0 HP, se convierte en el Gusano. Deja su kit de cartas y toma las 2 cartas de habilidad.</p>
+        <p>Cuando un jugador llega a 0 HP queda eliminado y se convierte en el Gusano. Deja su kit de cartas y toma las 2 cartas de habilidad. El jugador convertido no tiene vida.</p>
         <span class="reg-highlight">El Gusano no busca sobrevivir. Busca intervenir.</span>
-        <p>Al inicio de cada ronda, elige una habilidad, selecciona un jugador vivo y coloca la carta boca abajo frente a él.</p>
-        <span class="reg-flecha">Chocar: invierte el signo del jugador</span>
-        <span class="reg-flecha">Morder: suma 2 de daño, solo si ese jugador recibió daño</span>
+        <p>Es un rol transferible — siempre lo porta el último jugador eliminado. Si otro jugador muere mientras hay un Gusano activo, ese pasa a ser el nuevo Gusano y el anterior recupera su kit.</p>
+        <p>Si dos jugadores mueren en la misma ronda, se convierte en Gusano el que esté más cercano en sentido antihorario al jugador con el amuleto.</p>
+
+        <div class="reg-numero" style="margin-top:20px">Uso de las habilidades</div>
+        <p>Al inicio de cada ronda, antes de la revelación de cartas, el Gusano elige una habilidad y coloca su carta boca abajo frente a un jugador vivo. Al finalizar las tres revelaciones, la carta del Gusano se gira y se aplica su efecto. Luego queda disponible para usar en otra ronda.</p>
+        <span class="reg-flecha">Chocar: el signo (+/–) jugado por ese jugador se invierte</span>
+        <span class="reg-flecha">Morder: si ese jugador sufrió daño en la ronda, recibe –2 HP adicionales. Si no recibió daño, la mordida no tiene efecto</span>
       </div>
+
       <div class="reg-seccion">
         <h2>Amuleto</h2>
-        <p>Comienza en un jugador al azar y rota en sentido antihorario en cada ronda.</p>
-        <p>El amuleto tiene dos funciones según lo que ocurra en la revelación:</p>
-        <span class="reg-flecha">Empate de equipos → el equipo del jugador con el amuleto se considera Mayoría</span>
-        <span class="reg-flecha">Todos eligen el mismo equipo → el jugador con el amuleto pasa a la Minoría</span>
-        <span class="reg-highlight">El amuleto siempre resuelve la ambigüedad de la mesa — te empuja a la Mayoría o te inclina a la Minoría según lo que necesite la ronda.</span>
+        <p>Se coloca frente a un jugador al azar antes de la primera ronda y rota en sentido antihorario al inicio de cada ronda.</p>
+        <p>Tiene tres funciones:</p>
+        <span class="reg-flecha">Empate de equipos → el equipo del jugador con el amuleto es la <span class="r-may">Mayoría</span></span>
+        <span class="reg-flecha">Todos eligen el mismo equipo → el jugador con el amuleto pasa a la <span class="r-min">Minoría</span></span>
+        <span class="reg-flecha">Múltiples eliminaciones → el jugador eliminado más cercano en sentido antihorario al amuleto se convierte en el Gusano</span>
+        <span class="reg-highlight">El amuleto siempre resuelve la ambigüedad de la mesa.</span>
       </div>
+
       <div class="reg-seccion">
         <h2>Duelo Final</h2>
-        <p>Cuando quedan 2 jugadores con vida, el último eliminado vuelve como Gusano con un kit de cartas completo.</p>
-        <p>Si el daño debería aplicarse solo al Gusano, ese daño se redirige a los jugadores vivos.</p>
-        <span class="reg-highlight">El dano nunca se pierde. Siempre vuelve.</span>
+        <p>Cuando quedan 2 jugadores con vida, las rondas cambian su dinámica.</p>
+        <p>El último jugador eliminado (Gusano) recibe un kit de cartas completo y actúa como un <strong>jugador neutral</strong>. No tiene vida ni puede recibir daño. Elige sus cartas normalmente y se cuenta como "jugador vivo" para la determinación del daño.</p>
+        <p>Las rondas funcionan normalmente con una excepción: si el resultado indica que el daño debería aplicarse únicamente al Gusano, ese daño se revierte y se aplica a los jugadores vivos.</p>
+        <p>Si ambos jugadores mueren en la misma ronda del duelo, <strong>el Gusano se convierte en el ganador del juego</strong>.</p>
+        <span class="reg-highlight">El daño nunca se pierde. Siempre vuelve.</span>
         <p style="margin-top:24px;opacity:0.4;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;text-align:center;line-height:1.9">No sobrevivieron entre sí.<br>Fueron consumidos por el mar.</p>
       </div>
     </div>
