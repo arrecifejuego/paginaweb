@@ -189,11 +189,89 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:44px;letter-
 .btn-reiniciar:hover{border-color:rgba(100,210,230,0.3);color:rgba(255,255,255,0.6);}
 
 @media(max-width:520px){
-  .eze-sprite{width:64px;}
-  .eze-texto{font-size:15px;}
-  .carta-slot{width:38px;}
-  .carta-back{height:53px;}
+  .eze-sprite{width:56px;}
+  .eze-texto{font-size:14px;line-height:1.7;}
+  .carta-slot{width:32px;}
+  .carta-back{height:45px;}
+  .container{padding:80px 14px 80px;}
+  .eze-wrap{gap:10px;}
+  .eze-dialogo{padding:12px 14px;}
+  .mesa-jugadores{gap:4px;}
+  .jugador-nombre{font-size:8px;letter-spacing:1px;}
+  .jugador-hp{font-size:11px;}
+  .resultado-box{padding:14px 16px;}
+  .resultado-valor{font-size:32px;}
+  .medusa-panel{width:220px;}
+  .medusa-regla{font-size:12px;}
 }
+
+/* MEDUSA DE REGLAS */
+#medusa-reglas{
+  position:fixed;
+  bottom:24px;
+  right:20px;
+  z-index:40;
+}
+.medusa-label{
+  font-size:8px;letter-spacing:2px;opacity:0.35;
+  text-align:center;margin-bottom:4px;
+  text-transform:uppercase;
+  transition:opacity 0.3s;
+  color:rgba(100,210,230,0.8);
+  pointer-events:none;
+}
+.medusa-btn{
+  width:48px;height:56px;
+  background:transparent;border:none;
+  cursor:pointer;
+  filter:drop-shadow(0 0 8px rgba(100,210,230,0.35));
+  animation:medusaPulse 3s ease-in-out infinite;
+  transition:filter 0.3s;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;padding:0;
+}
+.medusa-btn:hover{filter:drop-shadow(0 0 18px rgba(100,210,230,0.8));}
+@keyframes medusaPulse{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-5px) scale(1.06);}
+}
+.medusa-panel{
+  position:absolute;bottom:60px;right:0;
+  width:260px;
+  background:rgba(3,12,18,0.96);
+  border:1px solid rgba(100,210,230,0.25);
+  border-radius:12px 12px 2px 12px;
+  padding:0;
+  max-height:0;overflow:hidden;
+  transition:max-height 0.5s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease, opacity 0.4s ease;
+  opacity:0;
+  backdrop-filter:blur(8px);
+}
+.medusa-panel.abierto{
+  max-height:400px;
+  padding:18px 16px 16px;
+  opacity:1;
+}
+.medusa-titulo{
+  font-size:8px;letter-spacing:3px;opacity:0.4;
+  text-transform:uppercase;margin-bottom:14px;
+  color:rgba(100,210,230,0.8);
+}
+.medusa-regla{
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px;line-height:1.7;
+  opacity:0.75;
+  padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  letter-spacing:0.2px;
+}
+.medusa-regla:last-child{border-bottom:none;}
+.medusa-regla strong{color:rgba(255,255,255,0.6);font-weight:400;}
+.m-may{color:rgba(100,210,230,0.9);font-weight:400;}
+.m-min{color:rgba(255,160,80,0.9);font-weight:400;}
+.m-tornado{color:rgba(200,120,255,0.9);font-style:normal;}
+.m-marea{color:rgba(80,220,180,0.9);font-style:normal;}
+.medusa-regla em{color:rgba(255,180,80,0.85);font-style:normal;}
 
 /* OVERLAY DE EVENTO */
 #evento-overlay{
@@ -293,6 +371,37 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:44px;letter-
     <button class="btn-avanzar" id="btnAvanzar">continuar</button>
     <button class="btn-reiniciar" id="btnReiniciar">nueva ronda</button>
   </div>
+</div>
+
+<!-- MEDUSA DE REGLAS -->
+<div id="medusa-reglas">
+  <div class="medusa-panel" id="medusa-panel">
+    <div class="medusa-titulo">Reglas de resolución</div>
+    <div class="medusa-regla">Suma <span class="m-may">Mayoría</span> <strong>&gt;</strong> jugadores vivos → daño a la <span class="m-may">Mayoría</span></div>
+    <div class="medusa-regla">Suma <span class="m-may">Mayoría</span> <strong>≤</strong> jugadores vivos → daño a la <span class="m-min">Minoría</span></div>
+    <div class="medusa-regla">Suma <span class="m-min">Minoría</span> <strong>&gt;</strong> Suma <span class="m-may">Mayoría</span> → <em class="m-tornado">Tornado</em> — daño se invierte</div>
+    <div class="medusa-regla">Suma <span class="m-may">Mayoría</span> <strong>= 0</strong> → <em class="m-marea">Marea</em> — <span class="m-min">Minoría</span> recupera 2 HP</div>
+  </div>
+  <div class="medusa-label" id="medusa-label">tocame</div>
+  <button class="medusa-btn" id="medusa-btn" title="Reglas">
+    <svg viewBox="0 0 48 56" xmlns="http://www.w3.org/2000/svg" width="48" height="56">
+      <!-- cuerpo campana -->
+      <ellipse cx="24" cy="18" rx="16" ry="14" fill="rgba(100,210,230,0.15)" stroke="rgba(100,210,230,0.6)" stroke-width="1.2"/>
+      <!-- brillo interno -->
+      <ellipse cx="20" cy="13" rx="5" ry="3" fill="rgba(255,255,255,0.08)"/>
+      <!-- tentáculos -->
+      <path d="M14 30 Q11 38 13 46" stroke="rgba(100,210,230,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M18 31 Q16 40 17 48" stroke="rgba(100,210,230,0.4)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M22 32 Q21 41 22 50" stroke="rgba(100,210,230,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M26 32 Q27 41 26 50" stroke="rgba(100,210,230,0.4)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M30 31 Q32 40 31 48" stroke="rgba(100,210,230,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M34 30 Q37 38 35 46" stroke="rgba(100,210,230,0.4)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <!-- puntitos internos -->
+      <circle cx="20" cy="18" r="1.5" fill="rgba(100,210,230,0.4)"/>
+      <circle cx="27" cy="15" r="1" fill="rgba(100,210,230,0.3)"/>
+      <circle cx="24" cy="22" r="1" fill="rgba(100,210,230,0.3)"/>
+    </svg>
+  </button>
 </div>
 
 <script>
@@ -929,6 +1038,31 @@ function mostrarEvento(tipo){
     };
   });
 }
+
+/* MEDUSA */
+(function(){
+  const btn=document.getElementById('medusa-btn');
+  const panel=document.getElementById('medusa-panel');
+  if(!btn||!panel) return;
+  let abierta=false;
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    abierta=!abierta;
+    panel.classList.toggle('abierto',abierta);
+    btn.style.animationPlayState=abierta?'paused':'running';
+    btn.style.transform=abierta?'rotate(20deg) scale(1.1)':'';
+    const lbl=document.getElementById('medusa-label');
+    if(lbl) lbl.style.opacity=abierta?'0':'';
+  });
+  document.addEventListener('click',function(e){
+    if(abierta && !document.getElementById('medusa-reglas').contains(e.target)){
+      abierta=false;
+      panel.classList.remove('abierto');
+      btn.style.transform='';
+      btn.style.animationPlayState='running';
+    }
+  });
+})();
 
 </script>
 </body>
