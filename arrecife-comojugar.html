@@ -73,9 +73,21 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .ola-apertura{width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(100,210,230,0.4),transparent);margin-bottom:32px;transform-origin:left;animation:olaAbre 1s ease forwards;}
 @keyframes olaAbre{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
 @media(max-width:600px){
-  .eze-wrap{flex-direction:column;align-items:flex-start;}
-  .eze-sprite{width:70px;}
+  .eze-wrap{flex-direction:column;align-items:center;gap:12px;}
+  .eze-sprite{width:70px;align-self:center;}
+  .eze-dialogo{border-radius:12px;padding:14px 16px;}
+  .eze-dialogo::before,.eze-dialogo::after{display:none;}
+  .eze-texto{font-size:15px;line-height:1.8;}
   .reg-seccion::before{display:none;}
+  .reg-seccion h2{font-size:18px;}
+  .reg-seccion p{font-size:15px;}
+  .reg-flecha{font-size:14px;}
+  .reg-highlight{font-size:15px;padding:10px 14px;}
+  .main{padding:80px 18px 80px;}
+  h1{font-size:28px;letter-spacing:1px;}
+  .sub{font-size:14px;}
+  .btn-reglamento{font-size:9px;padding:14px 18px;}
+  .video-wrap{margin-bottom:36px;}
 }
 </style>
 </head>
@@ -186,7 +198,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
       <div class="reg-seccion">
         <h2>Amuleto</h2>
         <p>Comienza en un jugador al azar y rota en sentido antihorario en cada ronda.</p>
-        <p>En caso de empate de equipos, el equipo del jugador con el amuleto se considera Mayoria.</p>
+        <p>El amuleto tiene dos funciones según lo que ocurra en la revelación:</p>
+        <span class="reg-flecha">Empate de equipos → el equipo del jugador con el amuleto se considera Mayoría</span>
+        <span class="reg-flecha">Todos eligen el mismo equipo → el jugador con el amuleto pasa a la Minoría</span>
+        <span class="reg-highlight">El amuleto siempre resuelve la ambigüedad de la mesa — te empuja a la Mayoría o te inclina a la Minoría según lo que necesite la ronda.</span>
       </div>
       <div class="reg-seccion">
         <h2>Duelo Final</h2>
