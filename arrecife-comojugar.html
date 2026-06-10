@@ -143,6 +143,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .comp-pila img:hover{transform:translateY(-3px);}
 .comp-pila.sm img{width:40px;}
 .comp-pila.xs img{width:36px;}
+.comp-pila.solo::before,.comp-pila.solo::after{display:none;}
 .comp-sep{width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);align-self:center;flex-shrink:0;}
 /* KIT — cómo se arma la mesa */
 .kit-wrap{margin:20px 0;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 20px;}
@@ -312,14 +313,21 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           <div class="comp-sep"></div>
           <div class="comp-grupo">
             <div class="comp-fila">
-              <div class="comp-pila xs"><img src="https://arrecifejuego.github.io/paginaweb/gusa_chocar.jpeg" alt="Chocar"/></div>
-              <div class="comp-pila xs"><img src="https://arrecifejuego.github.io/paginaweb/gusano_morder.jpeg" alt="Morder"/></div>
+              <div class="comp-pila xs solo"><img src="https://arrecifejuego.github.io/paginaweb/gusa_chocar.jpeg" alt="Chocar"/></div>
+              <div class="comp-pila xs solo"><img src="https://arrecifejuego.github.io/paginaweb/gusano_morder.jpeg" alt="Morder"/></div>
             </div>
             <span class="comp-cantidad">x1 cada una</span>
             <span class="comp-label">Habilidades</span>
           </div>
+          <div class="comp-sep"></div>
+          <div class="comp-grupo">
+            <div class="comp-fila">
+              <div class="comp-pila xs solo"><img src="https://arrecifejuego.github.io/paginaweb/carta_guia.jpeg" alt="Carta guía"/></div>
+            </div>
+            <span class="comp-cantidad">x1</span>
+            <span class="comp-label">Carta guía</span>
+          </div>
         </div>
-        <span class="reg-flecha" style="margin-top:4px">1 Carta de ayuda — 1 Amuleto del mar</span>
       </div>
 
       <div class="reg-seccion">
