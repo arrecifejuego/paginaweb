@@ -80,10 +80,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .reg-carta-img.sm{width:58px;}
 .reg-carta-grupo{display:flex;flex-direction:column;align-items:center;gap:6px;}
 .reg-carta-fila{display:flex;gap:8px;align-items:flex-end;}
-.reg-carta-label{font-size:8px;letter-spacing:2px;opacity:0.3;text-transform:uppercase;}
+.reg-carta-label{font-size:11px;letter-spacing:1.5px;opacity:0.35;text-transform:uppercase;}
 .reg-ejemplo{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 20px;margin:20px 0;}
-.reg-ejemplo-titulo{font-size:8px;letter-spacing:3px;opacity:0.25;text-transform:uppercase;margin-bottom:14px;}
-.reg-ejemplo-fila{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;font-family:'Cormorant Garamond',serif;font-size:15px;}
+.reg-ejemplo-titulo{font-size:11px;letter-spacing:2px;opacity:0.3;text-transform:uppercase;margin-bottom:14px;}
+.reg-ejemplo-fila{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;font-family:'Cormorant Garamond',serif;font-size:16px;}
 .reg-ejemplo-fila:last-child{margin-bottom:0;}
 .reg-ejemplo-sep{opacity:0.3;padding:0 2px;}
 .reg-ejemplo-val{opacity:0.65;}
@@ -94,10 +94,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 /* REVELACIONES */
 .rev-wrap{display:flex;flex-direction:column;gap:20px;margin:20px 0;}
 .rev-paso{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 18px;}
-.rev-paso-titulo{font-size:8px;letter-spacing:3px;opacity:0.3;text-transform:uppercase;margin-bottom:16px;}
+.rev-paso-titulo{font-size:11px;letter-spacing:2px;opacity:0.4;text-transform:uppercase;margin-bottom:16px;}
 .rev-fila{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
 .rev-flecha{font-size:16px;color:rgba(100,210,230,0.25);flex-shrink:0;}
-.rev-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;opacity:0.4;margin-top:14px;letter-spacing:0.3px;}
+.rev-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;opacity:0.45;margin-top:14px;letter-spacing:0.3px;}
 /* Mano */
 .rev-mano{position:relative;width:72px;height:62px;flex-shrink:0;}
 .rev-dorso{position:absolute;width:36px;height:54px;border-radius:5px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);}
@@ -110,11 +110,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 /* Mesa */
 .rev-mesa{display:flex;gap:8px;align-items:flex-end;}
 .rev-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
-.rev-slot-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);}
+.rev-slot-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.3);}
 .rev-carta{width:36px;height:54px;border-radius:5px;border:1px solid rgba(100,210,230,0.12);background:rgba(100,210,230,0.03);display:flex;align-items:center;justify-content:center;}
 .rev-carta.activa{border-color:rgba(100,210,230,0.55);background:rgba(100,210,230,0.09);box-shadow:0 0 8px rgba(100,210,230,0.12);}
 .rev-carta.jugada{border-color:rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);opacity:0.38;}
-.rev-carta-icono{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(100,210,230,0.75);}
+.rev-carta-icono{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(100,210,230,0.75);}
 .rev-carta.jugada .rev-carta-icono{color:rgba(255,255,255,0.2);}
 @media(max-width:600px){
   .rev-fila{gap:10px;}
@@ -132,8 +132,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 /* COMPONENTES — lo que hay en la caja */
 .comp-grid{display:flex;flex-wrap:wrap;gap:20px;margin:24px 0;align-items:flex-end;}
 .comp-grupo{display:flex;flex-direction:column;align-items:center;gap:8px;}
-.comp-label{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
-.comp-cantidad{font-size:8px;letter-spacing:1px;color:rgba(100,210,230,0.45);font-family:'Tenor Sans',sans-serif;}
+.comp-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);}
+.comp-cantidad{font-size:11px;letter-spacing:1px;color:rgba(100,210,230,0.5);font-family:'Tenor Sans',sans-serif;}
 .comp-fila{display:flex;gap:5px;align-items:flex-end;}
 .comp-pila{position:relative;display:inline-block;}
 .comp-pila::before,.comp-pila::after{content:'';position:absolute;border-radius:6px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.025);}
@@ -145,16 +145,16 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .comp-sep{width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);align-self:center;flex-shrink:0;}
 /* KIT — cómo se arma la mesa */
 .kit-wrap{margin:20px 0;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 20px;}
-.kit-titulo{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(100,210,230,0.35);margin-bottom:16px;}
+.kit-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(100,210,230,0.4);margin-bottom:16px;}
 .kit-fila{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;}
 .kit-grupo{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.kit-grupo-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);}
+.kit-grupo-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.3);}
 .kit-esquema-fondo{position:relative;padding:8px 8px 0;border-radius:8px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.03);}
 .kit-cartas{display:flex;gap:4px;align-items:flex-end;}
 .kit-cartas img{border-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);width:44px;height:auto;transition:transform 0.2s;position:relative;z-index:1;}
 .kit-cartas img:hover{transform:translateY(-3px);}
 .kit-sep{width:1px;height:50px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.07),transparent);align-self:center;flex-shrink:0;margin:0 4px;}
-.kit-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(255,255,255,0.3);margin-top:14px;letter-spacing:0.3px;}
+.kit-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(255,255,255,0.35);margin-top:14px;letter-spacing:0.3px;}
 
 @media(max-width:600px){
   .eze-wrap{flex-direction:column;align-items:center;gap:12px;}
@@ -189,36 +189,43 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 @keyframes dfFlotar{0%,100%{transform:translateY(0px)}50%{transform:translateY(-6px)}}
 @keyframes dfPulsar{0%,100%{opacity:0.45}50%{opacity:0.8}}
 .df-wrap{background:rgba(5,10,13,0.7);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:24px 18px 26px;margin:20px 0;font-family:'Tenor Sans',sans-serif;isolation:isolate;}
-.df-titulo{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(100,210,230,0.3);text-align:center;margin-bottom:22px;}
+.df-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(100,210,230,0.35);text-align:center;margin-bottom:22px;}
 .df-escena{display:flex;flex-direction:column;align-items:center;gap:14px;}
 .df-jugadores-fila{display:flex;justify-content:space-around;width:100%;gap:8px;}
 .df-jugador{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 auto;isolation:isolate;}
 .df-sprite{width:72px;image-rendering:pixelated;image-rendering:crisp-edges;display:block;}
 .df-sprite.giuli{transform:scaleX(-1);}
 .df-sprite.fantasma{width:170px;animation:dfFlotar 3s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}
-.df-nombre{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.22);}
-.df-hp{font-family:'Cormorant Garamond',serif;font-size:13px;color:rgba(255,80,80,0.65);letter-spacing:1px;}
+.df-nombre{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);}
+.df-hp{font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(255,80,80,0.7);letter-spacing:1px;}
 .df-hp.muerto{color:rgba(100,210,230,0.4);font-style:italic;}
 .df-cartas{display:flex;gap:5px;margin-top:2px;}
 .df-carta{width:28px;height:42px;border-radius:4px;border:1px solid rgba(100,210,230,0.35);background:rgba(100,210,230,0.07);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(100,210,230,0.65);}
 .df-mesa-centro{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding-bottom:4px;}
 .df-habilidad{width:28px;height:42px;border-radius:4px;border:1px dashed rgba(100,210,230,0.3);background:rgba(100,210,230,0.04);animation:dfPulsar 2.5s ease-in-out infinite;}
-.df-hab-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(100,210,230,0.28);}
+.df-hab-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(100,210,230,0.35);}
 .df-daño-wrap{margin:14px 0 0;display:flex;flex-direction:column;align-items:center;gap:7px;}
-.df-daño-label{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.18);}
+.df-daño-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
 .df-daño-fila{display:flex;align-items:center;gap:7px;}
-.df-nodo{padding:3px 10px;border-radius:4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;}
+.df-nodo{padding:3px 10px;border-radius:4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;}
 .df-nodo.g{border:1px dashed rgba(100,210,230,0.28);color:rgba(100,210,230,0.45);}
 .df-nodo.v{border:1px solid rgba(255,80,80,0.28);color:rgba(255,80,80,0.55);}
 .df-arrow{font-size:13px;}
-.df-rebota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(255,255,255,0.18);}
+.df-rebota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:rgba(255,255,255,0.25);}
 .df-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);margin:16px 0;}
+.df-jugador{cursor:pointer;}
+.df-mesa-centro{cursor:pointer;}
+.df-orbe{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+@keyframes dfBrilloFantasma{0%{filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}50%{filter:drop-shadow(0 0 28px rgba(100,210,230,1)) brightness(1.4);}100%{filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}}
+.df-sprite.brillando{animation:dfBrilloFantasma 0.5s ease !important;}
+@keyframes dfBrilloJugador{0%{filter:none;}40%{filter:drop-shadow(0 0 14px rgba(255,200,80,0.9)) brightness(1.2);}100%{filter:none;}}
+.df-sprite.brillando-jugador{animation:dfBrilloJugador 0.4s ease !important;}
 .df-finales{display:flex;gap:10px;}
 .df-final{flex:1;border-radius:8px;padding:12px 14px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01);}
-.df-ft{font-size:7px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.df-ft{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;}
 .df-ft.a{color:rgba(100,210,230,0.38);}
 .df-ft.b{color:rgba(180,100,255,0.45);}
-.df-final p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;line-height:1.75;color:rgba(255,255,255,0.28);margin:0;}
+.df-final p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;line-height:1.75;color:rgba(255,255,255,0.35);margin:0;}
 @media(max-width:600px){
   .df-wrap{padding:16px 14px 20px;}
   .df-escena{gap:10px;}
@@ -556,7 +563,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
         <div class="df-wrap">
           <div class="df-titulo">Duelo final — 2 jugadores vivos + el gusano</div>
           <div class="df-escena">
-            <div class="df-mesa-centro">
+            <div class="df-mesa-centro" id="df-fantasma-wrap">
               <img class="df-sprite fantasma" src="https://arrecifejuego.github.io/paginaweb/eze_fantasma.png" alt="Gusano"/>
               <div class="df-nombre" style="color:rgba(100,210,230,0.28);">el gusano</div>
               <div class="df-hp muerto">sin vida</div>
@@ -567,7 +574,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
               </div>
             </div>
             <div class="df-jugadores-fila">
-              <div class="df-jugador">
+              <div class="df-jugador" id="df-j1-wrap">
                 <img class="df-sprite" src="https://arrecifejuego.github.io/paginaweb/eze_mapa.png" alt="Eze"/>
                 <div class="df-nombre">J1</div>
                 <div class="df-hp">8 HP</div>
@@ -577,7 +584,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
                   <div class="df-carta">±</div>
                 </div>
               </div>
-              <div class="df-jugador">
+              <div class="df-jugador" id="df-j2-wrap">
                 <img class="df-sprite giuli" src="https://arrecifejuego.github.io/paginaweb/giuli.png" alt="Giuli"/>
                 <div class="df-nombre">J2</div>
                 <div class="df-hp">11 HP</div>
@@ -768,6 +775,119 @@ btn.addEventListener('click',function(){
     sonarClose();ola.style.display='none';
   }
 });
+</script>
+
+<script>
+(function(){
+  function centro(el){
+    const r = el.getBoundingClientRect();
+    return {x: r.left + r.width/2, y: r.top + r.height/2};
+  }
+
+  function lanzarOrbe(x0, y0, x1, y1, color, delay, onLlega){
+    setTimeout(function(){
+      const orbe = document.createElement('div');
+      orbe.className = 'df-orbe';
+      orbe.style.cssText = 'background:'+color+';box-shadow:0 0 8px 3px '+color+';left:'+x0+'px;top:'+y0+'px;transition:none;';
+      document.body.appendChild(orbe);
+
+      const duracion = 420;
+      const inicio = performance.now();
+
+      function animar(now){
+        const t = Math.min((now - inicio) / duracion, 1);
+        const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+        const cx = x0 + (x1-x0)*ease;
+        const cy = y0 + (y1-y0)*ease - Math.sin(Math.PI*t)*30;
+        orbe.style.left = cx+'px';
+        orbe.style.top  = cy+'px';
+        orbe.style.opacity = t < 0.1 ? t*10 : t > 0.85 ? (1-t)/0.15 : 1;
+        if(t < 1) requestAnimationFrame(animar);
+        else { orbe.remove(); if(onLlega) onLlega(); }
+      }
+      requestAnimationFrame(animar);
+    }, delay);
+  }
+
+  function brillar(sprite, clase){
+    sprite.classList.remove(clase);
+    void sprite.offsetWidth;
+    sprite.classList.add(clase);
+    setTimeout(function(){ sprite.classList.remove(clase); }, 600);
+  }
+
+  const CYAN   = 'rgba(100,210,230,0.95)';
+  const ROJO   = 'rgba(255,100,80,0.95)';
+  const AMARIL = 'rgba(255,210,60,0.95)';
+
+  document.addEventListener('click', function(e){
+    const j1w = document.getElementById('df-j1-wrap');
+    const j2w = document.getElementById('df-j2-wrap');
+    const fw  = document.getElementById('df-fantasma-wrap');
+    if(!j1w || !j2w || !fw) return;
+
+    const sJ1 = j1w.querySelector('.df-sprite');
+    const sJ2 = j2w.querySelector('.df-sprite');
+    const sF  = fw.querySelector('.df-sprite');
+
+    // Click en J1
+    if(j1w.contains(e.target)){
+      brillar(sJ1, 'brillando-jugador');
+      const cJ1 = centro(sJ1), cF = centro(sF), cJ2 = centro(sJ2);
+      // J1 → Fantasma
+      lanzarOrbe(cJ1.x, cJ1.y, cF.x, cF.y, AMARIL, 0, function(){
+        brillar(sF, 'brillando');
+        // Fantasma rebota → J1
+        lanzarOrbe(cF.x, cF.y, cJ1.x, cJ1.y, CYAN, 80, function(){
+          brillar(sJ1, 'brillando-jugador');
+        });
+      });
+      // J1 → J2 (simultáneo)
+      lanzarOrbe(cJ1.x, cJ1.y, cJ2.x, cJ2.y, AMARIL, 60, function(){
+        brillar(sJ2, 'brillando-jugador');
+      });
+      return;
+    }
+
+    // Click en J2
+    if(j2w.contains(e.target)){
+      brillar(sJ2, 'brillando-jugador');
+      const cJ2 = centro(sJ2), cF = centro(sF), cJ1 = centro(sJ1);
+      // J2 → Fantasma
+      lanzarOrbe(cJ2.x, cJ2.y, cF.x, cF.y, AMARIL, 0, function(){
+        brillar(sF, 'brillando');
+        // Fantasma rebota → J2
+        lanzarOrbe(cF.x, cF.y, cJ2.x, cJ2.y, CYAN, 80, function(){
+          brillar(sJ2, 'brillando-jugador');
+        });
+      });
+      // J2 → J1
+      lanzarOrbe(cJ2.x, cJ2.y, cJ1.x, cJ1.y, AMARIL, 60, function(){
+        brillar(sJ1, 'brillando-jugador');
+      });
+      return;
+    }
+
+    // Click en Fantasma
+    if(fw.contains(e.target)){
+      brillar(sF, 'brillando');
+      const cF = centro(sF), cJ1 = centro(sJ1), cJ2 = centro(sJ2);
+      // J1 → Fantasma
+      lanzarOrbe(cJ1.x, cJ1.y, cF.x, cF.y, AMARIL, 0, null);
+      // J2 → Fantasma
+      lanzarOrbe(cJ2.x, cJ2.y, cF.x, cF.y, AMARIL, 80, function(){
+        brillar(sF, 'brillando');
+        // Fantasma rebota → J1 y J2
+        lanzarOrbe(cF.x, cF.y, cJ1.x, cJ1.y, CYAN, 60, function(){
+          brillar(sJ1, 'brillando-jugador');
+        });
+        lanzarOrbe(cF.x, cF.y, cJ2.x, cJ2.y, CYAN, 100, function(){
+          brillar(sJ2, 'brillando-jugador');
+        });
+      });
+    }
+  });
+})();
 </script>
 </body>
 </html>
