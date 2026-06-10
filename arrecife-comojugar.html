@@ -94,22 +94,69 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 /* REVELACIONES */
 .rev-wrap{display:flex;flex-direction:column;gap:20px;margin:20px 0;}
 .rev-paso{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 18px;}
-.rev-paso-titulo{font-size:8px;letter-spacing:3px;opacity:0.3;text-transform:uppercase;margin-bottom:14px;}
-.rev-cartas-fila{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;}
-.rev-carta-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.rev-carta-label{font-size:7px;letter-spacing:1.5px;opacity:0.25;text-transform:uppercase;text-align:center;}
-.rev-pila{position:relative;width:58px;height:82px;}
-.rev-pila img{position:absolute;border-radius:6px;width:58px;box-shadow:0 3px 10px rgba(0,0,0,0.5);}
-.rev-pila img:nth-child(1){top:6px;left:4px;opacity:0.3;}
-.rev-pila img:nth-child(2){top:3px;left:2px;opacity:0.55;}
-.rev-pila img:nth-child(3){top:0;left:0;opacity:1;}
-.rev-flecha{font-size:18px;opacity:0.25;align-self:center;padding:0 4px;}
-.rev-elegida{position:relative;}
-.rev-elegida img{border-radius:6px;width:58px;box-shadow:0 6px 20px rgba(100,210,230,0.2);border:1px solid rgba(100,210,230,0.25);}
-.rev-jugada img{border-radius:6px;width:58px;opacity:0.15;filter:grayscale(1);}
-.rev-sep{font-family:'Cormorant Garamond',serif;font-size:13px;opacity:0.2;padding:0 4px;align-self:center;}
-.rev-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;opacity:0.4;margin-top:12px;letter-spacing:0.3px;}
-.rev-ejemplo-label{font-size:8px;letter-spacing:2px;opacity:0.2;text-transform:uppercase;margin-bottom:8px;}
+.rev-paso-titulo{font-size:8px;letter-spacing:3px;opacity:0.3;text-transform:uppercase;margin-bottom:16px;}
+.rev-fila{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.rev-flecha{font-size:16px;color:rgba(100,210,230,0.25);flex-shrink:0;}
+.rev-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;opacity:0.4;margin-top:14px;letter-spacing:0.3px;}
+/* Mano */
+.rev-mano{position:relative;width:72px;height:62px;flex-shrink:0;}
+.rev-dorso{position:absolute;width:36px;height:54px;border-radius:5px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);}
+.rev-dorso.dim{border-color:rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);}
+.rev-dorso:nth-child(1){transform:rotate(-12deg) translate(-10px,6px);}
+.rev-dorso:nth-child(2){transform:rotate(-4deg) translate(4px,0);}
+.rev-dorso:nth-child(3){transform:rotate(4deg) translate(18px,0);}
+.rev-dorso:nth-child(4){transform:rotate(12deg) translate(32px,6px);}
+.rev-dorso:nth-child(5){transform:rotate(20deg) translate(44px,14px);}
+/* Mesa */
+.rev-mesa{display:flex;gap:8px;align-items:flex-end;}
+.rev-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rev-slot-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);}
+.rev-carta{width:36px;height:54px;border-radius:5px;border:1px solid rgba(100,210,230,0.12);background:rgba(100,210,230,0.03);display:flex;align-items:center;justify-content:center;}
+.rev-carta.activa{border-color:rgba(100,210,230,0.55);background:rgba(100,210,230,0.09);box-shadow:0 0 8px rgba(100,210,230,0.12);}
+.rev-carta.jugada{border-color:rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);opacity:0.38;}
+.rev-carta-icono{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(100,210,230,0.75);}
+.rev-carta.jugada .rev-carta-icono{color:rgba(255,255,255,0.2);}
+@media(max-width:600px){
+  .rev-fila{gap:10px;}
+  .rev-mano{width:60px;height:54px;}
+  .rev-dorso{width:30px;height:46px;}
+  .rev-dorso:nth-child(1){transform:rotate(-12deg) translate(-8px,5px);}
+  .rev-dorso:nth-child(2){transform:rotate(-4deg) translate(3px,0);}
+  .rev-dorso:nth-child(3){transform:rotate(4deg) translate(14px,0);}
+  .rev-dorso:nth-child(4){transform:rotate(12deg) translate(25px,5px);}
+  .rev-dorso:nth-child(5){transform:rotate(20deg) translate(36px,11px);}
+  .rev-carta{width:30px;height:46px;}
+  .rev-carta-icono{font-size:11px;}
+}
+
+/* COMPONENTES — lo que hay en la caja */
+.comp-grid{display:flex;flex-wrap:wrap;gap:20px;margin:24px 0;align-items:flex-end;}
+.comp-grupo{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.comp-label{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.comp-cantidad{font-size:8px;letter-spacing:1px;color:rgba(100,210,230,0.45);font-family:'Tenor Sans',sans-serif;}
+.comp-fila{display:flex;gap:5px;align-items:flex-end;}
+.comp-pila{position:relative;display:inline-block;}
+.comp-pila::before,.comp-pila::after{content:'';position:absolute;border-radius:6px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.025);}
+.comp-pila::before{width:100%;height:100%;top:-5px;left:-3px;}
+.comp-pila::after{width:100%;height:100%;top:-9px;left:-6px;}
+.comp-pila img{position:relative;z-index:1;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.08);display:block;width:52px;transition:transform 0.2s;}
+.comp-pila img:hover{transform:translateY(-3px);}
+.comp-pila.sm img{width:40px;}
+.comp-pila.xs img{width:36px;}
+.comp-sep{width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);align-self:center;flex-shrink:0;}
+/* KIT — cómo se arma la mesa */
+.kit-wrap{margin:20px 0;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 20px;}
+.kit-titulo{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(100,210,230,0.35);margin-bottom:16px;}
+.kit-fila{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;}
+.kit-grupo{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.kit-grupo-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);}
+.kit-esquema-fondo{position:relative;padding:8px 8px 0;border-radius:8px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.03);}
+.kit-cartas{display:flex;gap:4px;align-items:flex-end;}
+.kit-cartas img{border-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);width:46px;transition:transform 0.2s;position:relative;z-index:1;}
+.kit-cartas img:hover{transform:translateY(-3px);}
+.kit-cartas img.sm{width:36px;}
+.kit-sep{width:1px;height:50px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.07),transparent);align-self:center;flex-shrink:0;margin:0 4px;}
+.kit-nota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(255,255,255,0.3);margin-top:14px;letter-spacing:0.3px;}
 
 @media(max-width:600px){
   .eze-wrap{flex-direction:column;align-items:center;gap:12px;}
@@ -127,6 +174,17 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
   .sub{font-size:14px;}
   .btn-reglamento{font-size:9px;padding:14px 18px;}
   .video-wrap{margin-bottom:36px;}
+  .comp-grid{gap:14px;}
+  .comp-pila img{width:40px;}
+  .comp-pila.sm img{width:32px;}
+  .comp-pila.xs img{width:28px;}
+  .reg-ejemplo-fila{gap:6px;}
+  .reg-ejemplo-fila .reg-carta-img{width:40px;}
+  .reg-cartas{gap:8px;}
+  .reg-carta-fila{gap:5px;}
+  .reg-carta-img,.reg-carta-img.sm{width:44px;}
+  .kit-cartas img{width:36px;}
+  .kit-cartas img.sm{width:28px;}
 }
 </style>
 </head>
@@ -156,7 +214,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
   </button>
   <div class="reglamento-wrap" id="reglamentoWrap">
     <div class="reglamento-contenido">
-      <div class="ola-apertura" id="olaApertura" style="display:none"></div>
+      <div class="ola-apertura" id="olaApertura" style="display:none;animation:none"></div>
       <div class="reg-titulo">ARRECIFE</div>
       <div class="reg-subtitulo">De 3 a 7 jugadores</div>
 
@@ -178,45 +236,91 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
       <div class="reg-seccion">
         <h2>Lo que hay en la caja</h2>
         <p>El juego contiene <strong>66 cartas</strong> en total:</p>
-        <span class="reg-flecha">Cartas de Equipo — Algas x7 y Corales x7</span>
-        <span class="reg-flecha">Cartas de Valor — del 1 al 5, x7 de cada una</span>
-        <span class="reg-flecha">Cartas de Signo — más x7 y menos x7</span>
-        <span class="reg-flecha">2 Cartas de Habilidad — Chocar y Morder</span>
-        <span class="reg-flecha">1 Carta de ayuda</span>
-        <span class="reg-flecha">1 Amuleto del mar</span>
+        <div class="comp-grid">
+          <div class="comp-grupo">
+            <div class="comp-fila">
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="Algas"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/team_corales.jpeg" alt="Corales"/></div>
+            </div>
+            <span class="comp-cantidad">x7 cada una</span>
+            <span class="comp-label">Equipos</span>
+          </div>
+          <div class="comp-sep"></div>
+          <div class="comp-grupo">
+            <div class="comp-fila">
+              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_1.jpeg" alt="1"/></div>
+              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/></div>
+              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/></div>
+              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_4.jpeg" alt="4"/></div>
+              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_5.jpeg" alt="5"/></div>
+            </div>
+            <span class="comp-cantidad">x7 cada una</span>
+            <span class="comp-label">Valores</span>
+          </div>
+          <div class="comp-sep"></div>
+          <div class="comp-grupo">
+            <div class="comp-fila">
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="+"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/signo_menos.jpeg" alt="–"/></div>
+            </div>
+            <span class="comp-cantidad">x7 cada una</span>
+            <span class="comp-label">Signos</span>
+          </div>
+          <div class="comp-sep"></div>
+          <div class="comp-grupo">
+            <div class="comp-fila">
+              <div class="comp-pila xs"><img src="https://arrecifejuego.github.io/paginaweb/gusa_chocar.jpeg" alt="Chocar"/></div>
+              <div class="comp-pila xs"><img src="https://arrecifejuego.github.io/paginaweb/gusano_morder.jpeg" alt="Morder"/></div>
+            </div>
+            <span class="comp-cantidad">x1 cada una</span>
+            <span class="comp-label">Habilidades</span>
+          </div>
+        </div>
+        <span class="reg-flecha" style="margin-top:4px">1 Carta de ayuda — 1 Amuleto del mar</span>
       </div>
 
       <div class="reg-seccion">
         <h2>Cómo se arma la mesa</h2>
         <p>Cada jugador recibe su kit, que va a tener en mano durante toda la partida hasta ser eliminado:</p>
-        <div class="reg-cartas">
-          <div class="reg-carta-grupo">
-            <div class="reg-carta-fila">
-              <img class="reg-carta-img" src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="Algas"/>
-              <img class="reg-carta-img" src="https://arrecifejuego.github.io/paginaweb/team_corales.jpeg" alt="Corales"/>
+        <div class="kit-wrap">
+          <div class="kit-titulo">Kit de cada jugador — 9 cartas</div>
+          <div class="kit-fila">
+            <div class="kit-grupo">
+              <div class="kit-esquema-fondo">
+                <div class="kit-cartas">
+                  <img src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="Algas"/>
+                  <img src="https://arrecifejuego.github.io/paginaweb/team_corales.jpeg" alt="Corales"/>
+                </div>
+              </div>
+              <span class="kit-grupo-label">2 equipos</span>
             </div>
-            <span class="reg-carta-label">Equipos</span>
-          </div>
-          <div class="reg-carta-grupo">
-            <div class="reg-carta-fila">
-              <img class="reg-carta-img sm" src="https://arrecifejuego.github.io/paginaweb/numero_1.jpeg" alt="1"/>
-              <img class="reg-carta-img sm" src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/>
-              <img class="reg-carta-img sm" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/>
-              <img class="reg-carta-img sm" src="https://arrecifejuego.github.io/paginaweb/numero_4.jpeg" alt="4"/>
-              <img class="reg-carta-img sm" src="https://arrecifejuego.github.io/paginaweb/numero_5.jpeg" alt="5"/>
+            <div class="kit-sep"></div>
+            <div class="kit-grupo">
+              <div class="kit-esquema-fondo">
+                <div class="kit-cartas">
+                  <img class="sm" src="https://arrecifejuego.github.io/paginaweb/numero_1.jpeg" alt="1"/>
+                  <img class="sm" src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/>
+                  <img class="sm" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/>
+                  <img class="sm" src="https://arrecifejuego.github.io/paginaweb/numero_4.jpeg" alt="4"/>
+                  <img class="sm" src="https://arrecifejuego.github.io/paginaweb/numero_5.jpeg" alt="5"/>
+                </div>
+              </div>
+              <span class="kit-grupo-label">5 valores</span>
             </div>
-            <span class="reg-carta-label">Valores</span>
-          </div>
-          <div class="reg-carta-grupo">
-            <div class="reg-carta-fila">
-              <img class="reg-carta-img" src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="+"/>
-              <img class="reg-carta-img" src="https://arrecifejuego.github.io/paginaweb/signo_menos.jpeg" alt="–"/>
+            <div class="kit-sep"></div>
+            <div class="kit-grupo">
+              <div class="kit-esquema-fondo">
+                <div class="kit-cartas">
+                  <img src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="+"/>
+                  <img src="https://arrecifejuego.github.io/paginaweb/signo_menos.jpeg" alt="–"/>
+                </div>
+              </div>
+              <span class="kit-grupo-label">2 signos</span>
             </div>
-            <span class="reg-carta-label">Signos</span>
           </div>
+          <p class="kit-nota">Los valores disponibles cambian según cuántos jugadores estén vivos — del 1 al 4 con 3 o 4 jugadores vivos, del 1 al 5 con 5 o más.</p>
         </div>
-        <p>Los números disponibles cambian según cuántos jugadores estén vivos. Con 3 o 4 jugadores vivos se juega del 1 al 4. Con 5 o más, del 1 al 5.</p>
-        <p style="margin-top:12px">El amuleto se coloca frente a un jugador al azar antes de que empiece todo.</p>
+        <p>El amuleto se coloca frente a un jugador al azar antes de que empiece todo.</p>
       </div>
 
       <div class="reg-seccion">
@@ -227,89 +331,89 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
           <div class="rev-paso">
             <div class="rev-paso-titulo">Primer momento — elegís cualquier tipo</div>
-            <div class="rev-cartas-fila">
-              <div class="rev-carta-wrap">
-                <div class="rev-pila">
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="Equipo"/>
-                </div>
-                <span class="rev-carta-label">Equipo</span>
+            <div class="rev-fila">
+              <div class="rev-mano">
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso"></div>
               </div>
-              <div class="rev-carta-wrap">
-                <div class="rev-pila">
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="Valor"/>
+              <div class="rev-flecha">→</div>
+              <div class="rev-mesa">
+                <div class="rev-slot">
+                  <div class="rev-carta activa"><span class="rev-carta-icono">E</span></div>
+                  <span class="rev-slot-label">Equipo</span>
                 </div>
-                <span class="rev-carta-label">Valor</span>
-              </div>
-              <div class="rev-carta-wrap">
-                <div class="rev-pila">
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="Signo"/>
+                <div class="rev-slot">
+                  <div class="rev-carta"></div>
+                  <span class="rev-slot-label">Valor</span>
                 </div>
-                <span class="rev-carta-label">Signo</span>
+                <div class="rev-slot">
+                  <div class="rev-carta"></div>
+                  <span class="rev-slot-label">Signo</span>
+                </div>
               </div>
             </div>
-            <p class="rev-nota">Ejemplo: empezás eligiendo un Equipo.</p>
+            <p class="rev-nota">Ejemplo: empezás eligiendo un Equipo. Todos ven lo que cada uno pone.</p>
           </div>
 
           <div class="rev-paso">
             <div class="rev-paso-titulo">Segundo momento — elegís entre los dos tipos que te faltan</div>
-            <div class="rev-cartas-fila">
-              <div class="rev-carta-wrap">
-                <div class="rev-jugada">
-                  <img src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="ya jugada"/>
-                </div>
-                <span class="rev-carta-label">ya jugada</span>
+            <div class="rev-fila">
+              <div class="rev-mano">
+                <div class="rev-dorso dim"></div>
+                <div class="rev-dorso dim"></div>
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso dim"></div>
               </div>
-              <div class="rev-carta-wrap">
-                <div class="rev-pila">
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="Valor"/>
+              <div class="rev-flecha">→</div>
+              <div class="rev-mesa">
+                <div class="rev-slot">
+                  <div class="rev-carta jugada"><span class="rev-carta-icono">E</span></div>
+                  <span class="rev-slot-label">ya jugada</span>
                 </div>
-                <span class="rev-carta-label">Valor</span>
-              </div>
-              <div class="rev-carta-wrap">
-                <div class="rev-pila">
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="Signo"/>
+                <div class="rev-slot">
+                  <div class="rev-carta activa"><span class="rev-carta-icono">V</span></div>
+                  <span class="rev-slot-label">Valor</span>
                 </div>
-                <span class="rev-carta-label">Signo</span>
+                <div class="rev-slot">
+                  <div class="rev-carta"></div>
+                  <span class="rev-slot-label">Signo</span>
+                </div>
               </div>
             </div>
-            <p class="rev-nota">Con lo que ya viste en la mesa, podés empezar a leer.</p>
+            <p class="rev-nota">Con lo que ya viste en la mesa, podés empezar a leer al resto.</p>
           </div>
 
           <div class="rev-paso">
             <div class="rev-paso-titulo">Tercer momento — jugás la carta que falta</div>
-            <div class="rev-cartas-fila">
-              <div class="rev-carta-wrap">
-                <div class="rev-jugada">
-                  <img src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="ya jugada"/>
-                </div>
-                <span class="rev-carta-label">ya jugada</span>
+            <div class="rev-fila">
+              <div class="rev-mano">
+                <div class="rev-dorso dim"></div>
+                <div class="rev-dorso dim"></div>
+                <div class="rev-dorso dim"></div>
+                <div class="rev-dorso"></div>
+                <div class="rev-dorso dim"></div>
               </div>
-              <div class="rev-carta-wrap">
-                <div class="rev-jugada">
-                  <img src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="ya jugada"/>
+              <div class="rev-flecha">→</div>
+              <div class="rev-mesa">
+                <div class="rev-slot">
+                  <div class="rev-carta jugada"><span class="rev-carta-icono">E</span></div>
+                  <span class="rev-slot-label">ya jugada</span>
                 </div>
-                <span class="rev-carta-label">ya jugada</span>
-              </div>
-              <div class="rev-carta-wrap">
-                <div class="rev-pila">
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="pila"/>
-                  <img src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="Signo"/>
+                <div class="rev-slot">
+                  <div class="rev-carta jugada"><span class="rev-carta-icono">V</span></div>
+                  <span class="rev-slot-label">ya jugada</span>
                 </div>
-                <span class="rev-carta-label">la que falta</span>
+                <div class="rev-slot">
+                  <div class="rev-carta activa"><span class="rev-carta-icono">±</span></div>
+                  <span class="rev-slot-label">Signo</span>
+                </div>
               </div>
             </div>
-            <p class="rev-nota">Al terminar, cada jugador tiene sus tres cartas visibles: Equipo, Valor y Signo.</p>
+            <p class="rev-nota">Al terminar: cada jugador tiene sus tres cartas visibles en la mesa.</p>
           </div>
 
         </div>
