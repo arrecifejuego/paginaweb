@@ -216,7 +216,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .df-jugador{cursor:pointer;}
 .df-mesa-centro{cursor:pointer;}
 .df-orbe{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
-@keyframes dfBrilloFantasma{0%{filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}50%{filter:drop-shadow(0 0 28px rgba(100,210,230,1)) brightness(1.4);}100%{filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}}
+@keyframes dfBrilloFantasma{0%{filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}50%{filter:drop-shadow(0 0 28px rgba(100,210,230,1)) brightness(1.5);}100%{filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}}
 .df-sprite.brillando{animation:dfBrilloFantasma 0.5s ease !important;}
 @keyframes dfBrilloJugador{0%{filter:none;}40%{filter:drop-shadow(0 0 14px rgba(255,200,80,0.9)) brightness(1.2);}100%{filter:none;}}
 .df-sprite.brillando-jugador{animation:dfBrilloJugador 0.4s ease !important;}
@@ -690,23 +690,16 @@ function sonarClose(){if(aC.state==='suspended')aC.resume();tone(420,0.5,'sine',
 /* SONIDO DE MAR */
 (function(){
   function iniciar(){
-    // Usar Web Audio API para controlar volumen del archivo
-    var audio = new Audio('https://arrecifejuego.github.io/paginaweb/oceano_sonido.mp3');
-    audio.loop = true;
+    var audio = document.getElementById('mar-audio');
+    if(!audio) return;
     audio.volume = 0;
-
-    var src = aC.createMediaElementSource(audio);
-    var gain = aC.createGain();
-    gain.gain.value = 0;
-    src.connect(gain);
-    gain.connect(aC.destination);
-
-    audio.play().then(function(){
-      // Fade in suave en 4 segundos hasta volumen bajo
-      var inicio = aC.currentTime;
-      gain.gain.setValueAtTime(0, inicio);
-      gain.gain.linearRampToValueAtTime(0.12, inicio + 4);
-    }).catch(function(){});
+    audio.play().catch(function(){});
+    var t = 0;
+    var intervalo = setInterval(function(){
+      t += 0.05;
+      audio.volume = Math.min(0.12, t * 0.006);
+      if(audio.volume >= 0.12) clearInterval(intervalo);
+    }, 150);
   }
   document.addEventListener('click', iniciar, {once:true, capture:true});
   document.addEventListener('touchstart', iniciar, {once:true, passive:true, capture:true});
@@ -763,6 +756,7 @@ btn.addEventListener('click',function(){
 });
 </script>
 
+<audio id="mar-audio" src="https://arrecifejuego.github.io/paginaweb/oceano_sonido.mp3" loop preload="none" style="display:none"></audio>
 <script>
 (function(){
   function centro(el){
@@ -806,6 +800,42 @@ btn.addEventListener('click',function(){
   const ROJO   = 'rgba(255,100,80,0.95)';
   const AMARIL = 'rgba(255,210,60,0.95)';
 
+  function romperOrbe(x, y, color){
+    // 6 partículas pequeñas que salen en distintas direcciones
+    for(var i=0;i<6;i++){
+      (function(idx){
+        var ang = (Math.PI*2/6)*idx;
+        var dist = 22+Math.random()*14;
+        var tx = x + Math.cos(ang)*dist;
+        var ty = y + Math.sin(ang)*dist;
+        var p = document.createElement('div');
+        p.style.cssText = 'position:fixed;width:5px;height:5px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);background:'+color+';box-shadow:0 0 5px 2px '+color+';left:'+x+'px;top:'+y+'px;';
+        document.body.appendChild(p);
+        var inicio = performance.now();
+        var dur = 280+Math.random()*120;
+        (function animar(now){
+          var t = Math.min((now-inicio)/dur,1);
+          p.style.left = (x+(tx-x)*t)+'px';
+          p.style.top  = (y+(ty-y)*t)+'px';
+          p.style.opacity = 1-t;
+          p.style.width = (5*(1-t*0.5))+'px';
+          p.style.height = (5*(1-t*0.5))+'px';
+          if(t<1) requestAnimationFrame(animar);
+          else p.remove();
+        })(inicio);
+      })(i);
+    }
+  }
+
+  function transparentar(sprite){
+    sprite.style.transition = 'opacity 0.25s ease';
+    sprite.style.opacity = '0.2';
+    setTimeout(function(){
+      sprite.style.transition = 'opacity 0.6s ease';
+      sprite.style.opacity = '1';
+    }, 350);
+  }
+
   document.addEventListener('click', function(e){
     const j1w = document.getElementById('df-j1-wrap');
     const j2w = document.getElementById('df-j2-wrap');
@@ -820,15 +850,12 @@ btn.addEventListener('click',function(){
     if(j1w.contains(e.target)){
       brillar(sJ1, 'brillando-jugador');
       const cJ1 = centro(sJ1), cF = centro(sF), cJ2 = centro(sJ2);
-      // J1 → Fantasma
+      // J1 → Fantasma: llega, fantasma se transparenta, orbe se rompe
       lanzarOrbe(cJ1.x, cJ1.y, cF.x, cF.y, AMARIL, 0, function(){
-        brillar(sF, 'brillando');
-        // Fantasma rebota → J1
-        lanzarOrbe(cF.x, cF.y, cJ1.x, cJ1.y, CYAN, 80, function(){
-          brillar(sJ1, 'brillando-jugador');
-        });
+        romperOrbe(cF.x, cF.y, AMARIL);
+        transparentar(sF);
       });
-      // J1 → J2 (simultáneo)
+      // J1 → J2
       lanzarOrbe(cJ1.x, cJ1.y, cJ2.x, cJ2.y, AMARIL, 60, function(){
         brillar(sJ2, 'brillando-jugador');
       });
@@ -839,13 +866,10 @@ btn.addEventListener('click',function(){
     if(j2w.contains(e.target)){
       brillar(sJ2, 'brillando-jugador');
       const cJ2 = centro(sJ2), cF = centro(sF), cJ1 = centro(sJ1);
-      // J2 → Fantasma
+      // J2 → Fantasma: llega, fantasma se transparenta, orbe se rompe
       lanzarOrbe(cJ2.x, cJ2.y, cF.x, cF.y, AMARIL, 0, function(){
-        brillar(sF, 'brillando');
-        // Fantasma rebota → J2
-        lanzarOrbe(cF.x, cF.y, cJ2.x, cJ2.y, CYAN, 80, function(){
-          brillar(sJ2, 'brillando-jugador');
-        });
+        romperOrbe(cF.x, cF.y, AMARIL);
+        transparentar(sF);
       });
       // J2 → J1
       lanzarOrbe(cJ2.x, cJ2.y, cJ1.x, cJ1.y, AMARIL, 60, function(){
