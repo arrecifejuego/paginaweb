@@ -687,40 +687,93 @@ function sonarVoz(cc){
 function sonarOpen(){if(aC.state==='suspended')aC.resume();tone(280,0.8,'sine',0.015);tone(420,0.6,'sine',0.008,0.2);tone(560,0.4,'sine',0.005,0.4);}
 function sonarClose(){if(aC.state==='suspended')aC.resume();tone(420,0.5,'sine',0.012);tone(280,0.4,'sine',0.008,0.15);}
 
-/* MUSICA DE FONDO */
+/* SONIDO DE MAR */
 (function(){
   function iniciar(){
-    var buf=aC.createBuffer(1,aC.sampleRate*4,aC.sampleRate);
-    var d=buf.getChannelData(0);
-    for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1);
-    var src=aC.createBufferSource();src.buffer=buf;src.loop=true;
-    var flt=aC.createBiquadFilter();flt.type='lowpass';flt.frequency.value=260;
-    var gOla=aC.createGain();gOla.gain.value=0.016;
-    src.connect(flt);flt.connect(gOla);gOla.connect(aC.destination);src.start();
-    var S=[147,165,196,220,261,294,330];
-    function nota(f,t,dur,vol,type){
-      vol=vol||0.012;type=type||'sine';
-      var o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime+t;
-      o.type=type;o.frequency.value=f;
-      g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(vol,n+0.1);
-      g.gain.exponentialRampToValueAtTime(0.0001,n+dur);
-      o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+dur);
+    var sr=aC.sampleRate;
+
+    // -- Generador de ruido blanco reutilizable --
+    function ruido(durSeg){
+      var buf=aC.createBuffer(1,sr*durSeg,sr);
+      var d=buf.getChannelData(0);
+      for(var i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+      var src=aC.createBufferSource();
+      src.buffer=buf; src.loop=true; src.start();
+      return src;
     }
-    function melodia(){
-      [[0,S[2],4],[4.5,S[4],3.5],[8,S[3],3],[12,S[1],4],[16,S[5],3],[19.5,S[4],3],[23,S[2],2.5],[25.5,S[0],4]]
-      .forEach(function(x){nota(x[1],x[0],x[2],0.012);});
-      [2,7,13,20].forEach(function(t){nota(S[6]*0.5,t,2.5,0.005,'triangle');});
-      setTimeout(melodia,28000);
+
+    // -- Capa 1: oleaje grave, largo --
+    var r1=ruido(8);
+    var f1=aC.createBiquadFilter(); f1.type='lowpass'; f1.frequency.value=320; f1.Q.value=0.8;
+    var f1b=aC.createBiquadFilter(); f1b.type='highpass'; f1b.frequency.value=60;
+    var g1=aC.createGain(); g1.gain.value=0;
+    r1.connect(f1); f1.connect(f1b); f1b.connect(g1); g1.connect(aC.destination);
+
+    // -- Capa 2: espuma media, más brillante --
+    var r2=ruido(6);
+    var f2=aC.createBiquadFilter(); f2.type='bandpass'; f2.frequency.value=900; f2.Q.value=0.5;
+    var g2=aC.createGain(); g2.gain.value=0;
+    r2.connect(f2); f2.connect(g2); g2.connect(aC.destination);
+
+    // -- Capa 3: shhh fino, aire marino --
+    var r3=ruido(4);
+    var f3=aC.createBiquadFilter(); f3.type='highpass'; f3.frequency.value=2800;
+    var f3b=aC.createBiquadFilter(); f3b.type='lowpass'; f3b.frequency.value=6000;
+    var g3=aC.createGain(); g3.gain.value=0;
+    r3.connect(f3); f3.connect(f3b); f3b.connect(g3); g3.connect(aC.destination);
+
+    // -- Modulacion de olas: sube y baja como el oleaje --
+    function ola(){
+      var now=aC.currentTime;
+      // duracion aleatoria de cada ola: 4-8 seg
+      var subida=1.8+Math.random()*1.4;
+      var cresta=0.6+Math.random()*0.8;
+      var bajada=2.2+Math.random()*2.0;
+      var pausa =0.4+Math.random()*1.2;
+      var total=subida+cresta+bajada+pausa;
+
+      // vol maximo de cada capa, ligeramente aleatorio
+      var v1=0.048+Math.random()*0.022;
+      var v2=0.022+Math.random()*0.012;
+      var v3=0.014+Math.random()*0.008;
+
+      // subida
+      g1.gain.linearRampToValueAtTime(v1, now+subida);
+      g2.gain.linearRampToValueAtTime(v2, now+subida*0.7);
+      g3.gain.linearRampToValueAtTime(v3, now+subida*0.5);
+      // cresta
+      g1.gain.setValueAtTime(v1, now+subida+cresta);
+      // bajada — espuma se va antes que el grave
+      g3.gain.linearRampToValueAtTime(0.001, now+subida+cresta+bajada*0.4);
+      g2.gain.linearRampToValueAtTime(0.001, now+subida+cresta+bajada*0.65);
+      g1.gain.linearRampToValueAtTime(0.003, now+subida+cresta+bajada);
+      // pausa silenciosa
+      g1.gain.linearRampToValueAtTime(0.002, now+total);
+      g2.gain.setValueAtTime(0.001, now+total);
+      g3.gain.setValueAtTime(0.001, now+total);
+
+      setTimeout(ola, (total - 0.3)*1000);
     }
-    melodia();
+    // fade in inicial suave
+    g1.gain.setValueAtTime(0.001, aC.currentTime);
+    g2.gain.setValueAtTime(0.001, aC.currentTime);
+    g3.gain.setValueAtTime(0.001, aC.currentTime);
+    setTimeout(ola, 200);
+
+    // -- Gotas / destellos lejanos muy suaves --
+    var S=[196,220,261,294,330];
     function gota(){
-      var freqs=[523,659,784,1047,1319];
-      nota(freqs[Math.floor(Math.random()*freqs.length)],0,1+Math.random()*0.8,0.007);
-      setTimeout(gota,(3+Math.random()*7)*1000);
+      if(aC.state==='suspended') return;
+      var f=S[Math.floor(Math.random()*S.length)];
+      var o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0,n);
+      g.gain.linearRampToValueAtTime(0.004,n+0.12);
+      g.gain.exponentialRampToValueAtTime(0.0001,n+2.2+Math.random());
+      o.connect(g); g.connect(aC.destination); o.start(n); o.stop(n+3.5);
+      setTimeout(gota,(5+Math.random()*11)*1000);
     }
-    setTimeout(gota,3500);
-    document.removeEventListener('click',iniciar,true);
-    document.removeEventListener('touchstart',iniciar,true);
+    setTimeout(gota, 4000);
   }
   document.addEventListener('click',iniciar,{once:true,capture:true});
   document.addEventListener('touchstart',iniciar,{once:true,passive:true,capture:true});
