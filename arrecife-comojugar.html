@@ -139,7 +139,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .comp-pila::before,.comp-pila::after{content:'';position:absolute;border-radius:6px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.025);}
 .comp-pila::before{width:100%;height:100%;top:-5px;left:-3px;}
 .comp-pila::after{width:100%;height:100%;top:-9px;left:-6px;}
-.comp-pila img{position:relative;z-index:1;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.08);display:block;width:44px;height:66px;object-fit:cover;transition:transform 0.2s;}
+.comp-pila img{position:relative;z-index:1;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.08);display:block;width:44px;height:auto;transition:transform 0.2s;}
 .comp-pila img:hover{transform:translateY(-3px);}
 .comp-pila.solo::before,.comp-pila.solo::after{display:none;}
 .comp-sep{width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);align-self:center;flex-shrink:0;}
@@ -151,7 +151,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .kit-grupo-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);}
 .kit-esquema-fondo{position:relative;padding:8px 8px 0;border-radius:8px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.03);}
 .kit-cartas{display:flex;gap:4px;align-items:flex-end;}
-.kit-cartas img{border-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);width:46px;transition:transform 0.2s;position:relative;z-index:1;}
+.kit-cartas img{border-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);width:46px;height:auto;transition:transform 0.2s;position:relative;z-index:1;}
 .kit-cartas img:hover{transform:translateY(-3px);}
 .kit-cartas img.sm{width:36px;}
 .kit-sep{width:1px;height:50px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.07),transparent);align-self:center;flex-shrink:0;margin:0 4px;}
@@ -604,11 +604,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           <div class="df-finales">
             <div class="df-final">
               <div class="df-ft a">un sobreviviente</div>
-              <p>Queda uno en pie. El duelo terminó.</p>
+              <p>El jugador en pie gana la partida.</p>
             </div>
             <div class="df-final">
               <div class="df-ft b">caen los dos a la vez</div>
-              <p>No sobrevivieron entre sí. Fueron consumidos por el mar.</p>
+              <p>El Gusano gana. Fueron consumidos por el mar.</p>
             </div>
           </div>
         </div>
