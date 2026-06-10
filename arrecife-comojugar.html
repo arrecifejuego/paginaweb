@@ -186,6 +186,49 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
   .kit-cartas img{width:36px;}
   .kit-cartas img.sm{width:28px;}
 }
+
+/* DUELO FINAL */
+@keyframes dfFlotar{0%,100%{transform:translateY(0px)}50%{transform:translateY(-6px)}}
+@keyframes dfPulsar{0%,100%{opacity:0.45}50%{opacity:0.8}}
+.df-wrap{background:rgba(5,10,13,0.7);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:24px 18px 26px;margin:20px 0;font-family:'Tenor Sans',sans-serif;}
+.df-titulo{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(100,210,230,0.3);text-align:center;margin-bottom:22px;}
+.df-escena{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.df-jugadores-fila{display:flex;justify-content:space-around;width:100%;gap:8px;}
+.df-jugador{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 auto;}
+.df-sprite{width:80px;image-rendering:pixelated;image-rendering:crisp-edges;display:block;mix-blend-mode:lighten;}
+.df-sprite.giuli{transform:scaleX(-1);}
+.df-sprite.fantasma{width:56px;animation:dfFlotar 3s ease-in-out infinite;opacity:0.65;filter:drop-shadow(0 0 10px rgba(100,210,230,0.35));mix-blend-mode:lighten;}
+.df-nombre{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.22);}
+.df-hp{font-family:'Cormorant Garamond',serif;font-size:13px;color:rgba(255,80,80,0.65);letter-spacing:1px;}
+.df-hp.muerto{color:rgba(100,210,230,0.4);font-style:italic;}
+.df-cartas{display:flex;gap:5px;margin-top:2px;}
+.df-carta{width:28px;height:42px;border-radius:4px;border:1px solid rgba(100,210,230,0.35);background:rgba(100,210,230,0.07);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(100,210,230,0.65);}
+.df-mesa-centro{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding-bottom:4px;}
+.df-habilidad{width:28px;height:42px;border-radius:4px;border:1px dashed rgba(100,210,230,0.3);background:rgba(100,210,230,0.04);animation:dfPulsar 2.5s ease-in-out infinite;}
+.df-hab-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(100,210,230,0.28);}
+.df-daño-wrap{margin:14px 0 0;display:flex;flex-direction:column;align-items:center;gap:7px;}
+.df-daño-label{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.18);}
+.df-daño-fila{display:flex;align-items:center;gap:7px;}
+.df-nodo{padding:3px 10px;border-radius:4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;}
+.df-nodo.g{border:1px dashed rgba(100,210,230,0.28);color:rgba(100,210,230,0.45);}
+.df-nodo.v{border:1px solid rgba(255,80,80,0.28);color:rgba(255,80,80,0.55);}
+.df-arrow{font-size:13px;}
+.df-rebota{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(255,255,255,0.18);}
+.df-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);margin:16px 0;}
+.df-finales{display:flex;gap:10px;}
+.df-final{flex:1;border-radius:8px;padding:12px 14px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01);}
+.df-ft{font-size:7px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.df-ft.a{color:rgba(100,210,230,0.38);}
+.df-ft.b{color:rgba(180,100,255,0.45);}
+.df-final p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;line-height:1.75;color:rgba(255,255,255,0.28);margin:0;}
+@media(max-width:600px){
+  .df-sprite{width:64px;}
+  .df-sprite.fantasma{width:48px;}
+  .df-carta{width:22px;height:34px;font-size:10px;}
+  .df-habilidad{width:22px;height:34px;}
+  .df-finales{flex-direction:column;gap:8px;}
+  .df-daño-fila{flex-wrap:wrap;justify-content:center;}
+}
 </style>
 </head>
 <body>
@@ -468,15 +511,15 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
         <span class="reg-highlight">Es la única vez que se puede recuperar vida en todo el juego. Algo se equilibra… aunque sea por un instante.</span>
 
         <div class="reg-numero" style="margin-top:28px">5 — <span class="r-torn">Tornado</span></div>
-        <p>Si la Suma de la <span class="r-min">Minoría</span> supera a la Suma de la <span class="r-may">Mayoría</span>, el daño se invierte — y lo recibe la <span class="r-may">Mayoría</span>.</p>
+        <p>Si la Suma de la <span class="r-min">Minoría</span> supera a la Suma de la <span class="r-may">Mayoría</span>, el daño se invierte y lo recibe la <span class="r-may">Mayoría</span>.</p>
         <span class="reg-highlight">Un grupo más chico puede darle vuelta a todo.</span>
       </div>
 
       <div class="reg-seccion">
         <h2>El Gusano</h2>
-        <p>Cuando un jugador llega a 0 HP cae eliminado y se convierte en el Gusano. Deja su kit y toma las 2 cartas de habilidad. Ya no tiene vida — pero sigue en el juego.</p>
+        <p>Cuando un jugador llega a 0 HP cae eliminado y se convierte en el Gusano. Deja su kit y toma las 2 cartas de habilidad. Ya no tiene vida, pero sigue en el juego.</p>
         <span class="reg-highlight">No busca sobrevivir. Busca intervenir.</span>
-        <p>Es un rol transferible — siempre lo porta el último jugador en caer. Si alguien más muere mientras hay un Gusano activo, ese nuevo eliminado toma el rol y el anterior queda sin nada.</p>
+        <p>Es un rol transferible. Siempre lo porta el último jugador en caer. Si alguien más muere mientras hay un Gusano activo, ese nuevo eliminado toma el rol y el anterior queda sin nada.</p>
         <p>Al inicio de cada ronda, antes de que empiece la revelación, el Gusano elige una habilidad y la coloca boca abajo frente a un jugador vivo. Cuando terminan las tres revelaciones, la carta se gira y se aplica. Luego queda disponible para otra ronda.</p>
         <div class="reg-cartas" style="margin:20px 0;">
           <div class="reg-carta-grupo">
@@ -505,11 +548,66 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
       <div class="reg-seccion">
         <h2>El Duelo Final</h2>
-        <p>Cuando quedan 2 jugadores con vida, el último eliminado vuelve como Gusano pero esta vez con un kit de cartas completo. No tiene vida ni puede recibir daño. Juega sus cartas normalmente y se cuenta como jugador vivo para el cálculo del daño.</p>
-        <p>Si el daño debería aplicarse solo al Gusano, ese daño se revierte y va a los jugadores vivos.</p>
-        <p>El duelo termina cuando queda un único sobreviviente. Pero si los dos caen en la misma ronda, el Gusano gana.</p>
-        <span class="reg-highlight">En el duelo final, el Gusano no juega para ganar. Juega para que el daño que iba a ser suyo termine siendo de los demás — y busca que ambos jugadores caigan a la vez.</span>
-        <p style="margin-top:24px;opacity:0.4;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;text-align:center;line-height:1.9">No sobrevivieron entre sí.<br>Fueron consumidos por el mar.</p>
+        <p>Cuando quedan 2 jugadores con vida, todo cambia. El último eliminado vuelve como el Gusano, con un kit completo, sin vida y sin poder recibir daño.</p>
+        <p>Juega sus cartas junto a los vivos y cuenta como jugador para el cálculo del daño. Si el daño cayera solo sobre él, rebota y va a los jugadores vivos.</p>
+
+        <div class="df-wrap">
+          <div class="df-titulo">Duelo final — 2 jugadores vivos + el gusano</div>
+          <div class="df-escena">
+            <div class="df-mesa-centro">
+              <img class="df-sprite fantasma" src="https://arrecifejuego.github.io/paginaweb/eze_fantasma.jpeg" alt="Gusano"/>
+              <div class="df-nombre" style="color:rgba(100,210,230,0.28);">el gusano</div>
+              <div class="df-hp muerto">sin vida</div>
+              <div class="df-habilidad"></div>
+              <div class="df-hab-label">↓ boca abajo</div>
+            </div>
+            <div class="df-jugadores-fila">
+              <div class="df-jugador">
+                <img class="df-sprite" src="https://arrecifejuego.github.io/paginaweb/eze_mapa.png" alt="Eze"/>
+                <div class="df-nombre">Eze</div>
+                <div class="df-hp">8 HP</div>
+                <div class="df-cartas">
+                  <div class="df-carta">E</div>
+                  <div class="df-carta">V</div>
+                  <div class="df-carta">±</div>
+                </div>
+              </div>
+              <div class="df-jugador">
+                <img class="df-sprite giuli" src="https://arrecifejuego.github.io/paginaweb/giuli.jpeg" alt="Giuli"/>
+                <div class="df-nombre">Giuli</div>
+                <div class="df-hp">11 HP</div>
+                <div class="df-cartas">
+                  <div class="df-carta">E</div>
+                  <div class="df-carta">V</div>
+                  <div class="df-carta">±</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="df-daño-wrap">
+            <div class="df-daño-label">si el daño cae solo sobre el gusano</div>
+            <div class="df-daño-fila">
+              <div class="df-nodo g">gusano</div>
+              <span class="df-arrow" style="color:rgba(100,210,230,0.4)">→</span>
+              <span class="df-rebota">rebota</span>
+              <span class="df-arrow" style="color:rgba(255,80,80,0.45)">→</span>
+              <div class="df-nodo v">jugadores vivos</div>
+            </div>
+          </div>
+          <div class="df-sep"></div>
+          <div class="df-finales">
+            <div class="df-final">
+              <div class="df-ft a">un sobreviviente</div>
+              <p>Queda uno en pie. El duelo terminó.</p>
+            </div>
+            <div class="df-final">
+              <div class="df-ft b">caen los dos a la vez</div>
+              <p>No sobrevivieron entre sí. Fueron consumidos por el mar.</p>
+            </div>
+          </div>
+        </div>
+
+        <span class="reg-highlight">El Gusano no juega para ganar. Juega para que el daño que iba a ser suyo termine siendo de los demás, y busca que ambos caigan a la vez.</span>
       </div>
     </div>
   </div>
