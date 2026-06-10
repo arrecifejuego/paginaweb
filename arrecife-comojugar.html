@@ -139,11 +139,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .comp-pila::before,.comp-pila::after{content:'';position:absolute;border-radius:6px;border:1px solid rgba(100,210,230,0.1);background:rgba(100,210,230,0.025);}
 .comp-pila::before{width:100%;height:100%;top:-5px;left:-3px;}
 .comp-pila::after{width:100%;height:100%;top:-9px;left:-6px;}
-.comp-pila img{position:relative;z-index:1;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.08);display:block;width:52px;transition:transform 0.2s;}
+.comp-pila img{position:relative;z-index:1;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.08);display:block;width:44px;height:66px;object-fit:cover;transition:transform 0.2s;}
 .comp-pila img:hover{transform:translateY(-3px);}
-.comp-pila.sm img{width:40px;}
-.comp-pila.xs img{width:36px;}
-.comp-pila.guia img{width:28px;}
 .comp-pila.solo::before,.comp-pila.solo::after{display:none;}
 .comp-sep{width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);align-self:center;flex-shrink:0;}
 /* KIT — cómo se arma la mesa */
@@ -197,9 +194,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .df-escena{display:flex;flex-direction:column;align-items:center;gap:14px;}
 .df-jugadores-fila{display:flex;justify-content:space-around;width:100%;gap:8px;}
 .df-jugador{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 auto;isolation:isolate;}
-.df-sprite{width:72px;image-rendering:pixelated;image-rendering:crisp-edges;display:block;mix-blend-mode:screen;border-radius:0;}
+.df-sprite{width:72px;image-rendering:pixelated;image-rendering:crisp-edges;display:block;}
 .df-sprite.giuli{transform:scaleX(-1);}
-.df-sprite.fantasma{width:48px;animation:dfFlotar 3s ease-in-out infinite;mix-blend-mode:screen;filter:drop-shadow(0 0 10px rgba(100,210,230,0.4)) brightness(1.1);}
+.df-sprite.fantasma{width:48px;animation:dfFlotar 3s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(100,210,230,0.4));}
 .df-nombre{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.22);}
 .df-hp{font-family:'Cormorant Garamond',serif;font-size:13px;color:rgba(255,80,80,0.65);letter-spacing:1px;}
 .df-hp.muerto{color:rgba(100,210,230,0.4);font-style:italic;}
@@ -297,11 +294,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           <div class="comp-sep"></div>
           <div class="comp-grupo">
             <div class="comp-fila">
-              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_1.jpeg" alt="1"/></div>
-              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/></div>
-              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/></div>
-              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_4.jpeg" alt="4"/></div>
-              <div class="comp-pila sm"><img src="https://arrecifejuego.github.io/paginaweb/numero_5.jpeg" alt="5"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/numero_1.jpeg" alt="1"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/numero_4.jpeg" alt="4"/></div>
+              <div class="comp-pila"><img src="https://arrecifejuego.github.io/paginaweb/numero_5.jpeg" alt="5"/></div>
             </div>
             <span class="comp-cantidad">x7 cada una</span>
             <span class="comp-label">Valores</span>
@@ -318,9 +315,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           <div class="comp-sep"></div>
           <div class="comp-grupo">
             <div class="comp-fila">
-              <div class="comp-pila xs solo"><img src="https://arrecifejuego.github.io/paginaweb/gusa_chocar.jpeg" alt="Chocar"/></div>
-              <div class="comp-pila xs solo"><img src="https://arrecifejuego.github.io/paginaweb/gusano_morder.jpeg" alt="Morder"/></div>
-              <div class="comp-pila guia solo"><img src="https://arrecifejuego.github.io/paginaweb/carta_guia.jpeg" alt="Carta guía"/></div>
+              <div class="comp-pila solo"><img src="https://arrecifejuego.github.io/paginaweb/gusa_chocar.jpeg" alt="Chocar"/></div>
+              <div class="comp-pila solo"><img src="https://arrecifejuego.github.io/paginaweb/gusano_morder.jpeg" alt="Morder"/></div>
+              <div class="comp-pila solo"><img src="https://arrecifejuego.github.io/paginaweb/carta_guia.jpeg" alt="Carta guía"/></div>
             </div>
             <span class="comp-cantidad">x1 cada una</span>
             <span class="comp-label">Habilidades y guía</span>
@@ -561,7 +558,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           <div class="df-titulo">Duelo final — 2 jugadores vivos + el gusano</div>
           <div class="df-escena">
             <div class="df-mesa-centro">
-              <img class="df-sprite fantasma" src="https://arrecifejuego.github.io/paginaweb/eze_fantasma.jpeg" alt="Gusano"/>
+              <img class="df-sprite fantasma" src="https://arrecifejuego.github.io/paginaweb/eze_fantasma.png" alt="Gusano"/>
               <div class="df-nombre" style="color:rgba(100,210,230,0.28);">el gusano</div>
               <div class="df-hp muerto">sin vida</div>
               <div class="df-cartas">
@@ -582,7 +579,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
                 </div>
               </div>
               <div class="df-jugador">
-                <img class="df-sprite giuli" src="https://arrecifejuego.github.io/paginaweb/giuli.jpeg" alt="Giuli"/>
+                <img class="df-sprite giuli" src="https://arrecifejuego.github.io/paginaweb/giuli.png" alt="Giuli"/>
                 <div class="df-nombre">J2</div>
                 <div class="df-hp">11 HP</div>
                 <div class="df-cartas">
