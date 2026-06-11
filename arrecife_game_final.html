@@ -225,7 +225,28 @@ function elegirSigno(idx,miEq,miVal){
 
 function botElige(idx){
   const f=falt(idx);if(!f.length)return null;
-  const tipo=f[0];const maxV=mv();
+  const maxV=mv();
+  // En el primer momento (los tres tipos disponibles), el bot elige estratégicamente
+  // qué tipo jugar primero según la situación
+  let tipo;
+  if(f.length===3){
+    // Momento 1: puede elegir cualquier tipo
+    // Estrategia: si tiene info de rondas anteriores, empezar por equipo para dar señal falsa
+    // Si no tiene historia, aleatorio entre los tres
+    if(G.hist.length===0){
+      tipo=f[Math.floor(Math.random()*3)];
+    } else {
+      // Empezar por equipo para establecer posición (bluff o real)
+      tipo='equipo';
+    }
+  } else {
+    // Momentos 2 y 3: elegir de los disponibles en orden estratégico
+    // Si le falta equipo, jugarlo ahora para poder calcular signo después
+    if(f.includes('equipo'))tipo='equipo';
+    else if(f.includes('valor'))tipo='valor';
+    else tipo='signo';
+  }
+
   if(tipo==='equipo')return{tipo:'equipo',valor:predecirEq(idx)};
   if(tipo==='valor'){const botHp=G.jugs[idx].hp;return{tipo:'valor',valor:botHp<10?1:maxV};}
   if(tipo==='signo'){const miEq=G.mesa[idx].equipo;const miVal=G.mesa[idx].valor||3;return{tipo:'signo',valor:elegirSigno(idx,miEq,miVal)};}
@@ -356,6 +377,7 @@ function resolverRonda(){
   }
   aLog(`Mayoría: ${may} — Minoría: ${men}`);
 
+  // Calcular sumas
   let sumaMay=0,sumaMen=0;
   vivos.forEach(j=>{
     const ri=G.jugs.indexOf(j);const mc=G.mesa[ri];
@@ -363,19 +385,31 @@ function resolverRonda(){
     if(mc.equipo===may)sumaMay+=ap;else sumaMen+=ap;
   });
   const absMay=Math.abs(sumaMay),absMen=Math.abs(sumaMen);
-  aLog(`Mayoría ${sumaMay} (|${absMay}|) — Minoría ${sumaMen} (|${absMen}|)`);
+  aLog(`Suma Mayoría: ${sumaMay} (|${absMay}|) — Suma Minoría: ${sumaMen} (|${absMen}|)`);
 
-  const tornado=absMen<absMay;
-  if(tornado)aLog(`⚡ Tornado — daño a la Mayoría`,'tor');
-
+  // MAREA: |Mayoría| = 0 → Minoría recupera 2 HP, no hay daño
   if(absMay===0){
     vivos.forEach(j=>{const ri=G.jugs.indexOf(j);if(G.mesa[ri].equipo===men){j.hp=Math.min(j.mhp,j.hp+2);}});
     aLog(`🌊 Marea — Minoría recupera 2 HP`,'mar');
   } else {
-    const eqD=tornado?may:men;
+    // Determinar a quién va el daño según regla principal
+    // Suma Mayoría > n → daño a Mayoría; Suma Mayoría <= n → daño a Minoría
+    let eqDaño = absMay > n ? may : men;
+    aLog(`Suma |${absMay}| ${absMay>n?'>':'≤'} ${n} jugadores → daño a ${eqDaño}`);
+
+    // TORNADO: solo aplica si el daño iba a la Minoría
+    // Si |Minoría| < |Mayoría| → el daño se redirige a la Mayoría
+    if(eqDaño===men && absMen<absMay){
+      eqDaño=may;
+      aLog(`⚡ Tornado — |Minoría| ${absMen} < |Mayoría| ${absMay} → daño redirigido a Mayoría`,'tor');
+    }
+
     vivos.forEach(j=>{
       const ri=G.jugs.indexOf(j);
-      if(G.mesa[ri].equipo===eqD){j.hp=Math.max(0,j.hp-absMay);aLog(`${j.n} recibe ${absMay} → ${j.hp} HP`,'dan');}
+      if(G.mesa[ri].equipo===eqDaño){
+        j.hp=Math.max(0,j.hp-absMay);
+        aLog(`${j.n} recibe ${absMay} → ${j.hp} HP`,'dan');
+      }
     });
   }
 
