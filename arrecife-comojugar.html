@@ -57,6 +57,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .btn-reglamento.abierto .btn-reglamento-arrow{transform:rotate(180deg);}
 .reglamento-wrap{max-height:0;overflow:hidden;transition:max-height 1.2s cubic-bezier(0.4,0,0.2,1);}
 .reglamento-wrap.abierto{max-height:9999px;}
+.reglamento-wrap .reglamento-contenido{visibility:hidden;}
+.reglamento-wrap.abierto .reglamento-contenido{visibility:visible;}
 .reglamento-contenido{padding:40px 0 20px;}
 .reg-titulo{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,30px);font-weight:300;letter-spacing:6px;text-align:center;margin-bottom:6px;opacity:0.9;}
 .reg-subtitulo{font-size:11px;letter-spacing:3px;opacity:0.3;text-align:center;margin-bottom:48px;text-transform:uppercase;}
@@ -260,11 +262,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
     <iframe src="https://www.youtube.com/embed/CcP3lMhOzkA" title="Como jugar ARRECIFE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </div>
   <div class="sep"></div>
-  <button class="btn-reglamento" id="btnReglamento">
+  <button class="btn-reglamento" id="btnReglamento" aria-expanded="false" aria-controls="reglamentoWrap">
     <span>Reglamento entero</span>
     <span class="btn-reglamento-arrow">↓</span>
   </button>
-  <div class="reglamento-wrap" id="reglamentoWrap">
+  <div class="reglamento-wrap" id="reglamentoWrap" aria-hidden="false" role="region" aria-label="Reglamento completo de Arrecife">
     <div class="reglamento-contenido">
       <div class="ola-apertura" id="olaApertura" style="display:none;animation:none"></div>
       <div class="reg-titulo">ARRECIFE</div>
@@ -742,6 +744,7 @@ btn.addEventListener('click',function(){
   abierto=!abierto;
   btn.classList.toggle('abierto',abierto);
   wrap.classList.toggle('abierto',abierto);
+  btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
   if(abierto){
     sonarOpen();
     setTimeout(function(){
