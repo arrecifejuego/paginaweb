@@ -1,0 +1,472 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&family=Tenor+Sans&display=swap');
+#app{max-width:720px;margin:0 auto;padding:24px 16px 40px;background:#050a0d;color:rgba(255,255,255,0.85);font-family:'Tenor Sans',sans-serif;min-height:600px;}
+.titulo{font-family:'Cormorant Garamond',serif;font-size:32px;letter-spacing:6px;text-transform:uppercase;color:white;text-align:center;margin-bottom:4px;}
+.subtitulo{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(100,210,230,0.35);text-align:center;margin-bottom:32px;}
+
+/* PANTALLA INICIO */
+.inicio{display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px 0;}
+.inicio p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(255,255,255,0.35);text-align:center;line-height:1.8;}
+.input-nombre{background:transparent;border:none;border-bottom:1px solid rgba(100,210,230,0.3);color:white;font-family:'Cormorant Garamond',serif;font-size:22px;text-align:center;padding:8px 16px;width:260px;outline:none;letter-spacing:2px;}
+.input-nombre::placeholder{color:rgba(255,255,255,0.15);}
+.input-nombre:focus{border-bottom-color:rgba(100,210,230,0.8);}
+.btn-entrar{padding:14px 36px;border-radius:6px;border:1px solid rgba(100,210,230,0.35);background:transparent;color:rgba(100,210,230,0.8);font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:8px;}
+.btn-entrar:hover{background:rgba(100,210,230,0.08);border-color:rgba(100,210,230,0.7);}
+
+/* JUGADORES HP */
+.jugadores{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.jhp{flex:1;min-width:120px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 12px;}
+.jn{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px;}
+.jam{color:rgba(255,200,80,0.8);margin-left:4px;}
+.jhpv{font-family:'Cormorant Garamond',serif;font-size:20px;color:white;margin-bottom:5px;}
+.hpb{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.hpf{height:100%;border-radius:2px;transition:width 0.5s;}
+.jtag{font-size:8px;margin-top:4px;opacity:0.35;letter-spacing:1px;}
+.jeq{font-size:8px;margin-top:3px;letter-spacing:1px;}
+
+/* FASE */
+.fase{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.18);text-align:center;margin-bottom:16px;}
+
+/* CARTAS */
+.st{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-bottom:10px;}
+.kit{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.carta{width:56px;height:80px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;flex-shrink:0;overflow:hidden;position:relative;}
+.carta img{width:100%;height:100%;object-fit:cover;border-radius:7px;display:block;}
+.carta:hover{border-color:rgba(100,210,230,0.5);transform:translateY(-5px);}
+.carta.sel{border-color:rgba(100,210,230,1);transform:translateY(-8px);box-shadow:0 0 16px rgba(100,210,230,0.25);}
+.carta.dis{opacity:0.15;pointer-events:none;transform:none;}
+.carta-tip{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.65);font-size:7px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.6);text-align:center;padding:3px 0;}
+
+/* MESA */
+.mesa{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px;margin-bottom:16px;}
+.mfila{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px;}
+.mfila:last-child{margin-bottom:0;}
+.ml{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:5px;}
+.mcs{display:flex;gap:4px;}
+.mc{width:38px;height:54px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.mc img{width:100%;height:100%;object-fit:cover;}
+.mc.vacio{display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:12px;color:rgba(255,255,255,0.2);}
+
+/* MOMENTOS */
+.moms{display:flex;gap:6px;margin-bottom:14px;}
+.momd{width:8px;height:8px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);transition:all 0.3s;}
+.momd.a{border-color:rgba(100,210,230,1);background:rgba(100,210,230,1);}
+.momd.j{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);}
+
+/* BOTONES */
+.bots{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.btn{padding:10px 20px;border-radius:6px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.45);font-family:'Tenor Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.btn:hover:not(:disabled){border-color:rgba(100,210,230,0.35);color:rgba(100,210,230,0.8);}
+.btn:disabled{opacity:0.2;cursor:default;}
+.btn.p{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
+.btn.p:hover{background:rgba(100,210,230,0.08);}
+
+/* LOG */
+.log{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:12px 14px;max-height:140px;overflow-y:auto;margin-bottom:12px;}
+.li{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(255,255,255,0.35);line-height:1.8;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:3px;margin-bottom:3px;}
+.li:last-child{border:none;color:rgba(255,255,255,0.65);}
+.li.d{color:rgba(100,210,230,0.7);}
+.li.dan{color:rgba(255,100,80,0.7);}
+.li.mar{color:rgba(80,200,160,0.7);}
+.li.tor{color:rgba(180,100,255,0.7);}
+
+/* FIN */
+.ganador{text-align:center;padding:40px 20px;font-family:'Cormorant Garamond',serif;}
+.ganador h2{font-size:30px;margin-bottom:14px;}
+.ganador p{font-style:italic;font-size:16px;color:rgba(255,255,255,0.4);line-height:1.9;}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
+
+<div id="app">
+  <div class="titulo">Arrecife</div>
+  <div class="subtitulo">juego de lectura social</div>
+  <div id="cnt"></div>
+</div>
+
+<script>
+const BASE_URL='https://arrecifejuego.github.io/paginaweb/';
+const IMGS={
+  'Algas':BASE_URL+'team_algas.jpeg',
+  'Corales':BASE_URL+'team_corales.jpeg',
+  1:BASE_URL+'numero_1.jpeg',
+  2:BASE_URL+'numero_2.jpeg',
+  3:BASE_URL+'numero_3.jpeg',
+  4:BASE_URL+'numero_4.jpeg',
+  5:BASE_URL+'numero_5.jpeg',
+  '+':BASE_URL+'signo_mas.jpeg',
+  '-':BASE_URL+'signo_menos.jpeg',
+  'dorso':BASE_URL+'Dorso_de_cartas.jpeg'
+};
+
+const CRIATURAS=['Medusa','Cangrejo','Erizo','Pulpo'];
+let G={};
+let nombreJugador='';
+
+function hpC(hp,mx){return hp/mx>0.5?'rgba(100,210,230,0.8)':hp/mx>0.25?'rgba(255,200,80,0.8)':'rgba(255,80,80,0.8)';}
+
+function imgCarta(tipo,valor){
+  if(tipo==='equipo')return IMGS[valor]||'';
+  if(tipo==='valor')return IMGS[valor]||'';
+  if(tipo==='signo')return IMGS[valor]||'';
+  return IMGS['dorso'];
+}
+
+function init(nombre){
+  nombreJugador=nombre||'Vos';
+  const jugs=[
+    {n:nombreJugador,hp:30,mhp:30,am:true,bot:false},
+    {n:CRIATURAS[0],hp:30,mhp:30,am:false,bot:true},
+    {n:CRIATURAS[1],hp:30,mhp:30,am:false,bot:true},
+    {n:CRIATURAS[2],hp:30,mhp:30,am:false,bot:true},
+  ];
+  G={ronda:1,mom:0,jugs,
+    mesa:[{},{},{},{}],
+    us:[{e:false,v:false,s:false},{e:false,v:false,s:false},{e:false,v:false,s:false},{e:false,v:false,s:false}],
+    sel:null,log:[],hist:[]};
+}
+
+function mostrarInicio(){
+  document.getElementById('cnt').innerHTML=`
+    <div class="inicio">
+      <p>En este mar, sobrevive quien mejor<br>interpreta a los demás.</p>
+      <input class="input-nombre" id="inp-nombre" type="text" placeholder="tu nombre" maxlength="14" autocomplete="off"/>
+      <button class="btn-entrar" onclick="comenzar()">Entrar al mar</button>
+    </div>`;
+  document.getElementById('inp-nombre').addEventListener('keydown',e=>{if(e.key==='Enter')comenzar();});
+}
+
+function comenzar(){
+  const v=document.getElementById('inp-nombre').value.trim();
+  init(v||'Vos');
+  aLog('— ronda 1 —','d');
+  rJ();rKit();
+}
+
+function aLog(msg,t=''){
+  G.log.push({msg,t});
+  const el=document.getElementById('lb');
+  if(el){const d=document.createElement('div');d.className='li'+(t?' '+t:'');d.textContent=msg;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+}
+
+function rJ(){
+  const fase=document.getElementById('fl');
+  if(!fase){
+    const f=document.createElement('div');f.id='fl';f.className='fase';
+    f.textContent=`ronda ${G.ronda} — momento ${G.mom+1} de 3`;
+    document.getElementById('cnt').prepend(f);
+  } else {
+    fase.textContent=`ronda ${G.ronda} — momento ${G.mom+1} de 3`;
+  }
+
+  let jhtml=`<div class="jugadores" id="jugs-bar">`;
+  G.jugs.forEach((j,i)=>{
+    if(j.hp<=0){jhtml+=`<div class="jhp" style="opacity:0.25"><div class="jn">${j.n} ✝</div><div class="jhpv">0 HP</div></div>`;return;}
+    const p=Math.max(0,j.hp/j.mhp*100);
+    const eqMesa=G.mesa[i]&&G.mesa[i].equipo;
+    jhtml+=`<div class="jhp">
+      <div class="jn">${j.n}${j.am?'<span class="jam">✦</span>':''}</div>
+      <div class="jhpv">${j.hp} HP</div>
+      <div class="hpb"><div class="hpf" style="width:${p}%;background:${hpC(j.hp,j.mhp)}"></div></div>
+      <div class="jtag">${j.bot?'bot':'jugador'}</div>
+      ${eqMesa?`<div class="jeq" style="color:${eqMesa==='Algas'?'rgba(80,200,160,0.7)':'rgba(220,120,90,0.7)'}">${eqMesa}</div>`:''}
+    </div>`;
+  });
+  jhtml+=`</div>`;
+  const jb=document.getElementById('jugs-bar');
+  if(jb)jb.outerHTML=jhtml;
+}
+
+function mv(){return G.jugs.filter(j=>j.hp>0).length>4?5:4;}
+function falt(i){const u=G.us[i],f=[];if(!u.e)f.push('equipo');if(!u.v)f.push('valor');if(!u.s)f.push('signo');return f;}
+
+// ── INTELIGENCIA ──────────────────────────────────────────────────
+function predecirEq(targetIdx){
+  // Analiza historial del jugador humano
+  if(G.hist.length<2)return['Algas','Corales'][Math.floor(Math.random()*2)];
+  const ultimas=G.hist.slice(-5).map(r=>r[0]&&r[0].eq).filter(Boolean);
+  const cntA=ultimas.filter(e=>e==='Algas').length;
+  const cntC=ultimas.filter(e=>e==='Corales').length;
+  // Detectar alternancia
+  let alterna=true;
+  for(let i=1;i<ultimas.length;i++)if(ultimas[i]===ultimas[i-1]){alterna=false;break;}
+  let predEze;
+  if(alterna&&ultimas.length>=2)predEze=ultimas[ultimas.length-1]==='Algas'?'Corales':'Algas';
+  else predEze=cntA>cntC?'Algas':'Corales';
+
+  // Analizar HP relativo
+  const botHp=G.jugs[targetIdx].hp;
+  const minHp=Math.min(...G.jugs.filter(j=>j.hp>0).map(j=>j.hp));
+  const maxHp=Math.max(...G.jugs.filter(j=>j.hp>0).map(j=>j.hp));
+  const esLider=botHp===maxHp;
+
+  // Si el bot lidera HP, quiere ser Minoría (menos riesgo)
+  // Si está bajo, necesita Tornado o Marea → va con la mayoría esperada
+  if(esLider)return predEze==='Algas'?'Corales':'Algas';
+  if(botHp<12)return predEze; // desesperado: seguir al humano para intentar Tornado
+  // Normal: ir contra el humano para ser Minoría
+  return predEze==='Algas'?'Corales':'Algas';
+}
+
+function elegirSigno(idx,miEq,miVal){
+  // Calcular suma parcial del propio equipo ya visible
+  let sumaActual=0,contMiEq=0,contOtroEq=0;
+  G.jugs.forEach((j,i)=>{
+    if(j.hp<=0||i===idx)return;
+    if(G.mesa[i].equipo===miEq){
+      contMiEq++;
+      if(G.mesa[i].valor&&G.mesa[i].signo)sumaActual+=G.mesa[i].valor*(G.mesa[i].signo==='-'?-1:1);
+    } else if(G.mesa[i].equipo){contOtroEq++;}
+  });
+  const n=G.jugs.filter(j=>j.hp>0).length;
+  const esMay=contMiEq+1>contOtroEq;
+  const botHp=G.jugs[idx].hp;
+
+  if(esMay){
+    // Como Mayoría:
+    // Si HP muy bajo → buscar Marea (suma → 0)
+    if(botHp<10){
+      const conMas=sumaActual+miVal,conMenos=sumaActual-miVal;
+      return Math.abs(conMenos)<Math.abs(conMas)?'-':'+';
+    }
+    // Maximizar suma > n para mandar daño a Minoría
+    const conMas=sumaActual+miVal,conMenos=sumaActual-miVal;
+    // Preferir que |suma| > n
+    const masLejos=Math.abs(conMas)>Math.abs(conMenos)?'+':'-';
+    // Pero si ambas > n, elegir la mayor
+    return masLejos;
+  } else {
+    // Como Minoría: buscar Tornado → |sumaMin| < |sumaMay|
+    // Minimizar valor absoluto propio para que sea menor que el de Mayoría
+    const conMas=sumaActual+miVal,conMenos=sumaActual-miVal;
+    return Math.abs(conMas)<Math.abs(conMenos)?'+':'-';
+  }
+}
+
+function botElige(idx){
+  const f=falt(idx);if(!f.length)return null;
+  const tipo=f[0];
+  const maxV=mv();
+  if(tipo==='equipo'){
+    return{tipo:'equipo',valor:predecirEq(idx)};
+  }
+  if(tipo==='valor'){
+    const miEq=G.mesa[idx].equipo;
+    const botHp=G.jugs[idx].hp;
+    const n=G.jugs.filter(j=>j.hp>0).length;
+    // Como Mayoría desesperado: valor bajo para Marea
+    if(botHp<10)return{tipo:'valor',valor:1};
+    // Calcular cuántos en mi equipo hay
+    const cntMiEq=G.jugs.filter((j,i)=>j.hp>0&&G.mesa[i].equipo===miEq).length;
+    const esMay=cntMiEq>n/2;
+    // Como Mayoría: maxV para maximizar daño
+    // Como Minoría: maxV también para maximizar chance de Tornado
+    return{tipo:'valor',valor:maxV};
+  }
+  if(tipo==='signo'){
+    const miEq=G.mesa[idx].equipo;
+    const miVal=G.mesa[idx].valor||3;
+    return{tipo:'signo',valor:elegirSigno(idx,miEq,miVal)};
+  }
+  return null;
+}
+// ─────────────────────────────────────────────────────────────────
+
+function rKit(){
+  const f=falt(0);const u=G.us[0];const maxV=mv();
+  let html=`<div class="fase" id="fl">ronda ${G.ronda} — momento ${G.mom+1} de 3</div>`;
+
+  // HP bar
+  html+=`<div class="jugadores" id="jugs-bar">`;
+  G.jugs.forEach((j,i)=>{
+    if(j.hp<=0){html+=`<div class="jhp" style="opacity:0.25"><div class="jn">${j.n} ✝</div><div class="jhpv">0</div></div>`;return;}
+    const p=Math.max(0,j.hp/j.mhp*100);
+    const eqMesa=G.mesa[i]&&G.mesa[i].equipo;
+    html+=`<div class="jhp">
+      <div class="jn">${j.n}${j.am?'<span class="jam">✦</span>':''}</div>
+      <div class="jhpv">${j.hp} HP</div>
+      <div class="hpb"><div class="hpf" style="width:${p}%;background:${hpC(j.hp,j.mhp)}"></div></div>
+      <div class="jtag">${j.bot?'bot':'vos'}</div>
+      ${eqMesa?`<div class="jeq" style="color:${eqMesa==='Algas'?'rgba(80,200,160,0.7)':'rgba(220,120,90,0.7)'}">${eqMesa}</div>`:''}
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Momentos
+  html+=`<div class="moms">${[0,1,2].map(i=>`<div class="momd ${i<G.mom?'j':i===G.mom?'a':''}"></div>`).join('')}</div>`;
+
+  // Kit
+  html+=`<div class="st">tu kit — elegí (disponibles: ${f.join(', ')||'—'})</div><div class="kit">`;
+  ['Algas','Corales'].forEach(eq=>{
+    const dis=u.e||(G.mom>0&&!f.includes('equipo'));
+    const s=G.sel&&G.sel.t==='equipo'&&G.sel.v===eq;
+    html+=`<div class="carta ${s?'sel':''} ${dis?'dis':''}" onclick="doSel('equipo','${eq}')">
+      <img src="${IMGS[eq]}" alt="${eq}" loading="lazy"/>
+      <div class="carta-tip">${eq==='Algas'?'algas':'corales'}</div>
+    </div>`;
+  });
+  for(let v=1;v<=maxV;v++){
+    const dis=u.v||(G.mom>0&&!f.includes('valor'));
+    const s=G.sel&&G.sel.t==='valor'&&G.sel.v===v;
+    html+=`<div class="carta ${s?'sel':''} ${dis?'dis':''}" onclick="doSel('valor',${v})">
+      <img src="${IMGS[v]}" alt="${v}" loading="lazy"/>
+      <div class="carta-tip">${v}</div>
+    </div>`;
+  }
+  ['+','-'].forEach(sg=>{
+    const dis=u.s||(G.mom>0&&!f.includes('signo'));
+    const s=G.sel&&G.sel.t==='signo'&&G.sel.v===sg;
+    html+=`<div class="carta ${s?'sel':''} ${dis?'dis':''}" onclick="doSel('signo','${sg}')">
+      <img src="${IMGS[sg]}" alt="${sg}" loading="lazy"/>
+      <div class="carta-tip">${sg==='+'?'más':'menos'}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Mesa
+  html+=`<div class="mesa"><div class="st">mesa</div>`;
+  G.jugs.forEach((j,i)=>{
+    if(j.hp<=0)return;
+    const mc=G.mesa[i];
+    html+=`<div class="mfila"><div>
+      <div class="ml">${j.n}${j.am?' ✦':''}</div>
+      <div class="mcs">
+        <div class="mc ${mc.equipo?'':'vacio'}">${mc.equipo?`<img src="${IMGS[mc.equipo]}" loading="lazy"/>`:'E'}</div>
+        <div class="mc ${mc.valor?'':'vacio'}">${mc.valor?`<img src="${IMGS[mc.valor]}" loading="lazy"/>`:'V'}</div>
+        <div class="mc ${mc.signo?'':'vacio'}">${mc.signo?`<img src="${IMGS[mc.signo]}" loading="lazy"/>`:'±'}</div>
+      </div></div></div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="bots"><button class="btn p" onclick="jugar()" ${!G.sel?'disabled':''}>Jugar carta</button></div>`;
+  html+=`<div class="log" id="lb">${G.log.slice(-10).map(l=>`<div class="li ${l.t}">${l.msg}</div>`).join('')}</div>`;
+  document.getElementById('cnt').innerHTML=html;
+  const lb=document.getElementById('lb');if(lb)lb.scrollTop=lb.scrollHeight;
+}
+
+function doSel(t,v){
+  if(!falt(0).includes(t))return;
+  G.sel={t,v};rKit();
+}
+
+function jugar(){
+  if(!G.sel)return;
+  const{t,v}=G.sel;
+  const tk=t==='equipo'?'equipo':t==='valor'?'valor':'signo';
+  G.mesa[0][tk]=v;
+  G.us[0][t==='equipo'?'e':t==='valor'?'v':'s']=true;
+  G.sel=null;
+
+  G.jugs.forEach((j,i)=>{
+    if(i===0||j.hp<=0)return;
+    const c=botElige(i);
+    if(c){
+      const tk2=c.tipo==='equipo'?'equipo':c.tipo==='valor'?'valor':'signo';
+      G.mesa[i][tk2]=c.valor;
+      G.us[i][c.tipo==='equipo'?'e':c.tipo==='valor'?'v':'s']=true;
+    }
+  });
+
+  G.mom++;
+  if(G.mom>=3)resolverRonda();
+  else rKit();
+}
+
+function resolverRonda(){
+  const vivos=G.jugs.filter(j=>j.hp>0);
+  const n=vivos.length;
+  const snap=G.jugs.map((j,i)=>j.hp>0?{eq:G.mesa[i].equipo,val:G.mesa[i].valor,sig:G.mesa[i].signo}:null);
+  G.hist.push(snap);
+
+  const cnt={Algas:0,Corales:0};
+  vivos.forEach(j=>{const ri=G.jugs.indexOf(j);if(G.mesa[ri].equipo)cnt[G.mesa[ri].equipo]++;});
+
+  let may,men;
+  if(cnt.Algas===n||cnt.Corales===n){
+    const eq=cnt.Algas===n?'Algas':'Corales';
+    const ai=G.jugs.findIndex(j=>j.am&&j.hp>0);
+    aLog(`Todos eligieron ${eq} — ${G.jugs[ai].n} pasa a Minoría`,'d');
+    G.mesa[ai].equipo=eq==='Algas'?'Corales':'Algas';
+    const cnt2={Algas:0,Corales:0};
+    vivos.forEach(j=>{const ri=G.jugs.indexOf(j);cnt2[G.mesa[ri].equipo]++;});
+    may=cnt2.Algas>cnt2.Corales?'Algas':'Corales';
+    men=may==='Algas'?'Corales':'Algas';
+  } else if(cnt.Algas===cnt.Corales){
+    const ai=G.jugs.findIndex(j=>j.am&&j.hp>0);
+    may=G.mesa[ai].equipo;men=may==='Algas'?'Corales':'Algas';
+    aLog(`Empate — ${G.jugs[ai].n} (amuleto) define Mayoría: ${may}`);
+  } else {
+    may=cnt.Algas>cnt.Corales?'Algas':'Corales';
+    men=may==='Algas'?'Corales':'Algas';
+  }
+  aLog(`Mayoría: ${may} — Minoría: ${men}`);
+
+  let sumaMay=0,sumaMen=0;
+  vivos.forEach(j=>{
+    const ri=G.jugs.indexOf(j);const mc=G.mesa[ri];
+    const ap=(mc.valor||0)*(mc.signo==='-'?-1:1);
+    if(mc.equipo===may)sumaMay+=ap;else sumaMen+=ap;
+  });
+  const absMay=Math.abs(sumaMay),absMen=Math.abs(sumaMen);
+  aLog(`Mayoría ${sumaMay} (|${absMay}|) — Minoría ${sumaMen} (|${absMen}|)`);
+
+  // TORNADO: |Minoría| < |Mayoría|
+  const tornado=absMen<absMay;
+  if(tornado)aLog(`⚡ Tornado — daño se aplica a la Mayoría`,'tor');
+
+  // MAREA: |Mayoría| === 0
+  if(absMay===0){
+    vivos.forEach(j=>{
+      const ri=G.jugs.indexOf(j);
+      if(G.mesa[ri].equipo===men){j.hp=Math.min(j.mhp,j.hp+2);}
+    });
+    aLog(`🌊 Marea — Minoría recupera 2 HP`,'mar');
+  } else {
+    const eqD=tornado?may:men;
+    const daño=absMay;
+    vivos.forEach(j=>{
+      const ri=G.jugs.indexOf(j);
+      if(G.mesa[ri].equipo===eqD){
+        j.hp=Math.max(0,j.hp-daño);
+        aLog(`${j.n} recibe ${daño} → ${j.hp} HP`,'dan');
+      }
+    });
+  }
+
+  G.jugs.forEach(j=>{if(j.hp<=0&&!j.n.includes('✝')){aLog(`${j.n} eliminado`);j.n+=' ✝';}});
+
+  // Rotar amuleto antihorario
+  const vp=G.jugs.filter(j=>j.hp>0);
+  if(vp.length>1){
+    const ai=G.jugs.findIndex(j=>j.am);
+    if(ai>=0){G.jugs[ai].am=false;
+      for(let i=1;i<=G.jugs.length;i++){
+        const ni=(ai-i+G.jugs.length)%G.jugs.length;
+        if(G.jugs[ni].hp>0){G.jugs[ni].am=true;break;}
+      }
+    }
+  }
+
+  const sob=G.jugs.filter(j=>j.hp>0);
+  if(sob.length<=1){setTimeout(()=>fin(sob[0]),600);return;}
+
+  G.ronda++;G.mom=0;
+  G.mesa=G.jugs.map(()=>({}));
+  G.us=G.jugs.map(()=>({e:false,v:false,s:false}));
+  G.sel=null;
+  aLog(`— ronda ${G.ronda} —`,'d');
+  setTimeout(rKit,400);
+}
+
+function fin(j){
+  const esJugador=j&&j.n===nombreJugador;
+  document.getElementById('cnt').innerHTML=`<div class="ganador">
+    <h2 style="color:${esJugador?'rgba(100,210,230,0.9)':'rgba(255,100,80,0.8)'}">${j?j.n.replace(' ✝',''):'?'} gana</h2>
+    <p>${esJugador?`Bien jugado, ${nombreJugador}.<br>Sabés leer el mar.`:'El mar no perdona.<br>¿Revancha?'}</p>
+    <button class="btn p" style="margin-top:24px" onclick="mostrarInicio()">Nueva partida</button>
+  </div>`;
+}
+
+mostrarInicio();
+</script>
