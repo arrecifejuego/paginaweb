@@ -521,8 +521,8 @@ function resolverRonda(){
     aLog(`🌊 Marea — Minoría recupera 2 HP`,'mar');
   } else {
     // Determinar a quién va el daño según regla principal
-    // Suma Mayoría > n → daño a Mayoría; Suma Mayoría <= n → daño a Minoría
-    let eqDaño = absMay > n ? may : men;
+    // Suma Mayoría > n → daño a la MINORÍA; Suma Mayoría ≤ n → daño a la MAYORÍA
+    let eqDaño = absMay > n ? men : may;
     aLog(`Suma |${absMay}| ${absMay>n?'>':'≤'} ${n} jugadores → daño a ${eqDaño}`);
 
     // TORNADO: solo aplica si el daño iba a la Minoría
