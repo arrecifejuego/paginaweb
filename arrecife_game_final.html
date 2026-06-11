@@ -162,6 +162,64 @@ function init(nombre){
   };
 }
 
+function mostrarResumen(mesaRonda, logRonda){
+  const vivos = G.jugs.filter(j=>j.hp>0);
+
+  // Armar HTML de cartas de cada jugador
+  let jugsHtml = '';
+  mesaRonda.forEach(j => {
+    if(!j.equipo && !j.valor && !j.signo) return; // sin cartas (eliminado antes)
+    const eqColor = j.equipo==='Algas' ? 'rgba(80,200,160,0.7)' : j.equipo==='Corales' ? 'rgba(220,120,90,0.7)' : 'rgba(255,255,255,0.2)';
+    jugsHtml += `<div class="resumen-jug">
+      <div class="resumen-jug-nombre">${j.nombre.replace(' ✝','')}${j.am?' ✦':''}</div>
+      <div class="resumen-cartas">
+        ${j.equipo ? `<div class="resumen-carta"><img src="${IMGS[j.equipo]}" loading="lazy"/></div>` : ''}
+        ${j.valor  ? `<div class="resumen-carta"><img src="${IMGS[j.valor]}"  loading="lazy"/></div>` : ''}
+        ${j.signo  ? `<div class="resumen-carta"><img src="${IMGS[j.signo]}"  loading="lazy"/></div>` : ''}
+      </div>
+      <span class="resumen-eq" style="color:${eqColor}">${j.equipo||''}</span>
+    </div>`;
+  });
+
+  // Últimas líneas del log (resultado de la ronda)
+  const ultLog = logRonda.slice(-6);
+  let logHtml = ultLog.map(l => {
+    const cls = l.t==='dan'?'rojo':l.t==='mar'?'verde':l.t==='tor'?'violeta':l.t==='d'?'cyan':'';
+    return `<span class="${cls}">${l.msg}</span>`;
+  }).join('<br>');
+
+  const proximaRonda = G.ronda;
+
+  document.getElementById('cnt').innerHTML = `
+    <div class="jugadores">${G.jugs.map((j)=>{
+      if(j.hp<=0) return `<div class="jhp eliminado"><div class="jn">${j.n} ✝</div><div class="jhpv">0</div></div>`;
+      const p=Math.max(0,j.hp/j.mhp*100);
+      return `<div class="jhp">
+        <div class="jn">${j.n}${j.am?'<span class="jam">✦</span>':''}</div>
+        <div class="jhpv">${j.hp} HP</div>
+        <div class="hpb"><div class="hpf" style="width:${p}%;background:${hpC(j.hp,j.mhp)}"></div></div>
+      </div>`;
+    }).join('')}</div>
+
+    <div class="resumen-ronda">
+      <div class="resumen-titulo">lo que jugaron — ronda ${proximaRonda-1}</div>
+      <div class="resumen-jugadores">${jugsHtml}</div>
+      <div class="resumen-sep"></div>
+      <div class="resumen-resultado">${logHtml}</div>
+      <div class="bots" style="justify-content:center">
+        <button class="btn p" onclick="iniciarRonda()">Ronda ${proximaRonda} →</button>
+      </div>
+    </div>
+
+    <div class="log" id="lb">${G.log.slice(-6).map(l=>`<div class="li ${l.t}">${l.msg}</div>`).join('')}</div>
+  `;
+}
+
+function iniciarRonda(){
+  aLog(\`— ronda \${G.ronda} —\`,'d');
+  rKit();
+}
+
 function mostrarInicio(){
   document.getElementById('cnt').innerHTML=`
     <div class="inicio">
@@ -557,12 +615,19 @@ function resolverRonda(){
   const sob=G.jugs.filter(j=>j.hp>0);
   if(sob.length<=1){setTimeout(()=>fin(sob[0]),600);return;}
 
+  // Guardar mesa de esta ronda para mostrar en el resumen
+  const mesaRonda = G.jugs.map((j,i) => ({
+    nombre: j.n, hp: j.hp, am: j.am, bot: j.bot, eliminado: j.hp<=0,
+    equipo: G.mesa[i].equipo, valor: G.mesa[i].valor, signo: G.mesa[i].signo
+  }));
+  const logRonda = [...G.log];
+
   G.ronda++;G.mom=0;
   G.mesa=G.jugs.map(()=>({}));
   G.us=G.jugs.map(()=>({e:false,v:false,s:false}));
   G.sel=null;
-  aLog(`— ronda ${G.ronda} —`,'d');
-  setTimeout(rKit,400);
+
+  mostrarResumen(mesaRonda, logRonda);
 }
 
 function fin(j){
