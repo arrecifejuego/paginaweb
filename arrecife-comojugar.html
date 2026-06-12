@@ -71,6 +71,12 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .reg-flecha::before{content:'→';position:absolute;left:0;opacity:0.4;}
 .reg-highlight{display:block;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(100,210,230,0.65);margin:16px 0;padding:12px 16px;border-left:1px solid rgba(100,210,230,0.2);letter-spacing:0.5px;line-height:1.7;}
 .reg-numero{font-size:11px;letter-spacing:3px;opacity:0.4;text-transform:uppercase;margin-bottom:10px;margin-top:8px;}
+.reg-regla{display:block;font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.9;opacity:0.65;margin-bottom:12px;letter-spacing:0.3px;padding-left:16px;position:relative;}
+.reg-regla::before{content:'·';position:absolute;left:0;color:rgba(100,210,230,0.55);font-size:20px;line-height:1.4;}
+
+.reg-evento-box{position:relative;border-radius:12px;overflow:hidden;margin-top:36px;border:1px solid rgba(255,255,255,0.06);}
+.reg-evento-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.12;}
+.reg-evento-contenido{position:relative;z-index:1;padding:20px 20px 18px;}
 .reg-deco{display:block;text-align:center;font-size:18px;opacity:0.08;margin:8px 0;letter-spacing:12px;user-select:none;}
 
 .ola-apertura{width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(100,210,230,0.4),transparent);margin-bottom:32px;transform-origin:left;animation:olaAbre 1s ease forwards;}
@@ -250,6 +256,14 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .footer-link svg{width:18px;height:18px;fill:currentColor;flex-shrink:0;}
 .footer-sep{width:1px;height:16px;background:rgba(255,255,255,0.1);}
 .footer-copy{font-family:'Cormorant Garamond',Georgia,serif;font-size:12px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:0.5px;}
+@media(max-width:600px){
+  .arrecife-footer{padding:24px 16px 20px;gap:12px;margin-top:40px;}
+  .footer-redes{gap:14px;}
+  .footer-link{font-size:10px;letter-spacing:1px;gap:6px;}
+  .footer-link svg{width:14px;height:14px;}
+  .footer-sep{height:12px;}
+  .footer-copy{font-size:10px;letter-spacing:0.3px;}
+}
 </style>
 </head>
 <body>
@@ -290,7 +304,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
         <p>Cada partida te muestra cómo funciona el grupo con el que estás jugando.</p>
 
-        <p style="margin-top:20px;">Las primeras rondas son caos. Las del medio, lectura. Las últimas, precisión.<br>El sistema no cambia — cambia lo que cada uno entiende del otro.</p>
+        <p style="margin-top:20px;">Las primeras rondas son caos.<br>Las del medio, lectura.<br>Las últimas, precisión.</p>
+
+        <p>El sistema no cambia — cambia lo que cada uno entiende del otro.</p>
 
         <span class="reg-highlight">En este mar, sobrevive quien mejor interpreta a los demás.</span>
       </div>
@@ -301,7 +317,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
         <p>Cada jugador empieza con <strong>30 HP</strong>. Se recomienda llevar el registro visible para todos — saber en qué estado está cada uno es parte del juego.</p>
 
-        <p style="margin-top:20px;">Hay una sola regla que vale para toda la partida, y es la más importante: <strong>no se puede coordinar</strong>. Nada de hablar sobre lo que van a elegir, nada de señas, nada de acuerdos.</p>
+        <p style="margin-top:20px;">Hay una sola regla que vale para toda la partida, y es la más importante:</p>
+        <span class="reg-regla"><strong>no se puede coordinar</strong> — nada de hablar sobre lo que van a elegir, nada de señas, nada de acuerdos.</span>
 
         <span class="reg-highlight">Gran parte del juego vive en ese espacio donde nadie puede confirmar nada. Todo lo que hagas va a ser interpretado — incluso lo que no hagas.</span>
       </div>
@@ -309,7 +326,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
       <div class="reg-seccion">
         <h2>Lo que hay en la caja</h2>
         <p>El juego contiene <strong>66 cartas</strong> en total, de tres tipos: Equipos, Valores y Signos.</p>
-        <p style="margin-top:0;">Esas tres categorías no son arbitrarias — son exactamente los tres momentos de cada ronda.</p>
+        <p>Esas tres categorías no son arbitrarias — son exactamente los tres momentos de cada ronda.</p>
         <div class="comp-grid">
           <div class="comp-grupo">
             <div class="comp-fila">
@@ -393,20 +410,20 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
               <span class="kit-grupo-label">2 signos</span>
             </div>
           </div>
-          <p class="kit-nota">Los valores disponibles cambian a medida que caen jugadores.</p>
-          <p class="kit-nota" style="margin-top:6px;">Con <strong>5 o más jugadores vivos</strong> → se usan del 1 al 5<br>Con <strong>4 o menos jugadores vivos</strong> → solo del 1 al 4</p>
+          <p class="kit-nota">El rango de valores depende de cuántos jugadores haya en la mesa.</p>
+          <p class="kit-nota" style="margin-top:6px;">Con <strong>5 o más jugadores</strong> → se usan del 1 al 5<br>Con <strong>4 o menos jugadores</strong> → solo del 1 al 4</p>
         </div>
 
         <p style="margin-top:20px;">El amuleto se coloca frente a un jugador al azar antes de que empiece la primera ronda.</p>
-
-        <p style="margin-top:20px; opacity:0.45; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; letter-spacing:0.3px;">Con todo esto en mano, empieza la primera ronda.</p>
       </div>
 
       <div class="reg-seccion">
         <h2>Cómo funciona una ronda</h2>
         <p>Cada ronda tiene tres momentos. En cada uno, todos eligen una carta en secreto y la revelan al mismo tiempo. Una vez revelada, esa carta queda fija en la mesa hasta que termine la ronda.</p>
 
-        <p>Lo que elegís revelar primero dice algo.<br>Lo que guardás para el final también.<br>El orden no está fijado — eso es parte de la decisión.</p>
+        <p>Lo que elegís revelar primero dice algo.</p>
+        <p>Lo que guardás para el final también.</p>
+        <p>El orden no está fijado — eso es parte de la decisión.</p>
 
         <div class="rev-wrap">
 
@@ -499,8 +516,6 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
         </div>
         <span class="reg-highlight">Recién ahí, con todo en la mesa, se puede entender lo que cada uno estaba haciendo.</span>
-
-        <p style="margin-top:24px; opacity:0.45; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; letter-spacing:0.3px;">Ahora hay que saber qué significa lo que quedó sobre la mesa.</p>
       </div>
 
       <div class="reg-seccion">
@@ -508,7 +523,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
         <div class="reg-numero">1 — <span class="r-may">Mayoría</span> y <span class="r-min">Minoría</span></div>
         <p>Mirá las cartas de equipo en la mesa. El equipo con más jugadores es la <span class="r-may">Mayoría</span>. El que tiene menos, la <span class="r-min">Minoría</span>.</p>
-        <p>Esto determina qué le pasa a cada uno en la ronda. Cualquier empate lo resuelve el amuleto.</p>
+
+        <p>Esto determina qué le pasa a cada uno en la ronda.</p>
+        <p>Cualquier empate lo resuelve el amuleto.</p>
 
         <div class="reg-numero" style="margin-top:36px">2 — Las sumas</div>
         <p>Cada equipo calcula su suma por separado. Cada jugador aporta su Valor multiplicado por su Signo, y esos resultados se suman entre todos los del equipo. El número final siempre se toma en <strong>valor absoluto</strong> — da lo mismo si el resultado fue positivo o negativo.</p>
@@ -529,7 +546,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
         </div>
 
         <div class="reg-numero" style="margin-top:36px">3 — El daño</div>
-        <p>En Arrecife, ser demasiado fuerte puede ser un problema.</p>
+        <span class="reg-highlight">En Arrecife, ser demasiado fuerte puede ser un problema.</span>
 
         <p>La Suma de la <span class="r-may">Mayoría</span> determina quién recibe el daño — y esa lógica es la más importante del juego:</p>
         <span class="reg-flecha">Si la suma supera la cantidad de jugadores vivos → el daño va a la <span class="r-may">Mayoría</span></span>
@@ -547,25 +564,36 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           </div>
         </div>
 
-        <p>Ese daño lo recibe cada jugador del equipo afectado de forma individual.</p>
+        <span class="reg-flecha">Ese daño lo recibe cada jugador del equipo afectado de forma individual</span>
         <span class="reg-highlight">No siempre conviene estar del lado de la <span class="r-may">Mayoría</span>. A veces, el lado más pequeño es el más seguro.</span>
 
-        <div class="reg-numero" style="margin-top:36px">4 — <span class="r-torn">Tornado</span></div>
-        <p>Si la Suma de la <span class="r-min">Minoría</span> supera a la Suma de la <span class="r-may">Mayoría</span>, el daño se invierte: lo recibe la <span class="r-may">Mayoría</span>.</p>
-        <span class="reg-highlight">Un grupo más chico puede darle vuelta a todo.</span>
+        <div class="reg-evento-box" id="box-tornado">
+          <canvas class="reg-evento-canvas" id="canvas-tornado"></canvas>
+          <div class="reg-evento-contenido">
+            <div class="reg-numero">4 — <span class="r-torn">Tornado</span></div>
+            <p>Cuando el daño iba a ir a la <span class="r-min">Minoría</span>, hay una salvación posible:</p>
+            <span class="reg-flecha">Si la Suma de la <span class="r-min">Minoría</span> supera a la Suma de la <span class="r-may">Mayoría</span> → el daño se invierte y lo recibe la <span class="r-may">Mayoría</span></span>
+            <span class="reg-highlight" style="border-color:rgba(200,60,60,0.2);color:rgba(220,100,100,0.7);">Un grupo más chico puede darle vuelta a todo — pero solo cuando el golpe ya le iba a caer encima.</span>
+          </div>
+        </div>
 
-        <div class="reg-numero" style="margin-top:36px">5 — <span class="r-marea">Marea</span></div>
-        <p>Si la Suma de la <span class="r-may">Mayoría</span> da exactamente 0, todos los jugadores de la <span class="r-min">Minoría</span> recuperan 2 HP. Nadie puede superar sus HP iniciales.</p>
-        <span class="reg-highlight">Es la única vez en todo el juego que se puede recuperar vida.</span>
-
-        <span class="reg-highlight" style="margin-top:10px; display:block;">Algo se equilibra — aunque sea por un instante.</span>
+        <div class="reg-evento-box" id="box-marea" style="margin-top:20px;">
+          <canvas class="reg-evento-canvas" id="canvas-marea"></canvas>
+          <div class="reg-evento-contenido">
+            <div class="reg-numero">5 — <span class="r-marea">Marea</span></div>
+            <p>Otro caso especial de la Suma de la <span class="r-may">Mayoría</span>:</p>
+            <span class="reg-flecha">Si la Suma de la <span class="r-may">Mayoría</span> da exactamente 0 → todos los jugadores de la <span class="r-min">Minoría</span> recuperan 2 HP</span>
+            <span class="reg-flecha">Nadie puede superar sus HP iniciales</span>
+            <span class="reg-highlight" style="border-color:rgba(80,200,150,0.2);color:rgba(80,210,160,0.7);">Algo se equilibra — aunque sea por un instante.</span>
+          </div>
+        </div>
 
         <p style="margin-top:28px; opacity:0.45; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; letter-spacing:0.3px;">Cuando alguien llega a 0 HP, el juego no termina para esa persona. Cambia.</p>
       </div>
 
       <div class="reg-seccion">
         <h2>El Gusano</h2>
-        <p>Cuando un jugador llega a 0 HP cae eliminado. Deja su kit, toma las 2 cartas de habilidad, y se convierte en el Gusano.</p>
+        <p>Cuando un jugador llega a 0 HP cae eliminado. Deja su kit, toma las 2 cartas de habilidad, y se convierte en el Gusano. Si la partida es de 3 jugadores, la eliminación del primero activa directamente el Duelo Final.</p>
 
         <p>No abandona el juego. Cambia de rol dentro del sistema.</p>
 
@@ -573,7 +601,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
         <p style="margin-top:24px;">El Gusano no busca sobrevivir. Busca intervenir.</p>
 
-        <p>Al inicio de cada ronda, antes de que empiece la revelación, elige una de sus dos habilidades y la coloca boca abajo frente a un jugador vivo. Cuando terminan las tres revelaciones, la carta se gira y se aplica. Luego vuelve a estar disponible.</p>
+        <p>Al inicio de cada ronda, antes de que empiece la revelación, elige una de sus dos habilidades y la coloca boca abajo frente a un jugador vivo.</p>
+
+        <p>Cuando terminan las tres revelaciones, la carta se gira y se aplica. Luego vuelve a estar disponible.</p>
 
         <div class="reg-cartas" style="margin:24px 0;">
           <div class="reg-carta-grupo">
@@ -586,10 +616,11 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           </div>
         </div>
 
-        <span class="reg-flecha">Chocar — el signo que jugó ese jugador en la ronda se invierte</span>
-        <span class="reg-flecha">Morder — si ese jugador recibió daño, recibe 2 HP menos adicionales. Si no recibió daño, no tiene efecto</span>
+        <span class="reg-regla">Chocar — el signo que jugó ese jugador en la ronda se invierte</span>
+        <span class="reg-regla">Morder — si ese jugador recibió daño, recibe 2 HP menos adicionales. Si no recibió daño, no tiene efecto</span>
 
-        <p style="margin-top:24px;">El Gusano es un rol transferible. Siempre lo porta el último jugador en caer. Si alguien más muere mientras hay un Gusano activo, ese nuevo eliminado toma el rol — y el anterior queda sin nada.</p>
+        <p>El Gusano es un rol transferible. Siempre lo porta el último jugador en caer.</p>
+        <p>Si alguien más muere mientras hay un Gusano activo, ese nuevo eliminado toma el rol — y el anterior queda sin nada.</p>
       </div>
 
 
@@ -613,9 +644,12 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
         <h2>El Duelo Final</h2>
         <p>Cuando quedan 2 jugadores con vida, el último eliminado vuelve.</p>
 
-        <p>Vuelve como el Gusano, con un kit completo. Sin vida, sin poder recibir daño. Pero jugando cartas junto a los vivos, contando como jugador para el cálculo del daño.</p>
+        <p>Vuelve como el Gusano, con un kit completo. Sin vida, sin poder recibir daño.</p>
 
-        <p style="margin-top:20px;">Todo lo que el Gusano construyó desde el borde del juego llega acá. Ya no es un observador que interviene — es el tercer eje del sistema.</p>
+        <p>Pero juega sus cartas junto a los vivos y cuenta como jugador para el cálculo del daño.</p>
+
+        <p style="margin-top:20px;">Todo lo que el Gusano construyó desde el borde del juego llega acá.</p>
+        <p>Ya no es un observador que interviene — es el tercer eje del sistema.</p>
 
         <p>Si el daño cayera solo sobre él, rebota y va a los jugadores vivos.</p>
 
@@ -827,10 +861,110 @@ btn.addEventListener('click',function(){
       ola.style.animation='olaAbre 1s ease forwards';
     },100);
     setTimeout(function(){wrap.scrollIntoView({behavior:'smooth',block:'start'});},200);
+    setTimeout(iniciarParticulas, 400);
   } else {
     sonarClose();ola.style.display='none';
   }
 });
+
+function iniciarParticulas(){
+  /* — TORNADO — partículas rojizas que giran hacia el centro — */
+  (function(){
+    const cv = document.getElementById('canvas-tornado');
+    const box = document.getElementById('box-tornado');
+    if(!cv||!box) return;
+    function resize(){cv.width=box.offsetWidth;cv.height=box.offsetHeight;}
+    resize();
+    window.addEventListener('resize', resize);
+    const ctx = cv.getContext('2d');
+    const pts = [];
+    for(let i=0;i<55;i++){
+      const angle = Math.random()*Math.PI*2;
+      const r = Math.random()*Math.min(cv.width,cv.height)*0.45;
+      pts.push({
+        angle, r,
+        speed:(Math.random()*0.018+0.008)*(Math.random()<0.5?1:-1),
+        rSpeed:-(Math.random()*0.25+0.1),
+        size:Math.random()*2+0.6,
+        op:Math.random()*0.45+0.15,
+        cr:`rgba(${190+Math.floor(Math.random()*50)},${30+Math.floor(Math.random()*40)},${30+Math.floor(Math.random()*30)},`
+      });
+    }
+    const cx=()=>cv.width/2, cy=()=>cv.height/2;
+    (function loop(){
+      requestAnimationFrame(loop);
+      ctx.fillStyle='rgba(18,4,4,0.18)';
+      ctx.fillRect(0,0,cv.width,cv.height);
+      pts.forEach(p=>{
+        p.angle+=p.speed;
+        p.r=Math.max(4,p.r+p.rSpeed*0.2);
+        if(p.r<6) p.r=Math.min(cv.width,cv.height)*0.42;
+        const x=cx()+Math.cos(p.angle)*p.r;
+        const y=cy()+Math.sin(p.angle)*p.r;
+        ctx.beginPath();ctx.arc(x,y,p.size,0,Math.PI*2);
+        ctx.fillStyle=p.cr+p.op+')';
+        ctx.shadowBlur=6;ctx.shadowColor=p.cr+'0.4)';
+        ctx.fill();
+      });
+    })();
+  })();
+
+  /* — MAREA — burbujas de luz que suben — */
+  (function(){
+    const cv = document.getElementById('canvas-marea');
+    const box = document.getElementById('box-marea');
+    if(!cv||!box) return;
+    function resize(){cv.width=box.offsetWidth;cv.height=box.offsetHeight;}
+    resize();
+    window.addEventListener('resize', resize);
+    const ctx = cv.getContext('2d');
+    const burbs = Array.from({length:35},()=>({
+      x:Math.random()*800,
+      y:Math.random()*200+100,
+      r:Math.random()*2.2+0.6,
+      vy:-(Math.random()*0.35+0.12),
+      vx:(Math.random()-0.5)*0.2,
+      op:Math.random()*0.28+0.08,
+      phase:Math.random()*Math.PI*2,
+      ps:Math.random()*0.018+0.007,
+      wb:Math.random()*Math.PI*2
+    }));
+    let t=0;
+    (function loop(){
+      requestAnimationFrame(loop);
+      t+=0.01;
+      const bg=ctx.createLinearGradient(0,0,0,cv.height);
+      bg.addColorStop(0,'rgba(2,14,22,0.12)');
+      bg.addColorStop(1,'rgba(3,22,38,0.2)');
+      ctx.fillStyle=bg;ctx.fillRect(0,0,cv.width,cv.height);
+      for(let w=0;w<2;w++){
+        ctx.beginPath();
+        const yb=cv.height*0.72+w*20;
+        ctx.moveTo(0,cv.height);
+        for(let x=0;x<=cv.width;x+=8){
+          const y=yb+Math.sin(x*0.01+t+w*1.1)*14+Math.sin(x*0.018+t*0.65)*6;
+          x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+        }
+        ctx.lineTo(cv.width,cv.height);ctx.closePath();
+        ctx.fillStyle=`rgba(40,160,200,${0.035-w*0.01})`;ctx.fill();
+      }
+      burbs.forEach(b=>{
+        b.phase+=b.ps;b.wb+=0.025;
+        b.x+=b.vx+Math.sin(b.wb)*0.3;
+        b.y+=b.vy;
+        if(b.y<-8){b.y=cv.height+8;b.x=Math.random()*cv.width;}
+        const op=b.op*(0.55+0.45*Math.sin(b.phase));
+        ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+        ctx.strokeStyle=`rgba(100,220,240,${op*0.75})`;ctx.lineWidth=0.7;ctx.stroke();
+        ctx.beginPath();ctx.arc(b.x-b.r*0.25,b.y-b.r*0.25,b.r*0.32,0,Math.PI*2);
+        ctx.fillStyle=`rgba(200,240,255,${op*0.35})`;ctx.fill();
+      });
+      const glow=ctx.createRadialGradient(cv.width/2,cv.height,0,cv.width/2,cv.height,cv.height*0.7);
+      glow.addColorStop(0,'rgba(40,160,200,0.05)');glow.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=glow;ctx.fillRect(0,0,cv.width,cv.height);
+    })();
+  })();
+}
 </script>
 
 <audio id="mar-audio" src="https://arrecifejuego.github.io/paginaweb/oceano_sonido.mp3" loop preload="none" style="display:none"></audio>
