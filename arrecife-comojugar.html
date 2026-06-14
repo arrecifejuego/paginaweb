@@ -150,6 +150,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .comp-pila img{position:relative;z-index:1;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.08);display:block;width:44px;height:auto;transition:transform 0.2s;}
 .comp-pila img:hover{transform:translateY(-3px);}
 .comp-pila.solo::before,.comp-pila.solo::after{display:none;}
+.comp-ficha{width:44px;height:44px;border-radius:50%;border:1px solid rgba(100,210,230,0.2);background:rgba(100,210,230,0.04);box-shadow:0 4px 14px rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.comp-ficha svg{width:30px;height:30px;display:block;}
 .comp-sep{width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);align-self:center;flex-shrink:0;}
 /* KIT — cómo se arma la mesa */
 .kit-wrap{margin:20px 0;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 20px;}
@@ -184,6 +186,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
   .comp-pila img{width:40px;}
   .comp-pila.sm img{width:32px;}
   .comp-pila.xs img{width:28px;}
+  .comp-ficha{width:40px;height:40px;}
+  .comp-ficha svg{width:27px;height:27px;}
   .reg-ejemplo-fila{gap:6px;}
   .reg-ejemplo-fila .reg-carta-img{width:40px;}
   .reg-cartas{gap:8px;}
@@ -325,8 +329,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
       <div class="reg-seccion">
         <h2>Lo que hay en la caja</h2>
-        <p>El juego contiene <strong>66 cartas</strong> en total, de tres tipos: Equipos, Valores y Signos.</p>
-        <p>Esas tres categorías no son arbitrarias — son exactamente los tres momentos de cada ronda.</p>
+        <p>El juego contiene <strong>66 cartas</strong> y una ficha "amuleto".</p>
         <div class="comp-grid">
           <div class="comp-grupo">
             <div class="comp-fila">
@@ -367,12 +370,30 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
             <span class="comp-cantidad">x1 cada una</span>
             <span class="comp-label">Habilidades y guía</span>
           </div>
+          <div class="comp-sep"></div>
+          <div class="comp-grupo">
+            <div class="comp-fila">
+              <div class="comp-ficha">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Amuleto">
+                  <path d="M 50.0,84.0 Q 75.7,78.5 98.9,73.6 Q 101.7,59.2 93.3,50.1 Q 88.5,35.8 75.4,31.9 Q 64.2,21.2 50.0,24.0 Q 35.8,21.2 24.6,31.9 Q 11.5,35.8 6.7,50.1 Q -1.7,59.2 1.1,73.6 Q 24.3,78.5 50.0,84.0 Z" fill="rgba(100,210,230,0.12)" stroke="rgba(100,210,230,0.7)" stroke-width="2"/>
+                  <line x1="50.0" y1="84.0" x2="93.3" y2="50.1" stroke="rgba(100,210,230,0.4)" stroke-width="1.2"/>
+                  <line x1="50.0" y1="84.0" x2="75.4" y2="31.9" stroke="rgba(100,210,230,0.4)" stroke-width="1.2"/>
+                  <line x1="50.0" y1="84.0" x2="50.0" y2="24.0" stroke="rgba(100,210,230,0.4)" stroke-width="1.2"/>
+                  <line x1="50.0" y1="84.0" x2="24.6" y2="31.9" stroke="rgba(100,210,230,0.4)" stroke-width="1.2"/>
+                  <line x1="50.0" y1="84.0" x2="6.7" y2="50.1" stroke="rgba(100,210,230,0.4)" stroke-width="1.2"/>
+                  <path d="M 40.0,84.0 Q 50.0,93.0 60.0,84.0" fill="none" stroke="rgba(100,210,230,0.55)" stroke-width="1.5"/>
+                </svg>
+              </div>
+            </div>
+            <span class="comp-cantidad">x1</span>
+            <span class="comp-label">Amuleto</span>
+          </div>
         </div>
       </div>
 
       <div class="reg-seccion">
         <h2>Cómo se arma la mesa</h2>
-        <p>Cada jugador recibe su kit: 9 cartas que va a tener en mano durante toda la partida.</p>
+        <p>Cada jugador recibe un kit individual de 9 cartas, que va a conservar durante toda la partida.</p>
 
         <div class="kit-wrap">
           <div class="kit-titulo">Kit de cada jugador — 9 cartas</div>
