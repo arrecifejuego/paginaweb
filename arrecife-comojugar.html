@@ -60,7 +60,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .reglamento-wrap .reglamento-contenido{visibility:hidden;}
 .reglamento-wrap.abierto .reglamento-contenido{visibility:visible;}
 .reglamento-contenido{padding:40px 0 20px;}
-.reg-titulo{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,30px);font-weight:300;letter-spacing:6px;text-align:center;margin-bottom:6px;opacity:0.9;}
+.btn-audio{position:fixed;top:24px;right:28px;z-index:100;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.3s;}
+.btn-audio:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
+.btn-audio.muted{opacity:0.3;}font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,30px);font-weight:300;letter-spacing:6px;text-align:center;margin-bottom:6px;opacity:0.9;}
 .reg-subtitulo{font-size:11px;letter-spacing:3px;opacity:0.3;text-align:center;margin-bottom:48px;text-transform:uppercase;}
 .reg-seccion{margin-bottom:44px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,0.05);position:relative;}
 .reg-seccion:last-child{border-bottom:none;}
@@ -295,7 +297,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
     <span class="btn-reglamento-arrow">↓</span>
   </button>
   <div class="reglamento-wrap" id="reglamentoWrap" aria-hidden="false" role="region" aria-label="Reglamento completo de Arrecife">
-    <div class="reglamento-contenido">
+    <button class="btn-audio muted" id="btnAudio" title="Sonido">♪</button>
       <div class="ola-apertura" id="olaApertura" style="display:none;animation:none"></div>
       <div class="reg-titulo">ARRECIFE</div>
       <div class="reg-subtitulo">De 3 a 7 jugadores</div>
@@ -840,6 +842,19 @@ function sonarClose(){if(aC.state==='suspended')aC.resume();tone(420,0.5,'sine',
   }
   document.addEventListener('click', iniciar, {once:true, capture:true});
   document.addEventListener('touchstart', iniciar, {once:true, passive:true, capture:true});
+})();
+
+/* BOTÓN AUDIO */
+(function(){
+  var btn = document.getElementById('btnAudio');
+  if(!btn) return;
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var audio = document.getElementById('mar-audio');
+    if(!audio) return;
+    if(audio.paused){ audio.play(); btn.classList.remove('muted'); }
+    else { audio.pause(); btn.classList.add('muted'); }
+  });
 })();
 
 /* TYPEWRITER */
