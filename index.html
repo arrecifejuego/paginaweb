@@ -149,12 +149,12 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 @keyframes patronFlota{0%{opacity:0;transform:translateY(4px);}30%{opacity:1;}70%{opacity:1;}100%{opacity:0;transform:translateY(-4px);}}
 
 /* FRASE Y CRÉDITO */
-.frase{position:fixed;bottom:58px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;opacity:0;letter-spacing:2px;white-space:nowrap;animation:fadeUp 1s ease 1.5s forwards;pointer-events:none;color:rgba(255,255,255,0.2);}
+.frase{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;opacity:0;letter-spacing:2px;white-space:nowrap;animation:fadeUp 1s ease 1.5s forwards;pointer-events:none;color:rgba(255,255,255,0.2);}
 @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .credito{position:fixed;bottom:10px;right:14px;font-size:8px;letter-spacing:1px;opacity:0.1;pointer-events:none;}
 
 /* PEZ ESPECIAL */
-#pez-especial{position:fixed;z-index:3;cursor:pointer;width:7px;height:7px;border-radius:50%;background:rgba(100,210,230,0.25);box-shadow:0 0 6px rgba(100,210,230,0.2);pointer-events:auto;user-select:none;transition:background 0.3s,box-shadow 0.3s,transform 0.3s;}
+#pez-especial{position:fixed;z-index:6;cursor:pointer;width:7px;height:7px;border-radius:50%;background:rgba(100,210,230,0.25);box-shadow:0 0 6px rgba(100,210,230,0.2);pointer-events:auto;user-select:none;transition:background 0.3s,box-shadow 0.3s,transform 0.3s;}
 .pez-contador{position:fixed;z-index:4;font-size:9px;letter-spacing:1px;color:rgba(255,220,80,0.6);pointer-events:none;opacity:0;transition:opacity 0.3s;}
 
 /* EASTER EGG */
@@ -177,15 +177,29 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 @media(max-width:600px){
   html{overflow:auto;}
   body{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100%;}
-  .ui{position:relative;inset:auto;min-height:100svh;padding:80px 16px 20px;justify-content:flex-start;gap:0;}
-  .cartas{gap:10px 12px;margin-bottom:0;}
-  .carta-wrap{gap:7px;}
-  .carta{width:calc(44vw - 16px);}
-  .carta-label{font-size:11px;letter-spacing:1.5px;}
-  .frase{position:relative;bottom:auto;left:auto;transform:none;margin-top:20px;font-size:10px;white-space:normal;text-align:center;width:100%;pointer-events:none;}
-  .subtitulo{margin-bottom:24px;}
-  .credito{position:relative;bottom:auto;right:auto;text-align:center;margin-top:8px;}
-  .arrecife-footer{display:flex;margin-top:32px;}
+  .ui{
+    position:relative;inset:auto;
+    min-height:100vh;
+    padding:64px 14px 16px;
+    justify-content:center;
+    gap:0;
+  }
+  .logo-img{width:min(72vw,300px);margin-bottom:6px;}
+  .subtitulo{font-size:11px;letter-spacing:3px;margin-bottom:20px;}
+  .cartas{gap:8px 10px;margin-bottom:0;}
+  .carta-wrap{gap:5px;}
+  .carta{width:calc(44vw - 14px);}
+  .carta-label{font-size:10px;letter-spacing:1px;white-space:normal;text-align:center;max-width:calc(44vw - 10px);}
+  .carta-label-cta{font-size:10px;letter-spacing:1px;}
+  .frase{
+    position:relative;bottom:auto;left:auto;transform:none;
+    margin-top:16px;font-size:10px;
+    white-space:normal;text-align:center;width:100%;
+    pointer-events:none;opacity:0.2;
+    animation:none;
+  }
+  .credito{position:relative;bottom:auto;right:auto;text-align:center;margin-top:4px;font-size:8px;}
+  .arrecife-footer{display:flex !important;margin-top:24px;padding-bottom:16px;}
 }
 
 .ui{
@@ -195,10 +209,10 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
   pointer-events:none;padding:0 20px;gap:0;
 }
 .logo-img{
-  width:clamp(240px,42vw,520px);
+  width:clamp(180px,38vw,520px);
   opacity:0;animation:fadeDown 1s ease 0.2s forwards;
   filter:invert(1);pointer-events:none;user-select:none;
-  display:block;margin-bottom:10px;
+  display:block;margin-bottom:8px;
 }
 </style>
 
@@ -212,6 +226,19 @@ body > footer.arrecife-footer .footer-link{font-size:10px;letter-spacing:2px;opa
 body > footer.arrecife-footer .footer-link:hover{opacity:1;}
 body > footer.arrecife-footer .footer-sep{height:12px;}
 body > footer.arrecife-footer .footer-copy{font-size:9px;color:rgba(255,255,255,0.12);letter-spacing:0.5px;}
+@media(max-width:600px){
+  body > footer.arrecife-footer{
+    position:relative;bottom:auto;left:auto;right:auto;
+    background:transparent;
+    padding:16px 20px 24px;
+    gap:10px;
+    z-index:2;
+    display:flex !important;
+  }
+  body > footer.arrecife-footer .footer-redes{gap:20px;flex-wrap:wrap;justify-content:center;}
+  body > footer.arrecife-footer .footer-link{font-size:11px;letter-spacing:1.5px;opacity:0.5;}
+  body > footer.arrecife-footer .footer-copy{font-size:9px;opacity:0.8;}
+}
 .footer-redes{display:flex;align-items:center;gap:24px;}
 .footer-link{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'Tenor Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;}
 .footer-link:hover{color:rgba(100,210,230,0.8);}
@@ -358,6 +385,8 @@ body > footer.arrecife-footer .footer-copy{font-size:9px;color:rgba(255,255,255,
     </div>
   </div>
 
+<div class="frase">En este mar, sobrevive quien mejor interpreta a los demás.</div>
+<div class="credito">Música: The Ocean — Savfk (CC BY 4.0)</div>
 <footer class="arrecife-footer">
   <div class="footer-redes">
     <a class="footer-link" href="https://www.instagram.com/arrecifejuego/" target="_blank" rel="noopener">
@@ -378,9 +407,6 @@ body > footer.arrecife-footer .footer-copy{font-size:9px;color:rgba(255,255,255,
   <p class="footer-copy">© 2026 Arrecife — Todos los derechos reservados. Prohibida su reproducción sin autorización.</p>
 </footer>
 </div>
-
-<div class="frase">En este mar, sobrevive quien mejor interpreta a los demás.</div>
-<div class="credito">Música: The Ocean — Savfk (CC BY 4.0)</div>
 
 <script>
 /* CANVAS CARTAS */
