@@ -84,32 +84,23 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
 .barra-label{font-size:8px;letter-spacing:4px;opacity:0.3;text-transform:uppercase;margin-bottom:12px;user-select:none;-webkit-user-select:none;}
 .barra-wrap{
   position:relative;width:100%;max-width:420px;
-  height:56px;cursor:grab;
-  border:1px solid rgba(255,255,255,0.08);
-  background:rgba(255,255,255,0.02);
-  border-radius:4px;
-  overflow:hidden;
-  touch-action:pan-y;
-  user-select:none;-webkit-user-select:none;
+  height:60px;cursor:pointer;
+  border:none;background:transparent;
+  border-radius:30px;overflow:hidden;
+  touch-action:manipulation;
 }
-.barra-fill{
-  position:absolute;top:0;bottom:0;left:0;
-  background:linear-gradient(90deg,rgba(100,210,230,0.08),rgba(100,210,230,0.18));
-  transition:width 0.05s;
-}
-.barra-ola{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:44px;height:44px;
+.barra-wrap.activa{cursor:default;}
+.barra-fill{display:none;}
+.barra-hint{
+  position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  font-size:22px;cursor:grab;opacity:0.6;
-  transition:opacity 0.3s;user-select:none;-webkit-user-select:none;
-  padding:22px;
-  margin:-22px;
-  touch-action:none;
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.22);
+  transition:opacity 0.5s;pointer-events:none;user-select:none;
+  z-index:2;
 }
-.barra-ola:active{cursor:grabbing;opacity:1;}
-.barra-labels{display:flex;justify-content:space-between;font-size:8px;letter-spacing:2px;opacity:0.2;margin-top:6px;text-transform:uppercase;width:100%;max-width:420px;box-sizing:border-box;padding:0 2px;user-select:none;-webkit-user-select:none;}
+.barra-wrap.activa .barra-hint{opacity:0;}
+.barra-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:blur(6px);z-index:1;}
 .equilibrio-msg{
   font-family:'Cormorant Garamond',serif;font-style:italic;
   font-size:13px;opacity:0;letter-spacing:1px;margin-top:20px;
@@ -240,15 +231,15 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
 
   <!-- EZE + PRECIO -->
   <div class="precio-wrap">
-    <img class="eze-linterna-img" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="Eze"/>
+    <img class="eze-linterna-img" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
     <div class="precio-contenido">
       <div class="precio-display" id="precio-display"></div>
-      <div class="barra-label">encontrá el equilibrio para continuar</div>
+      <div class="barra-label">tocá para continuar</div>
       <div class="barra-wrap" id="barra-wrap">
         <div class="barra-fill" id="barra-fill"></div>
-        <div class="barra-ola" id="barra-ola">∿</div>
+        <canvas class="barra-canvas" id="barra-canvas"></canvas>
+        <div class="barra-hint" id="barra-hint">∿ &nbsp; presioná aquí</div>
       </div>
-      <div class="barra-labels"><span>← demasiado</span><span>equilibrio</span><span>demasiado →</span></div>
       <div class="equilibrio-msg" id="equilibrio-msg">algo se equilibró — ya podés continuar</div>
     </div>
   </div>
@@ -394,105 +385,217 @@ setInterval(()=>{
 }, 80);
 
 /* ── BARRA DE EQUILIBRIO ── */
-const barraWrap=document.getElementById('barra-wrap');
-const barraFill=document.getElementById('barra-fill');
-const olaEl=document.getElementById('barra-ola');
-const equilibrioMsg=document.getElementById('equilibrio-msg');
-const formulario=document.getElementById('formulario');
+const barraWrap    = document.getElementById('barra-wrap');
+const barraCanvas  = document.getElementById('barra-canvas');
+const barraHint    = document.getElementById('barra-hint');
+const equilibrioMsg= document.getElementById('equilibrio-msg');
+const formulario   = document.getElementById('formulario');
 
-const BARRA_W=()=>barraWrap.offsetWidth;
-let olaX=0.8;
-let dragging=false,dragStartX=0,dragStartY=0,olaStartX=0;
-let equilibrado=false;
-let progreso=0;
-let completado=false;
-const ZONA=0.12;
-const FILL_SPEED=1/(4*60);
-const DRAIN_SPEED=1/(8*60);
+let completado  = false;
+let presionando = false;
+let progreso    = 0;
+let animFrame   = null;
 
-let olaAngle=Math.PI*0.5, oscAmplitud=1.0, olaVel=0;
+// ── CANVAS ──
+function resizeCanvas(){
+  barraCanvas.width  = barraWrap.offsetWidth;
+  barraCanvas.height = barraWrap.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-function olaLoop(){
-  requestAnimationFrame(olaLoop);
-  if(!dragging){
-    olaAngle+=0.036;
-    const wave=Math.sin(olaAngle)*oscAmplitud;
-    const diff=wave-olaX;
-    olaVel+=diff*0.022; olaVel*=0.90; olaX+=olaVel;
+// ── PARTÍCULAS ──
+const particulas = [];
+
+function crearParticula(){
+  const W = barraCanvas.width;
+  const H = barraCanvas.height;
+  particulas.push({
+    x:     Math.random() * (W * progreso),
+    y:     H * 0.5 + (Math.random() - 0.5) * H * 0.6,
+    vx:    (Math.random() - 0.5) * 0.7,
+    vy:    -0.4 - Math.random() * 1.0,
+    r:     1.5 + Math.random() * 2.5,
+    alpha: 0.7 + Math.random() * 0.3,
+    life:  1.0,
+    decay: 0.009 + Math.random() * 0.007,
+    hue:   180 + Math.random() * 40,
+  });
+}
+
+function dibujarTodo(){
+  const ctx = barraCanvas.getContext('2d');
+  const W   = barraCanvas.width;
+  const H   = barraCanvas.height;
+  ctx.clearRect(0, 0, W, H);
+  if(progreso <= 0.01) return;
+
+  const w = W * progreso;
+  const r = H * 0.5;
+
+  // ── blob principal ──
+  ctx.save();
+  const grad = ctx.createLinearGradient(0, 0, w, 0);
+  grad.addColorStop(0,   `rgba(50, 160, 190, ${0.25 + progreso * 0.15})`);
+  grad.addColorStop(0.5, `rgba(100, 210, 230, ${0.35 + progreso * 0.20})`);
+  grad.addColorStop(1,   `rgba(130, 225, 245, ${0.45 + progreso * 0.25})`);
+
+  ctx.beginPath();
+  if(w > r * 2){
+    ctx.moveTo(r, 0);
+    ctx.lineTo(w - r, 0);
+    ctx.quadraticCurveTo(w, 0, w, H * 0.5);
+    ctx.quadraticCurveTo(w, H, w - r, H);
+    ctx.lineTo(r, H);
+    ctx.quadraticCurveTo(0, H, 0, H * 0.5);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+  } else {
+    ctx.ellipse(w * 0.5, H * 0.5, Math.max(2, w * 0.5), H * 0.5, 0, 0, Math.PI * 2);
   }
-  const maxX=(BARRA_W()-36)/(BARRA_W());
-  olaX=Math.max(-maxX,Math.min(maxX,olaX));
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
 
-  const left=((olaX+1)/2)*(BARRA_W()-36);
-  olaEl.style.left=left+'px';
-  olaEl.style.transform='translateY(-50%)';
-  olaEl.style.top='50%';
+  // borde interior luminoso
+  ctx.strokeStyle = `rgba(160, 235, 250, ${0.3 + progreso * 0.3})`;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.restore();
 
-  const dist=Math.abs(olaX);
-  const estaEq=dist<ZONA;
+  // ── partículas ──
+  for(let i = particulas.length - 1; i >= 0; i--){
+    const p = particulas[i];
+    p.x   += p.vx;
+    p.y   += p.vy;
+    p.vy  -= 0.02;
+    p.life -= p.decay;
+    if(p.life <= 0){ particulas.splice(i,1); continue; }
+    const a = p.alpha * p.life;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${p.hue}, 85%, 80%, ${a * 0.15})`;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${p.hue}, 90%, 88%, ${a})`;
+    ctx.fill();
+  }
+}
 
-  if(estaEq&&!completado){
-    const bonus=1-(dist/ZONA);
-    progreso=Math.min(1,progreso+FILL_SPEED*(1+bonus));
-    barraFill.style.width=(progreso*100)+'%';
-    caosLevel=Math.max(0,dist/ZONA)*(1-progreso*0.85);
-    if(progreso>=1){
-      completado=true; equilibrado=true;
-      caosLevel=0; oscAmplitud=0.02;
+// ── LOOP ──
+let spawnAcc = 0;
+
+function animLoop(){
+  if(completado) return;
+
+  if(presionando){
+    progreso = Math.min(1, progreso + 0.006);
+  } else {
+    progreso = Math.max(0, progreso - 0.014);
+  }
+
+  if(presionando && progreso < 1){
+    spawnAcc += 1.5 + progreso * 2.5;
+    while(spawnAcc >= 1){ crearParticula(); spawnAcc--; }
+  }
+
+  dibujarTodo();
+
+  if(progreso >= 1){
+    completado = true;
+    destello();
+    return;
+  }
+
+  animFrame = requestAnimationFrame(animLoop);
+}
+
+// ── DESTELLO ──
+function destello(){
+  let t = 0;
+  const ctx = barraCanvas.getContext('2d');
+  const W   = barraCanvas.width;
+  const H   = barraCanvas.height;
+
+  function flashLoop(){
+    t += 0.04;
+    ctx.clearRect(0, 0, W, H);
+
+    // blob lleno con pulso de brillo
+    const pulse = Math.max(0, 1 - t);
+    const grad  = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0,   `rgba(100, 210, 230, ${0.35 + pulse * 0.4})`);
+    grad.addColorStop(1,   `rgba(200, 245, 255, ${0.5  + pulse * 0.5})`);
+    const r = H * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(r, 0); ctx.lineTo(W - r, 0);
+    ctx.quadraticCurveTo(W, 0, W, H * 0.5);
+    ctx.quadraticCurveTo(W, H, W - r, H);
+    ctx.lineTo(r, H);
+    ctx.quadraticCurveTo(0, H, 0, H * 0.5);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // partículas restantes
+    for(let i = particulas.length - 1; i >= 0; i--){
+      const p = particulas[i];
+      p.x += p.vx; p.y += p.vy; p.vy -= 0.02;
+      p.life -= p.decay;
+      if(p.life <= 0){ particulas.splice(i,1); continue; }
+      const a = p.alpha * p.life;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 90%, 88%, ${a})`;
+      ctx.fill();
+    }
+
+    if(t < 1.5){
+      requestAnimationFrame(flashLoop);
+    } else {
+      caosLevel = 0;
       equilibrioMsg.classList.add('visible');
       document.getElementById('lampara-luz').classList.add('activa');
       document.querySelector('.eze-linterna-img').classList.add('encendida');
-      // mostrar mensaje profundo primero
       mostrarMensajeProfundo();
-      try{const aC=new(window.AudioContext||window.webkitAudioContext)();
-        [440,660,880].forEach((f,i)=>setTimeout(()=>{const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
-        o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n);
-        g.gain.linearRampToValueAtTime(0.015,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.6);
-        o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.6);},i*180));}catch(e){}
+      try{
+        const aC=new(window.AudioContext||window.webkitAudioContext)();
+        [440,660,880].forEach((f,i)=>setTimeout(()=>{
+          const o=aC.createOscillator(),g=aC.createGain(),n=aC.currentTime;
+          o.type='sine';o.frequency.value=f;
+          g.gain.setValueAtTime(0,n);
+          g.gain.linearRampToValueAtTime(0.015,n+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001,n+0.6);
+          o.connect(g);g.connect(aC.destination);o.start(n);o.stop(n+0.6);
+        },i*180));
+      }catch(e){}
     }
-  } else if(!estaEq){
-    // si ya completó, no resetear — la barra queda fija
-    if(completado) return;
-    progreso=Math.max(0,progreso-DRAIN_SPEED);
-    barraFill.style.width=(progreso*100)+'%';
-    caosLevel=Math.min(1,dist/0.3);
+  }
+  flashLoop();
+}
+
+// ── EVENTOS ──
+function iniciarPresion(e){
+  if(completado) return;
+  if(e.cancelable) e.preventDefault();
+  presionando = true;
+  barraWrap.classList.add('activa');
+  if(!animFrame || progreso === 0){
+    animFrame = requestAnimationFrame(animLoop);
   }
 }
-olaLoop();
-
-// toda la barra es arrastrable
-barraWrap.style.cursor='grab';
-let olaTarget=null;
-let olaLerping=false;
-function lerpOla(){
-  if(olaTarget===null){olaLerping=false;return;}
-  const diff=olaTarget-olaX;
-  if(Math.abs(diff)<0.005){olaX=olaTarget;olaTarget=null;olaLerping=false;return;}
-  olaX+=diff*0.12;
-  requestAnimationFrame(lerpOla);
+function soltarPresion(){
+  if(completado) return;
+  presionando = false;
+  barraWrap.classList.remove('activa');
 }
-barraWrap.addEventListener('mousedown',e=>{
-  dragging=true;
-  const rect=barraWrap.getBoundingClientRect();
-  const relX=e.clientX-rect.left;
-  olaTarget=Math.max(-1,Math.min(1,(relX/(BARRA_W()))*2-1));
-  if(!olaLerping){olaLerping=true;lerpOla();}
-  dragStartX=e.clientX;olaStartX=olaTarget||olaX;oscAmplitud=0.7;
-  barraWrap.style.cursor='grabbing';
-  e.preventDefault();
-});
-window.addEventListener('mousemove',e=>{if(!dragging)return;const dx=(e.clientX-dragStartX)/(BARRA_W()/2);olaX=Math.max(-1,Math.min(1,olaStartX+dx));});
-window.addEventListener('mouseup',()=>{dragging=false;barraWrap.style.cursor='grab';});
-barraWrap.addEventListener('touchstart',e=>{
-  dragging=true;
-  const rect=barraWrap.getBoundingClientRect();
-  const relX=e.touches[0].clientX-rect.left;
-  olaTarget=Math.max(-1,Math.min(1,(relX/(BARRA_W()))*2-1));
-  if(!olaLerping){olaLerping=true;lerpOla();}
-  dragStartX=e.touches[0].clientX;dragStartY=e.touches[0].clientY;olaStartX=olaTarget||olaX;oscAmplitud=0.7;
-},{passive:true});
-barraWrap.addEventListener('touchmove',e=>{if(!dragging)return;const dx=e.touches[0].clientX-dragStartX;const dy=e.touches[0].clientY-dragStartY;if(Math.abs(dx)>Math.abs(dy)){e.preventDefault();olaX=Math.max(-1,Math.min(1,olaStartX+dx/(BARRA_W()/2)));}else{dragging=false;}},{passive:false});
-window.addEventListener('touchend',()=>{dragging=false;});
+
+barraWrap.addEventListener('mousedown',    iniciarPresion);
+barraWrap.addEventListener('touchstart',   iniciarPresion, {passive:false});
+window.addEventListener('mouseup',         soltarPresion);
+window.addEventListener('touchend',        soltarPresion);
+window.addEventListener('touchcancel',     soltarPresion)
 
 /* ── FORMULARIO ── */
 document.getElementById('btn-enviar').addEventListener('click',()=>{
