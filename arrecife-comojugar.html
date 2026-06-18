@@ -38,20 +38,21 @@ body{font-family:'Tenor Sans',sans-serif;}
 }
 #luciernagas-canvas.activo{opacity:1;}
 .eze-reglamento{
-  position:fixed;
-  right:calc(50% - 400px);
-  bottom:-120px;
-  width:80px;
+  display:none;
+  width:90px;
   image-rendering:pixelated;
   image-rendering:crisp-edges;
   filter:drop-shadow(0 0 18px rgba(255,160,40,0.3));
-  opacity:0;
-  transition:opacity 1.5s ease, bottom 1.5s ease;
+  transform:scaleX(-1);
+  position:absolute;
+  right:-110px;
+  bottom:0;
   pointer-events:none;
-  z-index:3;
+  opacity:0;
+  transition:opacity 1s ease;
 }
-.eze-reglamento.activo{opacity:0.85;bottom:0;}
-@media(max-width:860px){.eze-reglamento{display:none;}}
+.eze-reglamento.activo{opacity:0.85;}
+@media(min-width:900px){.eze-reglamento{display:block;}}
 .btn-volver{position:fixed;top:24px;left:24px;z-index:10;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:3px;padding:8px 16px;cursor:pointer;text-decoration:none;text-transform:uppercase;transition:all 0.3s;display:flex;align-items:center;gap:8px;}
 .btn-volver:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
 .main{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:100px 24px 100px;}
@@ -318,7 +319,6 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 <canvas id="bg-canvas"></canvas>
 <div class="ocean"><div class="wave"></div><div class="wave wave2"></div><div class="wave wave3"></div></div>
 <a class="btn-volver" href="index.html"><span>←</span><span>Volver</span></a>
-<img class="eze-reglamento" id="ezeReglamento" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
 <div class="main">
   <div class="logo">Arrecife</div>
   <h1>Cómo se juega</h1>
@@ -806,7 +806,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 
         <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; line-height:2; opacity:0.6; letter-spacing:0.4px; margin-top:24px;">Y si te tuviera que decir qué hay en el fondo del océano, te diría que es la misma agua que la de la superficie. Solo que nadar en la del fondo te hace tomar dimensión de la profundidad en la que vivís.</p>
 
-        <span class="reg-highlight" style="margin-top:36px; display:block;">El arrecife no es el tablero.<br>Es la mesa, las personas, el silencio entre una ronda y la siguiente.</span>
+        <div style="position:relative;">
+          <span class="reg-highlight" style="margin-top:36px; display:block;">El arrecife no es el tablero.<br>Es la mesa, las personas, el silencio entre una ronda y la siguiente.</span>
+          <img class="eze-reglamento" id="ezeReglamento" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
+        </div>
       </div>
 
     </div>
@@ -1082,7 +1085,6 @@ btn.addEventListener('click',function(){
     activo = true;
     canvas.classList.add('activo');
     if(ezeEl) ezeEl.classList.add('activo');
-    // ajustar canvas al tamaño real del wrap después de que abra
     setTimeout(resize, 800);
     if(!animId) animId = requestAnimationFrame(dibujar);
   }
@@ -1092,7 +1094,6 @@ btn.addEventListener('click',function(){
     activo = false;
     canvas.classList.remove('activo');
     if(ezeEl) ezeEl.classList.remove('activo');
-    // el loop se detiene solo cuando todas las alphas lleguen a 0
   }
 
   window.addEventListener('resize', function(){
