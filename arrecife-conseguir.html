@@ -491,9 +491,9 @@ function animLoop(){
   if(completado) return;
 
   if(presionando){
-    progreso = Math.min(1, progreso + 0.006);
+    progreso = Math.min(1, progreso + 0.0025);
   } else {
-    progreso = Math.max(0, progreso - 0.014);
+    progreso = Math.max(0, progreso - 0.010);
   }
 
   if(presionando && progreso < 1){
