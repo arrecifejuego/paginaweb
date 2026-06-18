@@ -31,7 +31,11 @@ body{font-family:'Tenor Sans',sans-serif;}
 @keyframes rotateWave{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .criatura-bg{position:fixed;pointer-events:none;z-index:1;opacity:0;animation:flotarCriatura linear infinite;}
 @keyframes flotarCriatura{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:0;}10%{opacity:1;}90%{opacity:0.6;}100%{transform:translateY(-120vh) rotate(360deg) scale(0.5);opacity:0;}}
-#luciernagas-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity 1.5s ease;}
+#luciernagas-canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:0;
+  transition:opacity 1.5s ease;
+}
 #luciernagas-canvas.activo{opacity:1;}
 .eze-reglamento{
   position:fixed;
@@ -72,7 +76,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 .btn-reglamento.abierto{border-color:rgba(100,210,230,0.25);color:rgba(100,210,230,0.6);}
 .btn-reglamento-arrow{transition:transform 0.4s;font-size:14px;}
 .btn-reglamento.abierto .btn-reglamento-arrow{transform:rotate(180deg);}
-.reglamento-wrap{max-height:0;overflow:hidden;transition:max-height 1.2s cubic-bezier(0.4,0,0.2,1);}
+.reglamento-wrap{max-height:0;overflow:hidden;transition:max-height 1.2s cubic-bezier(0.4,0,0.2,1);position:relative;}
 .reglamento-wrap.abierto{max-height:9999px;}
 .reglamento-wrap .reglamento-contenido{visibility:hidden;}
 .reglamento-wrap.abierto .reglamento-contenido{visibility:visible;}
@@ -314,7 +318,6 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 <canvas id="bg-canvas"></canvas>
 <div class="ocean"><div class="wave"></div><div class="wave wave2"></div><div class="wave wave3"></div></div>
 <a class="btn-volver" href="index.html"><span>←</span><span>Volver</span></a>
-<canvas id="luciernagas-canvas"></canvas>
 <img class="eze-reglamento" id="ezeReglamento" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
 <div class="main">
   <div class="logo">Arrecife</div>
@@ -331,6 +334,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
   </button>
 
   <div class="reglamento-wrap" id="reglamentoWrap" aria-hidden="true" role="region" aria-label="Reglamento completo de Arrecife">
+    <canvas id="luciernagas-canvas"></canvas>
     <button class="btn-audio muted" id="btnAudio" title="Sonido">♪</button>
       <div class="ola-apertura" id="olaApertura" style="display:none;animation:none"></div>
       <div class="reg-indice" id="regIndice">
@@ -966,102 +970,121 @@ btn.addEventListener('click',function(){
 
 /* ── LUCIÉRNAGAS + EZE LATERAL ── */
 (function(){
-  const canvas = document.getElementById('luciernagas-canvas');
-  const ezeEl  = document.getElementById('ezeReglamento');
-  const ctx    = canvas.getContext('2d');
-  let activo   = false;
-  let animId   = null;
+  const canvas  = document.getElementById('luciernagas-canvas');
+  const wrapEl  = document.getElementById('reglamentoWrap');
+  const ezeEl   = document.getElementById('ezeReglamento');
+  const ctx     = canvas.getContext('2d');
+  let activo    = false;
+  let animId    = null;
+  const N       = 22;
+  const luces   = [];
+
+  function getMainW(){ return Math.min(720, window.innerWidth); }
+  function getMargen(){ return Math.max((window.innerWidth - getMainW()) / 2, 32); }
 
   function resize(){
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Canvas ocupa todo el espacio del wrap
+    canvas.width  = wrapEl.offsetWidth;
+    canvas.height = wrapEl.offsetHeight;
+    // redistribuir luciérnagas si ya existen
+    luces.forEach(l => { const p = crearPos(); l.x = p.x; });
   }
-  resize();
-  window.addEventListener('resize', resize);
 
-  // ── Partículas ──
-  const luces = [];
-  const N = 28;
-
-  function crearLuz(i){
-    // Solo en los márgenes del .main (izquierda y derecha del contenido central)
-    const mainW = Math.min(720, window.innerWidth);
-    const margen = (window.innerWidth - mainW) / 2;
-    const enIzq  = Math.random() < 0.5;
-    const maxM   = Math.max(margen, 60);
-
+  function crearPos(){
+    // Solo en márgenes izquierdo y derecho
+    const margen = getMargen();
+    const izq = Math.random() < 0.5;
     return {
-      x:   enIzq
-            ? Math.random() * Math.max(margen - 20, 40)
-            : window.innerWidth - Math.random() * Math.max(margen - 20, 40),
-      y:   Math.random() * window.innerHeight,
-      vx:  (Math.random() - 0.5) * 0.25,
-      vy:  -0.08 - Math.random() * 0.18,
-      r:   1.2 + Math.random() * 1.8,
-      hue: 160 + Math.random() * 60,   // cyan-verde-teal
-      phase: Math.random() * Math.PI * 2,
-      speed: 0.008 + Math.random() * 0.012,
-      alpha: 0,
-      targetAlpha: 0.4 + Math.random() * 0.5,
+      x: izq
+        ? 8 + Math.random() * Math.max(margen - 40, 20)
+        : canvas.width - 8 - Math.random() * Math.max(margen - 40, 20)
     };
   }
 
-  for(let i = 0; i < N; i++) luces.push(crearLuz(i));
+  function crearLuz(){
+    const pos = crearPos();
+    const totalH = Math.max(canvas.height, 400);
+    return {
+      x:     pos.x,
+      y:     Math.random() * totalH,       // posición en el documento
+      vx:    (Math.random() - 0.5) * 0.15,
+      vy:    -0.06 - Math.random() * 0.10, // flotan muy lento hacia arriba
+      r:     0.9 + Math.random() * 1.4,
+      hue:   170 + Math.random() * 50,
+      phase: Math.random() * Math.PI * 2,
+      alpha: 0,
+      targetAlpha: 0.18 + Math.random() * 0.18, // muy sutiles
+    };
+  }
+
+  for(let i = 0; i < N; i++) luces.push(crearLuz());
 
   function dibujar(){
+    if(!activo && luces.every(l => l.alpha <= 0)){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cancelAnimationFrame(animId);
+      animId = null;
+      return;
+    }
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const t = performance.now() / 1000;
 
     for(let i = 0; i < luces.length; i++){
       const l = luces[i];
-      // movimiento suave ondulante
-      l.x += l.vx + Math.sin(t * l.speed * 4 + l.phase) * 0.3;
+
+      // movimiento
+      l.x += l.vx + Math.sin(t * 0.4 + l.phase) * 0.2;
       l.y += l.vy;
-      l.phase += 0.005;
 
-      // fade in
-      if(activo) l.alpha = Math.min(l.targetAlpha, l.alpha + 0.004);
-      else        l.alpha = Math.max(0, l.alpha - 0.006);
+      // fade
+      l.alpha = activo
+        ? Math.min(l.targetAlpha, l.alpha + 0.002)
+        : Math.max(0, l.alpha - 0.003);
 
-      // reciclar si sale por arriba
-      if(l.y < -10) {
-        const nuevo = crearLuz(i);
-        nuevo.y = window.innerHeight + 10;
-        nuevo.alpha = l.alpha;
-        luces[i] = nuevo;
+      // reciclar cuando sale por arriba
+      if(l.y < -10){
+        const nuevo  = crearLuz();
+        nuevo.y      = canvas.height + 10;
+        nuevo.alpha  = 0;
+        luces[i]     = nuevo;
         continue;
       }
 
-      // pulso de brillo
-      const pulso = 0.5 + 0.5 * Math.sin(t * 1.8 + l.phase * 3);
-      const a = l.alpha * (0.5 + 0.5 * pulso);
+      if(l.alpha <= 0.002) continue;
 
-      // halo exterior
-      const grad = ctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, l.r * 5);
-      grad.addColorStop(0,   `hsla(${l.hue}, 80%, 75%, ${a * 0.35})`);
-      grad.addColorStop(1,   `hsla(${l.hue}, 80%, 75%, 0)`);
+      // pulso muy suave
+      const pulso = 0.7 + 0.3 * Math.sin(t * 1.2 + l.phase * 2);
+      const a     = l.alpha * pulso;
+
+      // solo halo difuso — sin núcleo brillante
+      const grad = ctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, l.r * 6);
+      grad.addColorStop(0,   `hsla(${l.hue}, 70%, 72%, ${a})`);
+      grad.addColorStop(0.4, `hsla(${l.hue}, 70%, 72%, ${a * 0.4})`);
+      grad.addColorStop(1,   `hsla(${l.hue}, 70%, 72%, 0)`);
       ctx.beginPath();
-      ctx.arc(l.x, l.y, l.r * 5, 0, Math.PI * 2);
+      ctx.arc(l.x, l.y, l.r * 6, 0, Math.PI * 2);
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // núcleo
+      // núcleo — muy pequeño y tenue
       ctx.beginPath();
-      ctx.arc(l.x, l.y, l.r, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${l.hue}, 90%, 88%, ${a})`;
+      ctx.arc(l.x, l.y, l.r * 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${l.hue}, 80%, 85%, ${a * 0.6})`;
       ctx.fill();
     }
 
     animId = requestAnimationFrame(dibujar);
   }
 
-  // ── Activar / desactivar con el acordeón ──
   function activar(){
     if(activo) return;
     activo = true;
     canvas.classList.add('activo');
     if(ezeEl) ezeEl.classList.add('activo');
-    if(!animId) dibujar();
+    // ajustar canvas al tamaño real del wrap después de que abra
+    setTimeout(resize, 800);
+    if(!animId) animId = requestAnimationFrame(dibujar);
   }
 
   function desactivar(){
@@ -1069,14 +1092,17 @@ btn.addEventListener('click',function(){
     activo = false;
     canvas.classList.remove('activo');
     if(ezeEl) ezeEl.classList.remove('activo');
+    // el loop se detiene solo cuando todas las alphas lleguen a 0
   }
 
-  // Escuchar cuando el acordeón se abre/cierra
+  window.addEventListener('resize', function(){
+    if(activo) resize();
+  });
+
   document.getElementById('btnReglamento').addEventListener('click', function(){
-    // leer el estado después del toggle (ya fue aplicado)
     setTimeout(function(){
-      const abierto = document.getElementById('reglamentoWrap').classList.contains('abierto');
-      abierto ? activar() : desactivar();
+      const ab = document.getElementById('reglamentoWrap').classList.contains('abierto');
+      ab ? activar() : desactivar();
     }, 50);
   });
 })();
