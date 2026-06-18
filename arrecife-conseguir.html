@@ -52,21 +52,25 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
 
 /* SECCIÓN EZE + PRECIO */
 .precio-wrap{
-  display:flex;align-items:flex-end;gap:32px;
-  margin-bottom:48px;
+  display:flex;flex-direction:column;align-items:center;
+  margin-bottom:48px;text-align:center;
 }
 .eze-linterna-img{
-  width:clamp(100px,16vw,160px);
+  width:clamp(90px,14vw,140px);
   image-rendering:pixelated;
   display:block;
-  align-self:flex-end;
+  margin:16px auto 0;
   filter:drop-shadow(0 0 20px rgba(255,160,40,0.25));
-  flex-shrink:0;
+  transition:filter 0.6s, transform 0.6s;
 }
-.precio-contenido{flex:1;}
+.eze-linterna-img.encendida{
+  filter:drop-shadow(0 0 32px rgba(255,180,60,0.55));
+  transform:translateY(-4px);
+}
+.precio-contenido{width:100%;}
 
 .precio-display{
-  display:flex;align-items:center;gap:1px;
+  display:flex;align-items:center;justify-content:center;gap:1px;
   margin-bottom:6px;height:72px;
   position:relative;
 }
@@ -78,16 +82,17 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   transition:transform 0.12s,opacity 0.2s;
 }
 .digito.prefijo{font-size:0.45em;opacity:0.6;align-self:flex-start;margin-top:10px;}
-.precio-moneda{font-size:9px;letter-spacing:4px;opacity:0.3;text-transform:uppercase;margin-bottom:32px;}
+.precio-moneda{font-size:9px;letter-spacing:4px;opacity:0.3;text-transform:uppercase;margin-bottom:32px;text-align:center;}
 
 /* BARRA DE EQUILIBRIO */
-.barra-label{font-size:8px;letter-spacing:4px;opacity:0.3;text-transform:uppercase;margin-bottom:12px;user-select:none;-webkit-user-select:none;}
+.barra-label{font-size:8px;letter-spacing:4px;opacity:0.3;text-transform:uppercase;margin-bottom:12px;user-select:none;-webkit-user-select:none;text-align:center;}
 .barra-wrap{
   position:relative;width:100%;max-width:420px;
   height:60px;cursor:pointer;
   border:none;background:transparent;
   border-radius:30px;overflow:hidden;
   touch-action:manipulation;
+  margin:0 auto;
 }
 .barra-wrap.activa{cursor:default;}
 .barra-fill{display:none;}
@@ -181,11 +186,8 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
   filter:drop-shadow(0 0 22px rgba(255,165,40,1)) drop-shadow(0 0 55px rgba(255,110,20,0.7)) brightness(1.2) !important;
 }
 @media(max-width:540px){
-  .precio-wrap{flex-direction:column;align-items:center;gap:12px;}
-  .eze-linterna-img{width:80px;align-self:center;}
-  .precio-contenido{width:100%;text-align:center;}
-  .precio-display{justify-content:center;}
-  .barra-wrap{max-width:100%;height:64px;}
+  .eze-linterna-img{width:80px;}
+  .barra-wrap{max-width:100%;}
   .galeria{grid-template-columns:1fr 1fr;gap:4px;}
 }
 </style>
@@ -231,7 +233,6 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
 
   <!-- EZE + PRECIO -->
   <div class="precio-wrap">
-    <img class="eze-linterna-img" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
     <div class="precio-contenido">
       <div class="precio-display" id="precio-display"></div>
       <div class="barra-label">tocá para continuar</div>
@@ -242,6 +243,7 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5
       </div>
       <div class="equilibrio-msg" id="equilibrio-msg">algo se equilibró — ya podés continuar</div>
     </div>
+    <img class="eze-linterna-img" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
   </div>
 
   <!-- MENSAJE PROFUNDO -->
