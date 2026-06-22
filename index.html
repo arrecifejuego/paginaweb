@@ -175,31 +175,6 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 .easter-cerrar:hover{border-color:rgba(100,210,230,0.4);color:rgba(100,210,230,0.8);}
 
 
-@media(max-width:600px){
-  .ui{
-    position:relative;inset:auto;
-    min-height:100vh;
-    padding:64px 14px 16px;
-    justify-content:center;
-    gap:0;
-  }
-  .logo-img{width:min(72vw,300px);margin-bottom:6px;}
-  .subtitulo{font-size:11px;letter-spacing:3px;margin-bottom:20px;}
-  .cartas{gap:8px 10px;margin-bottom:0;}
-  .carta-wrap{gap:5px;}
-  .carta{width:calc(44vw - 14px);}
-  .carta-label{font-size:10px;letter-spacing:1px;white-space:normal;text-align:center;max-width:calc(44vw - 10px);}
-  .carta-label-cta{font-size:10px;letter-spacing:1px;}
-  .frase{
-    position:relative;bottom:auto;left:auto;transform:none;
-    margin-top:16px;font-size:10px;
-    white-space:normal;text-align:center;width:100%;
-    pointer-events:none;opacity:0.2;
-    animation:none;
-  }
-  .credito{position:relative;bottom:auto;right:auto;text-align:center;margin-top:4px;font-size:8px;}
-}
-
 .ui{
   position:fixed;inset:0;z-index:2;
   display:flex;flex-direction:column;
@@ -211,6 +186,30 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
   opacity:0;animation:fadeDown 1s ease 0.2s forwards;
   filter:invert(1);pointer-events:none;user-select:none;
   display:block;margin-bottom:8px;
+}
+@media(max-width:600px){
+  .ui{
+    position:relative;inset:auto;
+    min-height:auto;
+    padding:64px 14px 24px;
+    justify-content:center;
+    gap:0;
+  }
+  .logo-img{width:min(72vw,300px);margin-bottom:6px;}
+  .subtitulo{font-size:11px;letter-spacing:3px;margin-bottom:20px;}
+  .cartas{gap:8px 10px;margin-bottom:0;}
+  .carta-wrap{gap:5px;}
+  .carta{width:calc(44vw - 14px);}
+  .carta-label{font-size:11px;letter-spacing:1px;white-space:normal;text-align:center;max-width:calc(44vw - 10px);color:rgba(255,255,255,0.55);}
+  .carta-label-cta{font-size:11px;letter-spacing:1px;}
+  .frase{
+    position:relative;bottom:auto;left:auto;transform:none;
+    margin-top:16px;font-size:10px;
+    white-space:normal;text-align:center;width:100%;
+    pointer-events:none;opacity:0.2;
+    animation:none;
+  }
+  .credito{position:relative;bottom:auto;right:auto;text-align:center;margin-top:4px;font-size:8px;}
 }
 </style>
 
