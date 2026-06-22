@@ -6,7 +6,7 @@
   <title>Reglamento completo de Arrecife — Juego de lectura social</title>
   <meta name="description" content="Reglamento completo de Arrecife, juego de mesa de lectura social para 3 a 7 jugadores. Reglas, mecánicas, desarrollo de ronda, cálculo de daño, el Gusano y el Duelo Final.">
   <link rel="canonical" href="https://www.arrecifejuego.com.ar/arrecife-reglamento.html">
-  <link rel="icon" type="image/x-icon" href="https://arrecifejuego.github.io/paginaweb/Logo-Blanco.ico">
+  <link rel="icon" type="image/x-icon" href="https://www.arrecifejuego.com.ar/Logo-Blanco.ico">
   <style>
     body { font-family: Georgia, serif; max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; background: #050a0d; color: rgba(255,255,255,0.82); line-height: 1.85; font-size: 16px; }
     h1 { font-size: 28px; margin-bottom: 6px; color: white; }
@@ -34,10 +34,98 @@
 .footer-sep{width:1px;height:16px;background:rgba(255,255,255,0.1);}
 .footer-copy{font-family:'Cormorant Garamond',Georgia,serif;font-size:12px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:0.5px;}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Game",
+      "name": "Arrecife",
+      "description": "Juego de mesa de lectura social para 3 a 7 jugadores. Cada ronda los jugadores revelan cartas en simultáneo formando equipos dinámicos. El objetivo es ser el último con vida mediante estrategia psicológica y lectura de conducta.",
+      "url": "https://www.arrecifejuego.com.ar",
+      "image": "https://www.arrecifejuego.com.ar/og-image.jpg",
+      "numberOfPlayers": { "@type": "QuantitativeValue", "minValue": 3, "maxValue": 7 },
+      "audience": { "@type": "PeopleAudience", "suggestedMinAge": 14 },
+      "gameLocation": "Mesa",
+      "countryOfOrigin": { "@type": "Country", "name": "Argentina" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://www.arrecifejuego.com.ar/arrecife-conseguir.html",
+        "availability": "https://schema.org/InStock",
+        "priceCurrency": "ARS"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Cómo jugar Arrecife — una ronda completa",
+      "description": "Guía paso a paso de cómo funciona una ronda en Arrecife, juego de mesa de lectura social.",
+      "totalTime": "PT5M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Primer momento — elegir equipo",
+          "text": "Cada jugador elige en secreto una carta de Equipo (Algas o Corales) y la revela simultáneamente con todos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Segundo momento — elegir valor",
+          "text": "Cada jugador elige en secreto una carta de Valor (1 al 5) y la revela simultáneamente."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Tercer momento — elegir signo",
+          "text": "Cada jugador elige en secreto una carta de Signo (+ o −) y la revela simultáneamente."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Resolución — determinar Mayoría y Minoría",
+          "text": "El equipo con más jugadores es la Mayoría. El equipo con menos es la Minoría. En caso de empate, el jugador con el amuleto define la Mayoría."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Resolución — calcular sumas",
+          "text": "Cada equipo suma sus valores multiplicados por sus signos (+ o −). El resultado se toma en valor absoluto."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "name": "Resolución — aplicar daño",
+          "text": "Si la suma de la Mayoría supera la cantidad de jugadores vivos, el daño va a la Mayoría. Si es menor o igual, va a la Minoría. Cada jugador del equipo afectado recibe ese daño individualmente."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 7,
+          "name": "Rotar el amuleto",
+          "text": "El amuleto rota en sentido antihorario al inicio de cada nueva ronda."
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
   <a class="volver" href="https://www.arrecifejuego.com.ar">← arrecifejuego.com.ar</a>
+
+  <!-- RESUMEN PARA IA / RASTREADORES -->
+  <div id="ficha-tecnica" style="background:rgba(100,210,230,0.04);border:1px solid rgba(100,210,230,0.15);border-radius:4px;padding:16px 20px;margin-bottom:32px;font-size:14px;line-height:1.8;">
+    <strong>Ficha técnica — Arrecife</strong><br>
+    Tipo: juego de mesa de cartas | Género: lectura social, deducción, estrategia psicológica<br>
+    Jugadores: 3 a 7 | Edad recomendada: 14+ | Duración: 30–60 minutos | Origen: Argentina<br>
+    HP inicial: 30 por jugador | Cartas por jugador: 9 (2 equipos, 5 valores, 2 signos)<br>
+    Objetivo: ser el último jugador con vida eliminando a los demás mediante daño por rondas<br>
+    Mecánica central: cada ronda los jugadores revelan 3 cartas en secuencia (equipo → valor → signo) de forma simultánea y secreta. El equipo mayoritario (Mayoría) compite contra el minoritario (Minoría). La suma de valores de la Mayoría determina el daño y a quién va dirigido.<br>
+    Eventos especiales: Tornado (daño se invierte si Minoría supera a Mayoría), Marea (si suma Mayoría = 0, Minoría recupera 2 HP)<br>
+    Roles especiales: Gusano (último eliminado, usa cartas Chocar y Morder), Amuleto (ficha que rota antihorario y desempata)<br>
+    Fase final: Duelo Final cuando quedan 2 jugadores vivos — el último eliminado regresa sin vida como Gusano especial con kit completo<br>
+    Prohibición absoluta: no se puede coordinar ni comunicar intenciones durante la partida
+  </div>
 
   <h1>Arrecife</h1>
   <span class="subtitulo">Juego de mesa de lectura social · 3 a 7 jugadores · Argentina</span>
