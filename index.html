@@ -9,7 +9,7 @@
 <title>Arrecife — Juego de mesa de lectura social</title>
 
 <!-- SEO -->
-<meta name="description" content="Arrecife es un juego de mesa de lectura social. Cada partida invita a ver a las personas de una manera distinta. Un arrecife diferente en cada grupo."/>
+<meta name="description" content="Arrecife es un juego de lectura social para 3 a 7 jugadores. Cada ronda elegís en secreto tu equipo, un número y un signo, mientras observás qué eligen los demás. El grupo se divide en mayorías y minorías, y el daño lo genera el propio grupo. Perder vida no es quedar afuera — es cambiar de rol."/>
 <meta name="keywords" content="arrecife, juego de mesa, juego de lectura social, juego argentino, juego de cartas, juego para grupos, juego reflexivo"/>
 <meta name="author" content="Arrecife"/>
 <link rel="canonical" href="https://www.arrecifejuego.com.ar/"/>
@@ -18,14 +18,14 @@
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://www.arrecifejuego.com.ar/"/>
 <meta property="og:title" content="Arrecife — Juego de mesa de lectura social"/>
-<meta property="og:description" content="Cada partida invita a ver a las personas de una manera distinta. Un arrecife diferente en cada grupo."/>
+<meta property="og:description" content="Arrecife es un juego de lectura social. Interpretás a los demás y tratás de deducir cómo te interpretan a vos. Cada ronda el grupo se divide en mayorías y minorías, y el daño lo crean los propios jugadores con sus elecciones."/>
 <meta property="og:image" content="https://www.arrecifejuego.com.ar/og-image.jpg"/>
 <meta property="og:locale" content="es_AR"/>
 
 <!-- Twitter/X -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Arrecife — Juego de mesa de lectura social"/>
-<meta name="twitter:description" content="Cada partida invita a ver a las personas de una manera distinta. Un arrecife diferente en cada grupo."/>
+<meta property="twitter:description" content="Arrecife es un juego de lectura social. Interpretás a los demás y tratás de deducir cómo te interpretan a vos. Cada ronda el grupo se divide en mayorías y minorías, y el daño lo crean los propios jugadores con sus elecciones."/>
 <meta name="twitter:image" content="https://www.arrecifejuego.com.ar/og-image.jpg"/>
 
 <!-- Schema.org: juego de mesa -->
@@ -34,7 +34,7 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Arrecife",
-  "description": "Juego de mesa de lectura social. Cada partida invita a ver a las personas de una manera distinta. Un arrecife diferente en cada grupo.",
+  "description": "Arrecife es un juego de lectura social para 3 a 7 jugadores. La experiencia central es interpretar a los demás y deducir cómo te interpretan a vos. Cada ronda se eligen en secreto cartas de equipo, valor y signo, mientras se observa qué eligen los demás. El grupo se divide en mayorías y minorías según esas elecciones, y el daño lo genera el propio grupo. Cuando un jugador pierde toda su vida no abandona la partida: cambia de rol y pasa a influir en los que siguen jugando.",
   "category": "Juego de mesa",
   "brand": {
     "@type": "Brand",
@@ -264,6 +264,19 @@ body{font-family:'Tenor Sans',sans-serif;color:white;}
 <body>
 
 <canvas id="bg-canvas"></canvas>
+
+<!-- descripción para rastreadores e IA -->
+<div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+Arrecife es un juego de lectura social para 3 a 7 jugadores, creado en Argentina.
+La experiencia central es interpretar a los demás y tratar de deducir cómo los demás te interpretan a vos.
+Cada ronda los jugadores eligen en secreto una carta de equipo (Algas o Corales), una carta de valor (1 al 5) y una carta de signo (+ o −), y las revelan de a una mientras observan qué eligen los demás.
+Según esas elecciones el grupo se divide en Mayoría (el equipo con más jugadores) y Minoría (el equipo con menos). Ninguna posición es segura — depende de lo que haya elegido el grupo en esa ronda.
+El daño de la ronda lo genera el propio grupo con sus elecciones, y lo recibe uno de los dos equipos según el resultado.
+A medida que avanza la partida los jugadores van perdiendo vida hasta quedar eliminados.
+Pero perder vida no significa quedar afuera: el jugador eliminado se convierte en el Gusano, un rol que le permite seguir participando de otra manera — alterando resultados, generando desconfianza, e influyendo en los jugadores que siguen en pie.
+Esto cambia la experiencia de perder: en lugar de abandonar la mesa, el jugador pasa a jugar con ella.
+El juego incluye el Amuleto (ficha que rota y resuelve empates), eventos especiales como el Tornado y la Marea, y el Duelo Final cuando quedan los últimos dos jugadores.
+</div>
 <audio id="audio-bg" loop><source src="savfk-the-ocean.mp3" type="audio/mpeg"/></audio>
 <button class="btn-audio muted" id="btnAudio">♪</button>
 
