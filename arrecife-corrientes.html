@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Corrientes Cruzadas — Arrecife</title>
+  <meta name="description" content="Corrientes Cruzadas es un modo avanzado de Arrecife para jugadores experimentados. Las cartas de Valor se hunden y emergen hacia otras manos. El mar cambia las reglas de la adaptación."/>
+  <link rel="icon" type="image/x-icon" href="https://www.arrecifejuego.com.ar/Logo-Blanco.ico">
+  <link rel="canonical" href="https://www.arrecifejuego.com.ar/arrecife-corrientes.html"/>
+  <meta property="og:title" content="Corrientes Cruzadas — Arrecife"/>
+  <meta property="og:description" content="Un modo de juego para quienes ya conocen el mar. Las cartas de Valor se hunden y emergen en otras manos."/>
+  <meta property="og:image" content="https://www.arrecifejuego.com.ar/og-image.jpg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#02060a;
+      --cyan:rgba(100,210,230,1);
+      --text:rgba(255,255,255,0.75);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:100%;min-height:100%;background:var(--bg);color:white;overflow-x:hidden;}
+    body{font-family:'Tenor Sans',sans-serif;}
+
+    /* Canvas de fondo turbulento */
+    #cc-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+    /* Botón volver */
+    .btn-volver{
+      position:fixed;top:24px;left:24px;z-index:10;
+      background:transparent;border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.35);font-family:'Tenor Sans',sans-serif;
+      font-size:10px;letter-spacing:3px;padding:8px 16px;
+      cursor:pointer;text-decoration:none;text-transform:uppercase;
+      transition:all 0.3s;display:flex;align-items:center;gap:8px;
+    }
+    .btn-volver:hover{border-color:rgba(100,210,230,0.35);color:rgba(100,210,230,0.7);}
+
+    /* Contenido */
+    .main{
+      position:relative;z-index:2;
+      max-width:660px;margin:0 auto;
+      padding:120px 28px 100px;
+    }
+
+    /* Header */
+    .cc-eyebrow{
+      font-size:9px;letter-spacing:5px;text-transform:uppercase;
+      color:rgba(100,210,230,0.4);margin-bottom:20px;
+    }
+    .cc-titulo{
+      font-family:'Cormorant Garamond',serif;font-weight:300;
+      font-size:clamp(38px,7vw,58px);letter-spacing:3px;
+      line-height:1.1;margin-bottom:12px;
+      color:rgba(255,255,255,0.92);
+    }
+    .cc-subtitulo{
+      font-family:'Cormorant Garamond',serif;font-style:italic;
+      font-size:16px;line-height:1.8;
+      color:rgba(255,255,255,0.38);
+      margin-bottom:64px;letter-spacing:0.3px;
+    }
+
+    /* Separador */
+    .cc-sep{
+      width:32px;height:1px;
+      background:linear-gradient(90deg,rgba(100,210,230,0.5),transparent);
+      margin:48px 0;
+    }
+
+    /* Texto */
+    .cc-intro{
+      font-family:'Cormorant Garamond',serif;
+      font-size:18px;line-height:2;
+      color:rgba(255,255,255,0.7);
+      letter-spacing:0.3px;
+      margin-bottom:48px;
+    }
+    .cc-intro em{
+      font-style:italic;
+      color:rgba(100,210,230,0.75);
+    }
+
+    /* Reglas */
+    .cc-seccion-label{
+      font-size:9px;letter-spacing:4px;text-transform:uppercase;
+      color:rgba(100,210,230,0.35);margin-bottom:28px;
+    }
+
+    .cc-regla{
+      margin-bottom:40px;
+      padding-left:20px;
+      border-left:1px solid rgba(100,210,230,0.12);
+      position:relative;
+    }
+    .cc-regla::before{
+      content:'';
+      position:absolute;left:-3px;top:8px;
+      width:5px;height:5px;border-radius:50%;
+      background:rgba(100,210,230,0.35);
+    }
+    .cc-regla p{
+      font-family:'Cormorant Garamond',serif;
+      font-size:17px;line-height:1.95;
+      color:rgba(255,255,255,0.65);
+      letter-spacing:0.3px;
+    }
+    .cc-regla p strong{
+      color:rgba(255,255,255,0.88);
+      font-weight:400;
+    }
+    .cc-regla p em{
+      color:rgba(100,210,230,0.65);
+      font-style:italic;
+    }
+
+    /* Visual de carta hundiéndose */
+    .cc-carta-demo{
+      display:flex;align-items:center;gap:24px;
+      margin:28px 0 8px 20px;
+      flex-wrap:wrap;
+    }
+    .cc-carta{
+      width:42px;height:62px;border-radius:6px;
+      border:1px solid rgba(255,255,255,0.15);
+      background:rgba(255,255,255,0.04);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Cormorant Garamond',serif;font-style:italic;
+      font-size:16px;color:rgba(255,255,255,0.6);
+      transition:all 0.4s;flex-shrink:0;
+    }
+    .cc-carta.hundida{
+      transform:rotate(90deg);
+      border-color:rgba(100,210,230,0.2);
+      background:rgba(100,210,230,0.03);
+      color:rgba(100,210,230,0.35);
+    }
+    .cc-carta.emergiendo{
+      border-color:rgba(100,210,230,0.45);
+      background:rgba(100,210,230,0.06);
+      color:rgba(100,210,230,0.7);
+      box-shadow:0 0 12px rgba(100,210,230,0.1);
+    }
+    .cc-carta-flecha{
+      font-size:14px;color:rgba(255,255,255,0.2);flex-shrink:0;
+    }
+    .cc-carta-label{
+      font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+      color:rgba(255,255,255,0.25);margin-top:8px;text-align:center;
+    }
+    .cc-carta-grupo{
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+    }
+
+    /* Gusano */
+    .cc-gusano{
+      margin-top:56px;
+      padding:24px 26px;
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:2px;
+      background:rgba(255,255,255,0.015);
+    }
+    .cc-gusano-label{
+      font-size:9px;letter-spacing:4px;text-transform:uppercase;
+      color:rgba(255,255,255,0.25);margin-bottom:16px;
+    }
+    .cc-gusano p{
+      font-family:'Cormorant Garamond',serif;
+      font-size:16px;line-height:1.9;
+      color:rgba(255,255,255,0.55);letter-spacing:0.3px;
+    }
+
+    /* Cierre */
+    .cc-cierre{
+      margin-top:72px;
+      font-family:'Cormorant Garamond',serif;font-style:italic;
+      font-size:17px;line-height:2;
+      color:rgba(100,210,230,0.45);
+      padding:20px 24px;
+      border-left:1px solid rgba(100,210,230,0.15);
+      letter-spacing:0.5px;
+    }
+
+    /* Footer */
+    .arrecife-footer{
+      width:100%;padding:32px 24px 28px;
+      display:flex;flex-direction:column;align-items:center;gap:16px;
+      border-top:1px solid rgba(255,255,255,0.04);
+      margin-top:60px;position:relative;z-index:2;
+    }
+    .footer-redes{display:flex;align-items:center;gap:24px;}
+    .footer-link{
+      display:flex;align-items:center;gap:8px;
+      color:rgba(255,255,255,0.25);text-decoration:none;
+      font-family:'Tenor Sans',sans-serif;font-size:12px;
+      letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;
+    }
+    .footer-link:hover{color:rgba(100,210,230,0.7);}
+    .footer-link svg{width:16px;height:16px;fill:currentColor;}
+    .footer-sep{width:1px;height:14px;background:rgba(255,255,255,0.08);}
+    .footer-copy{font-family:'Cormorant Garamond',serif;font-size:11px;color:rgba(255,255,255,0.12);text-align:center;}
+
+    @media(max-width:600px){
+      .main{padding:100px 20px 80px;}
+      .cc-titulo{font-size:36px;}
+      .cc-intro{font-size:16px;}
+      .cc-regla p{font-size:16px;}
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="cc-canvas"></canvas>
+<a class="btn-volver" href="arrecife-comojugar.html"><span>←</span><span>Volver</span></a>
+
+<div class="main">
+
+  <div class="cc-eyebrow">Arrecife — Modo avanzado</div>
+  <h1 class="cc-titulo">Corrientes<br>Cruzadas</h1>
+  <p class="cc-subtitulo">Para quienes ya conocen el mar.<br>Para quienes necesitan más fricción.</p>
+
+  <p class="cc-intro">
+    Existe un clima en este juego reservado para quienes ya conocen el mar.<br>
+    Si el grupo aprendió a sobrevivir, si las corrientes ya no sorprenden y las partidas empezaron a sentirse previsibles, <em>el mar responde</em>.<br><br>
+    En Corrientes Cruzadas, las cartas de Valor siguen una corriente distinta.
+  </p>
+
+  <div class="cc-sep"></div>
+
+  <div class="cc-seccion-label">Las nuevas reglas</div>
+
+  <div class="cc-regla">
+    <p>Al finalizar cada ronda, la carta de Valor que jugó cada jugador se coloca <strong>girada 90°</strong> junto a él. Esa carta se considera <em>hundida</em> y no podrá utilizarse durante la siguiente ronda.</p>
+    <div class="cc-carta-demo">
+      <div class="cc-carta-grupo">
+        <div class="cc-carta">3</div>
+        <div class="cc-carta-label">jugada</div>
+      </div>
+      <div class="cc-carta-flecha">→</div>
+      <div class="cc-carta-grupo">
+        <div class="cc-carta hundida">3</div>
+        <div class="cc-carta-label">hundida</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc-regla">
+    <p>Mientras una carta permanece hundida, el jugador continúa la partida <strong>únicamente con las cartas de Valor que conserva en su mano</strong>. La carta hundida no está disponible esa ronda.</p>
+  </div>
+
+  <div class="cc-regla">
+    <p>Al finalizar la ronda siguiente, la carta de Valor recién jugada pasa a ocupar el lugar de la carta hundida. La carta que emerge <strong>no vuelve a su dueño</strong>: se incorpora a la mano del jugador ubicado a la <em>derecha</em>.</p>
+    <div class="cc-carta-demo">
+      <div class="cc-carta-grupo">
+        <div class="cc-carta hundida">3</div>
+        <div class="cc-carta-label">emerge</div>
+      </div>
+      <div class="cc-carta-flecha">→</div>
+      <div class="cc-carta-grupo">
+        <div class="cc-carta emergiendo">3</div>
+        <div class="cc-carta-label">mano derecha</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="cc-intro" style="margin-top:40px;margin-bottom:0;">
+    A medida que avanza la partida, las manos comienzan a cambiar.<br>
+    Algunas cartas desaparecen por un tiempo, otras llegan desde otro jugador.<br>
+    Cada decisión deja una huella sobre las rondas siguientes.<br><br>
+    Sobrevivir deja de depender de esperar el número indicado.<br>
+    <em>Depende de adaptarte a los números que el mar decidió dejar en tus manos.</em>
+  </p>
+
+  <div class="cc-sep"></div>
+
+  <div class="cc-gusano">
+    <div class="cc-gusano-label">El Gusano en Corrientes Cruzadas</div>
+    <p>En este modo, el Gusano puede utilizar <strong>Morder y Chocar en la misma ronda</strong>.<br>
+    Cada habilidad debe asignarse a un jugador distinto. Ambos efectos se resuelven normalmente al finalizar la ronda.</p>
+  </div>
+
+  <div class="cc-cierre">
+    El arrecife no cambia.<br>
+    Cambia lo que cada uno es capaz de leer en él.
+  </div>
+
+</div>
+
+<footer class="arrecife-footer">
+  <div class="footer-redes">
+    <a class="footer-link" href="https://www.instagram.com/arrecifejuego/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Instagram
+    </a>
+    <div class="footer-sep"></div>
+    <a class="footer-link" href="https://youtube.com/@arrecifejuego" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+      YouTube
+    </a>
+    <div class="footer-sep"></div>
+    <a class="footer-link" href="mailto:arrecifejuego@gmail.com">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Contacto
+    </a>
+  </div>
+  <p class="footer-copy">© 2026 Arrecife — Todos los derechos reservados.</p>
+</footer>
+
+<script>
+/* ── CANVAS TURBULENTO ── */
+(function(){
+  const canvas = document.getElementById('cc-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Partículas — más densas y rápidas que el index
+  const pts = [];
+  const N   = 90;
+
+  for(let i = 0; i < N; i++){
+    pts.push({
+      x:     Math.random() * 1000,
+      y:     Math.random() * 1000,
+      vx:    (Math.random() - 0.5) * 0.55,
+      vy:    -0.12 - Math.random() * 0.28,
+      r:     0.7 + Math.random() * 1.8,
+      hue:   175 + Math.random() * 35,
+      alpha: 0.06 + Math.random() * 0.14,
+      phase: Math.random() * Math.PI * 2,
+      wobble:Math.random() * 0.025 + 0.008,
+    });
+  }
+
+  // Corrientes — líneas diagonales que cruzan el fondo
+  const corrientes = [];
+  for(let i = 0; i < 6; i++){
+    corrientes.push({
+      x:     Math.random() * 1200,
+      y:     Math.random() * 800,
+      len:   120 + Math.random() * 200,
+      angle: -0.3 + Math.random() * 0.6,
+      speed: 0.3 + Math.random() * 0.5,
+      alpha: 0.02 + Math.random() * 0.04,
+    });
+  }
+
+  let t = 0;
+  function loop(){
+    requestAnimationFrame(loop);
+    t += 0.008;
+
+    // Fondo degradado muy oscuro
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#010509');
+    g.addColorStop(1, '#000304');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // Luz cenital tenue
+    const luz = ctx.createRadialGradient(W*.5, 0, 0, W*.5, H*.3, W*.6);
+    luz.addColorStop(0, 'rgba(30,80,110,0.05)');
+    luz.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = luz;
+    ctx.fillRect(0, 0, W, H);
+
+    // Corrientes diagonales
+    corrientes.forEach(c => {
+      c.x += c.speed;
+      if(c.x > W + c.len) c.x = -c.len;
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.angle);
+      const cg = ctx.createLinearGradient(0, 0, c.len, 0);
+      cg.addColorStop(0,   `rgba(100,210,230,0)`);
+      cg.addColorStop(0.4, `rgba(100,210,230,${c.alpha})`);
+      cg.addColorStop(1,   `rgba(100,210,230,0)`);
+      ctx.strokeStyle = cg;
+      ctx.lineWidth   = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(c.len, 0);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // Partículas
+    pts.forEach(p => {
+      p.x += p.vx + Math.sin(t * p.wobble * 5 + p.phase) * 0.4;
+      p.y += p.vy;
+      if(p.y < -10){ p.y = H + 10; p.x = Math.random() * W; }
+      if(p.x < -10) p.x = W + 10;
+      if(p.x > W + 10) p.x = -10;
+
+      const pulse = 0.6 + 0.4 * Math.sin(t * 1.5 + p.phase);
+      const a     = p.alpha * pulse;
+
+      const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      rg.addColorStop(0, `hsla(${p.hue},75%,70%,${a})`);
+      rg.addColorStop(1, `hsla(${p.hue},75%,70%,0)`);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = rg;
+      ctx.fill();
+    });
+
+    // Ruido: destellos rápidos ocasionales
+    if(Math.random() < 0.015){
+      const rx = Math.random() * W;
+      const ry = Math.random() * H;
+      const rr = 30 + Math.random() * 80;
+      const flash = ctx.createRadialGradient(rx, ry, 0, rx, ry, rr);
+      flash.addColorStop(0, 'rgba(100,210,230,0.04)');
+      flash.addColorStop(1, 'rgba(100,210,230,0)');
+      ctx.beginPath();
+      ctx.arc(rx, ry, rr, 0, Math.PI * 2);
+      ctx.fillStyle = flash;
+      ctx.fill();
+    }
+  }
+  loop();
+})();
+</script>
+</body>
+</html>
