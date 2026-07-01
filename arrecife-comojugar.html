@@ -301,6 +301,56 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
 </style>
 
 <style>
+.btn-corrientes{
+  display:block;width:100%;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:2px;
+  padding:28px 32px;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.4s;
+  margin-top:56px;
+  text-align:left;
+  position:relative;
+  overflow:hidden;
+}
+.btn-corrientes::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(100,210,230,0.03),transparent 60%);
+  opacity:0;transition:opacity 0.4s;
+}
+.btn-corrientes:hover{border-color:rgba(100,210,230,0.2);}
+.btn-corrientes:hover::before{opacity:1;}
+.btn-corrientes-eyebrow{
+  font-size:9px;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(100,210,230,0.35);margin-bottom:10px;
+  font-family:'Tenor Sans',sans-serif;
+  display:block;
+}
+.btn-corrientes-titulo{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(22px,3.5vw,28px);letter-spacing:2px;
+  color:rgba(255,255,255,0.7);
+  margin-bottom:10px;display:block;
+  transition:color 0.3s;
+}
+.btn-corrientes:hover .btn-corrientes-titulo{color:rgba(255,255,255,0.92);}
+.btn-corrientes-desc{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:15px;line-height:1.75;
+  color:rgba(255,255,255,0.3);
+  letter-spacing:0.3px;display:block;
+}
+.btn-corrientes-arrow{
+  position:absolute;right:28px;top:50%;transform:translateY(-50%);
+  font-size:18px;color:rgba(100,210,230,0.2);
+  transition:all 0.3s;
+}
+.btn-corrientes:hover .btn-corrientes-arrow{
+  color:rgba(100,210,230,0.5);
+  transform:translateY(-50%) translateX(4px);
+}
 .arrecife-footer{width:100%;padding:32px 24px 28px;display:flex;flex-direction:column;align-items:center;gap:16px;border-top:1px solid rgba(255,255,255,0.06);margin-top:60px;position:relative;z-index:10;}
 .footer-redes{display:flex;align-items:center;gap:24px;}
 .footer-link{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'Tenor Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;}
@@ -813,6 +863,14 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,6
           <span class="reg-highlight" style="margin-top:36px; display:block;">El arrecife no es el tablero.<br>Es la mesa, las personas, el silencio entre una ronda y la siguiente.</span>
           <img class="eze-reglamento" id="ezeReglamento" src="https://arrecifejuego.github.io/paginaweb/eze_linterna.png" alt="" onerror="this.style.display='none'"/>
         </div>
+
+        <a class="btn-corrientes" href="arrecife-corrientes.html">
+          <span class="btn-corrientes-eyebrow">Modo avanzado</span>
+          <span class="btn-corrientes-titulo">Corrientes Cruzadas</span>
+          <span class="btn-corrientes-desc">Un modo de juego para quienes ya conocen el mar.<br>Para los que necesitan más fricción en las corrientes.</span>
+          <span class="btn-corrientes-arrow">→</span>
+        </a>
+
       </div>
 
     </div>
