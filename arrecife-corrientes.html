@@ -119,26 +119,49 @@
       margin:28px 0 8px 20px;
       flex-wrap:wrap;
     }
-    .cc-carta{
-      width:42px;height:62px;border-radius:6px;
-      border:1px solid rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.04);
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Cormorant Garamond',serif;font-style:italic;
-      font-size:16px;color:rgba(255,255,255,0.6);
-      transition:all 0.4s;flex-shrink:0;
+    .cc-carta-img{
+      width:44px;height:auto;
+      border-radius:6px;
+      box-shadow:0 3px 12px rgba(0,0,0,0.5);
+      border:1px solid rgba(255,255,255,0.08);
+      display:block;
+      transition:all 0.4s;
+      flex-shrink:0;
     }
-    .cc-carta.hundida{
+    .cc-carta-img.hundida{
       transform:rotate(90deg);
-      border-color:rgba(100,210,230,0.2);
-      background:rgba(100,210,230,0.03);
-      color:rgba(100,210,230,0.35);
+      opacity:0.45;
+      filter:brightness(0.7) sepia(0.3);
+      box-shadow:0 0 8px rgba(100,210,230,0.15);
     }
-    .cc-carta.emergiendo{
-      border-color:rgba(100,210,230,0.45);
-      background:rgba(100,210,230,0.06);
-      color:rgba(100,210,230,0.7);
-      box-shadow:0 0 12px rgba(100,210,230,0.1);
+    .cc-carta-img.emergiendo{
+      box-shadow:0 0 16px rgba(100,210,230,0.3);
+      border-color:rgba(100,210,230,0.4);
+      filter:brightness(1.1);
+    }
+    /* Dorso CSS — igual al tutorial */
+    .cc-dorso{
+      width:44px;height:64px;border-radius:6px;
+      border:1px solid rgba(255,255,255,0.15);
+      background:linear-gradient(135deg,#1a2a35 0%,#0d1a22 100%);
+      position:relative;overflow:hidden;flex-shrink:0;
+      box-shadow:0 3px 12px rgba(0,0,0,0.5);
+    }
+    .cc-dorso::before{
+      content:'';position:absolute;inset:0;
+      background:repeating-linear-gradient(
+        -45deg,
+        transparent,transparent 4px,
+        rgba(100,210,230,0.04) 4px,rgba(100,210,230,0.04) 5px
+      );
+    }
+    .cc-dorso::after{
+      content:'';position:absolute;inset:3px;
+      border:1px solid rgba(100,210,230,0.08);border-radius:4px;
+    }
+    .cc-dorso.hundida{
+      transform:rotate(90deg);
+      opacity:0.45;
     }
     .cc-carta-flecha{
       font-size:14px;color:rgba(255,255,255,0.2);flex-shrink:0;
@@ -146,9 +169,56 @@
     .cc-carta-label{
       font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
       color:rgba(255,255,255,0.25);margin-top:8px;text-align:center;
+      white-space:nowrap;
     }
     .cc-carta-grupo{
       display:flex;flex-direction:column;align-items:center;gap:6px;
+    }
+    /* Diagrama jugadores eliminados */
+    .cc-diagrama{
+      margin:32px 0;
+      background:rgba(255,255,255,0.015);
+      border:1px solid rgba(255,255,255,0.05);
+      border-radius:8px;
+      padding:24px 20px;
+    }
+    .cc-diagrama-titulo{
+      font-size:9px;letter-spacing:3px;text-transform:uppercase;
+      color:rgba(100,210,230,0.3);margin-bottom:20px;
+      font-family:'Tenor Sans',sans-serif;
+    }
+    .cc-diagrama-fila{
+      display:flex;align-items:flex-start;justify-content:center;
+      gap:6px;flex-wrap:nowrap;overflow-x:auto;
+    }
+    .cc-jugador{
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      flex-shrink:0;
+    }
+    .cc-jugador-nombre{
+      font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+      color:rgba(255,255,255,0.25);
+      font-family:'Tenor Sans',sans-serif;
+    }
+    .cc-jugador-nombre.eliminado{
+      color:rgba(255,80,80,0.35);
+      text-decoration:line-through;
+    }
+    .cc-jugador-cartas{
+      display:flex;flex-direction:column;align-items:center;gap:4px;
+    }
+    .cc-jugador-label{
+      font-size:9px;letter-spacing:1px;text-transform:uppercase;
+      color:rgba(255,255,255,0.2);margin-top:2px;
+    }
+    .cc-diagrama-arrow{
+      font-size:16px;color:rgba(100,210,230,0.25);
+      margin-top:36px;flex-shrink:0;
+    }
+    .cc-diagrama-nota{
+      font-family:'Cormorant Garamond',serif;font-style:italic;
+      font-size:14px;color:rgba(255,255,255,0.3);
+      margin-top:16px;letter-spacing:0.3px;text-align:center;
     }
 
     /* Gusano */
@@ -221,50 +291,120 @@
   <p class="cc-intro">
     Existe un clima en este juego reservado para quienes ya conocen el mar.<br>
     Si el grupo aprendió a sobrevivir, si las corrientes ya no sorprenden y las partidas empezaron a sentirse previsibles, <em>el mar responde</em>.<br><br>
-    En Corrientes Cruzadas, las cartas de Valor siguen una corriente distinta.
+    Te invita a jugar Corrientes Cruzadas.
   </p>
 
   <div class="cc-sep"></div>
 
-  <div class="cc-seccion-label">Las nuevas reglas</div>
+  <div class="cc-seccion-label">Las cartas de Valor</div>
 
   <div class="cc-regla">
-    <p>Al finalizar cada ronda, la carta de Valor que jugó cada jugador se coloca <strong>girada 90°</strong> junto a él. Esa carta se considera <em>hundida</em> y no podrá utilizarse durante la siguiente ronda.</p>
+    <p>En este modo, la cantidad de cartas de Valor utilizada al comienzo de la partida <strong>no vuelve a modificarse</strong>.</p>
+    <p style="margin-top:12px;">Si la partida comenzó con los valores del 1 al 5, esos cinco valores permanecerán en juego durante toda la partida, <em>sin importar cuántos jugadores queden con vida</em>.</p>
+  </div>
+
+  <div class="cc-regla">
+    <p>Al finalizar cada ronda, la carta de Valor jugada por cada jugador se coloca <strong>girada 90°</strong> junto al jugador ubicado a su <em>derecha</em>.</p>
+    <p style="margin-top:12px;">Esa carta se considera <em>hundida</em> y no podrá utilizarse durante la siguiente ronda.</p>
     <div class="cc-carta-demo">
       <div class="cc-carta-grupo">
-        <div class="cc-carta">3</div>
+        <img class="cc-carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/>
         <div class="cc-carta-label">jugada</div>
       </div>
       <div class="cc-carta-flecha">→</div>
       <div class="cc-carta-grupo">
-        <div class="cc-carta hundida">3</div>
-        <div class="cc-carta-label">hundida</div>
+        <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3 hundida"/>
+        <div class="cc-carta-label">hundida (derecha)</div>
       </div>
     </div>
   </div>
 
   <div class="cc-regla">
-    <p>Mientras una carta permanece hundida, el jugador continúa la partida <strong>únicamente con las cartas de Valor que conserva en su mano</strong>. La carta hundida no está disponible esa ronda.</p>
+    <p>Mientras una carta permanece hundida, el jugador continúa la partida <strong>únicamente con las cartas de Valor que conserva en su mano</strong>.</p>
   </div>
 
   <div class="cc-regla">
-    <p>Al finalizar la ronda siguiente, la carta de Valor recién jugada pasa a ocupar el lugar de la carta hundida. La carta que emerge <strong>no vuelve a su dueño</strong>: se incorpora a la mano del jugador ubicado a la <em>derecha</em>.</p>
+    <p>Al finalizar la ronda siguiente, la carta de Valor recién jugada ocupa el lugar de la carta hundida. La carta que estaba hundida <em>emerge</em> y pasa a la mano del jugador ubicado a su <em>derecha</em>.</p>
     <div class="cc-carta-demo">
       <div class="cc-carta-grupo">
-        <div class="cc-carta hundida">3</div>
+        <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3 hundida"/>
         <div class="cc-carta-label">emerge</div>
       </div>
       <div class="cc-carta-flecha">→</div>
       <div class="cc-carta-grupo">
-        <div class="cc-carta emergiendo">3</div>
+        <img class="cc-carta-img emergiendo" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3 emergiendo"/>
         <div class="cc-carta-label">mano derecha</div>
       </div>
     </div>
+    <p style="margin-top:16px;">De esta manera, las cartas de Valor permanecen siempre en movimiento: una ronda se hunden, la siguiente emergen y continúan su recorrido por el mar.</p>
+  </div>
+
+  <div class="cc-sep"></div>
+
+  <div class="cc-seccion-label">Jugadores eliminados</div>
+
+  <div class="cc-regla">
+    <p>Cuando un jugador es eliminado, la carta hundida que permanece frente a él <strong>no abandona la partida</strong>.</p>
+  </div>
+
+  <div class="cc-regla">
+    <p>Si una carta emerge y su siguiente destino corresponde a un jugador eliminado, ocupa el lugar de la carta hundida que se encuentra frente a él, <em>empujándola nuevamente hacia la derecha</em>.</p>
+    <p style="margin-top:12px;">Este proceso continúa hasta que una carta alcanza a un jugador con vida, quien la incorpora inmediatamente a su mano.</p>
+
+    <div class="cc-diagrama">
+      <div class="cc-diagrama-titulo">Ejemplo — una carta viajando por el mar</div>
+      <div class="cc-diagrama-fila">
+
+        <div class="cc-jugador">
+          <div class="cc-jugador-nombre">J1 (vivo)</div>
+          <div class="cc-jugador-cartas">
+            <img class="cc-carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/>
+            <div class="cc-jugador-label">en mano</div>
+          </div>
+        </div>
+
+        <div class="cc-diagrama-arrow">→</div>
+
+        <div class="cc-jugador">
+          <div class="cc-jugador-nombre eliminado">J2 (eliminado)</div>
+          <div class="cc-jugador-cartas">
+            <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/numero_4.jpeg" alt="4 hundida"/>
+            <div class="cc-jugador-label">hundida</div>
+          </div>
+        </div>
+
+        <div class="cc-diagrama-arrow">→</div>
+
+        <div class="cc-jugador">
+          <div class="cc-jugador-nombre eliminado">J3 (eliminado)</div>
+          <div class="cc-jugador-cartas">
+            <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/numero_1.jpeg" alt="1 hundida"/>
+            <div class="cc-jugador-label">hundida</div>
+          </div>
+        </div>
+
+        <div class="cc-diagrama-arrow">→</div>
+
+        <div class="cc-jugador">
+          <div class="cc-jugador-nombre">J4 (vivo)</div>
+          <div class="cc-jugador-cartas">
+            <img class="cc-carta-img" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+            <div class="cc-jugador-label">recibe la carta</div>
+          </div>
+        </div>
+
+      </div>
+      <p class="cc-diagrama-nota">La carta emerge desde J2, pasa por J3 (también eliminado) y llega a J4 que sigue con vida.</p>
+    </div>
+  </div>
+
+  <div class="cc-regla">
+    <p>Así, las cartas hundidas permanecen siempre en la mesa y continúan recorriendo el mar, <em>incluso después de que un jugador haya desaparecido</em>.</p>
   </div>
 
   <p class="cc-intro" style="margin-top:40px;margin-bottom:0;">
     A medida que avanza la partida, las manos comienzan a cambiar.<br>
-    Algunas cartas desaparecen por un tiempo, otras llegan desde otro jugador.<br>
+    Algunas cartas desaparecen por un tiempo, otras llegan desde jugadores que ya no están.<br>
     Cada decisión deja una huella sobre las rondas siguientes.<br><br>
     Sobrevivir deja de depender de esperar el número indicado.<br>
     <em>Depende de adaptarte a los números que el mar decidió dejar en tus manos.</em>
@@ -276,6 +416,7 @@
     <div class="cc-gusano-label">El Gusano en Corrientes Cruzadas</div>
     <p>En este modo, el Gusano puede utilizar <strong>Morder y Chocar en la misma ronda</strong>.<br>
     Cada habilidad debe asignarse a un jugador distinto. Ambos efectos se resuelven normalmente al finalizar la ronda.</p>
+    <p style="margin-top:16px;">Cuando comienza el Duelo Final, el Gusano recupera el mismo kit de cartas con el que terminó su vida como jugador, <strong>conservando exactamente el estado de sus cartas de Valor y la carta hundida que tiene frente a él</strong>.</p>
   </div>
 
   <div class="cc-cierre">
