@@ -470,26 +470,26 @@
     ctx.fillStyle = luz;
     ctx.fillRect(0, 0, W, H);
 
-    // Corrientes — líneas ondulantes que viajan hacia la derecha
+    // Corrientes — la onda viaja hacia la derecha
     CORRIENTES.forEach(c => {
-      c.x += c.speed;
-      if(c.x > W + c.len) c.x = -c.len;
+      // offset aumenta → la onda se desplaza a la derecha
+      c.offset += c.speed * 2.2;
 
       ctx.beginPath();
-      ctx.moveTo(c.x, c.y);
-
-      // Trazar la corriente como curva ondulante
-      for(let x = c.x; x < c.x + c.len; x += 4){
-        const y = c.y + Math.sin((x + c.offset + t * 60) * c.freq) * c.amp
-                      + Math.sin((x + c.offset) * c.freq * 2.3 + t * 40) * (c.amp * 0.3);
-        ctx.lineTo(x, y);
+      let started = false;
+      for(let x = 0; x <= W; x += 3){
+        const y = c.y
+          + Math.sin((x - c.offset) * c.freq) * c.amp
+          + Math.sin((x - c.offset) * c.freq * 2.3 + 1.1) * (c.amp * 0.3);
+        if(!started){ ctx.moveTo(x, y); started = true; }
+        else ctx.lineTo(x, y);
       }
 
-      const cg = ctx.createLinearGradient(c.x, 0, c.x + c.len, 0);
-      cg.addColorStop(0,    `rgba(100,210,230,0)`);
-      cg.addColorStop(0.2,  `rgba(100,210,230,${c.alpha})`);
-      cg.addColorStop(0.8,  `rgba(100,210,230,${c.alpha})`);
-      cg.addColorStop(1,    `rgba(100,210,230,0)`);
+      const cg = ctx.createLinearGradient(0, 0, W, 0);
+      cg.addColorStop(0,   `rgba(100,210,230,0)`);
+      cg.addColorStop(0.08,`rgba(100,210,230,${c.alpha})`);
+      cg.addColorStop(0.92,`rgba(100,210,230,${c.alpha})`);
+      cg.addColorStop(1,   `rgba(100,210,230,0)`);
       ctx.strokeStyle = cg;
       ctx.lineWidth   = c.width;
       ctx.stroke();
