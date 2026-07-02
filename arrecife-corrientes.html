@@ -4,191 +4,163 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Corrientes Cruzadas — Arrecife</title>
-  <meta name="description" content="Corrientes Cruzadas es un modo avanzado de Arrecife para jugadores experimentados. Las cartas de Valor se hunden y emergen hacia otras manos. El mar cambia las reglas de la adaptación."/>
+  <meta name="description" content="Corrientes Cruzadas es un modo avanzado de Arrecife para jugadores experimentados. Las cartas de Valor se hunden y emergen en otras manos. El mar empieza a leerte a vos."/>
   <link rel="icon" type="image/x-icon" href="https://www.arrecifejuego.com.ar/Logo-Blanco.ico">
   <link rel="canonical" href="https://www.arrecifejuego.com.ar/arrecife-corrientes.html"/>
   <meta property="og:title" content="Corrientes Cruzadas — Arrecife"/>
-  <meta property="og:description" content="Un modo de juego para quienes ya conocen el mar. Las cartas de Valor se hunden y emergen en otras manos."/>
   <meta property="og:image" content="https://www.arrecifejuego.com.ar/og-image.jpg"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
   <style>
-    :root{
-      --bg:#02060a;
-      --cyan:rgba(100,210,230,1);
-      --text:rgba(255,255,255,0.75);
-    }
+    :root{ --bg:#01070c; --cyan:rgba(100,210,230,1); }
     *{margin:0;padding:0;box-sizing:border-box;}
-    html,body{width:100%;min-height:100%;background:var(--bg);color:white;overflow-x:hidden;}
+    html,body{width:100%;min-height:100%;background:transparent;color:white;overflow-x:hidden;}
     body{font-family:'Tenor Sans',sans-serif;}
 
-    /* Canvas de fondo turbulento */
+    /* Canvas corrientes */
     #cc-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-    /* Botón volver */
+    /* Volver */
     .btn-volver{
       position:fixed;top:24px;left:24px;z-index:10;
-      background:transparent;border:1px solid rgba(255,255,255,0.12);
-      color:rgba(255,255,255,0.35);font-family:'Tenor Sans',sans-serif;
+      background:transparent;border:1px solid rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.3);font-family:'Tenor Sans',sans-serif;
       font-size:10px;letter-spacing:3px;padding:8px 16px;
       cursor:pointer;text-decoration:none;text-transform:uppercase;
       transition:all 0.3s;display:flex;align-items:center;gap:8px;
     }
-    .btn-volver:hover{border-color:rgba(100,210,230,0.35);color:rgba(100,210,230,0.7);}
+    .btn-volver:hover{border-color:rgba(100,210,230,0.3);color:rgba(100,210,230,0.6);}
 
-    /* Contenido */
+    /* Layout */
     .main{
       position:relative;z-index:2;
-      max-width:660px;margin:0 auto;
-      padding:120px 28px 100px;
+      max-width:640px;margin:0 auto;
+      padding:130px 28px 120px;
     }
 
     /* Header */
     .cc-eyebrow{
       font-size:9px;letter-spacing:5px;text-transform:uppercase;
-      color:rgba(100,210,230,0.4);margin-bottom:20px;
+      color:rgba(100,210,230,0.3);margin-bottom:24px;display:block;
     }
     .cc-titulo{
       font-family:'Cormorant Garamond',serif;font-weight:300;
-      font-size:clamp(38px,7vw,58px);letter-spacing:3px;
-      line-height:1.1;margin-bottom:12px;
-      color:rgba(255,255,255,0.92);
-    }
-    .cc-subtitulo{
-      font-family:'Cormorant Garamond',serif;font-style:italic;
-      font-size:16px;line-height:1.8;
-      color:rgba(255,255,255,0.38);
-      margin-bottom:64px;letter-spacing:0.3px;
+      font-size:clamp(42px,8vw,64px);letter-spacing:2px;
+      line-height:1.0;margin-bottom:48px;
+      color:rgba(255,255,255,0.88);
     }
 
-    /* Separador */
-    .cc-sep{
-      width:32px;height:1px;
-      background:linear-gradient(90deg,rgba(100,210,230,0.5),transparent);
-      margin:48px 0;
-    }
-
-    /* Texto */
+    /* Intro — tono de adaptación */
     .cc-intro{
       font-family:'Cormorant Garamond',serif;
-      font-size:18px;line-height:2;
-      color:rgba(255,255,255,0.7);
+      font-size:18px;line-height:2.1;
+      color:rgba(255,255,255,0.55);
       letter-spacing:0.3px;
-      margin-bottom:48px;
+      margin-bottom:80px;
     }
     .cc-intro em{
       font-style:italic;
-      color:rgba(100,210,230,0.75);
+      color:rgba(100,210,230,0.65);
+    }
+    .cc-intro strong{
+      font-weight:400;
+      color:rgba(255,255,255,0.8);
+    }
+
+    /* Separador corriente */
+    .cc-sep{
+      width:100%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(100,210,230,0.15),transparent);
+      margin:64px 0;
+      position:relative;
+      overflow:visible;
+    }
+    .cc-sep::after{
+      content:'';
+      position:absolute;
+      top:-1px;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,transparent,rgba(100,210,230,0.06),transparent);
+      filter:blur(3px);
+    }
+
+    /* Label sección */
+    .cc-label{
+      font-size:9px;letter-spacing:5px;text-transform:uppercase;
+      color:rgba(255,255,255,0.18);margin-bottom:32px;display:block;
     }
 
     /* Reglas */
-    .cc-seccion-label{
-      font-size:9px;letter-spacing:4px;text-transform:uppercase;
-      color:rgba(100,210,230,0.35);margin-bottom:28px;
+    .cc-bloque{
+      margin-bottom:52px;
     }
-
-    .cc-regla{
-      margin-bottom:40px;
-      padding-left:20px;
-      border-left:1px solid rgba(100,210,230,0.12);
-      position:relative;
-    }
-    .cc-regla::before{
-      content:'';
-      position:absolute;left:-3px;top:8px;
-      width:5px;height:5px;border-radius:50%;
-      background:rgba(100,210,230,0.35);
-    }
-    .cc-regla p{
+    .cc-bloque p{
       font-family:'Cormorant Garamond',serif;
-      font-size:17px;line-height:1.95;
-      color:rgba(255,255,255,0.65);
+      font-size:17px;line-height:2;
+      color:rgba(255,255,255,0.6);
       letter-spacing:0.3px;
+      margin-bottom:16px;
     }
-    .cc-regla p strong{
-      color:rgba(255,255,255,0.88);
-      font-weight:400;
+    .cc-bloque p:last-child{margin-bottom:0;}
+    .cc-bloque p strong{
+      font-weight:400;color:rgba(255,255,255,0.85);
     }
-    .cc-regla p em{
-      color:rgba(100,210,230,0.65);
-      font-style:italic;
+    .cc-bloque p em{
+      font-style:italic;color:rgba(100,210,230,0.6);
     }
 
-    /* Visual de carta hundiéndose */
-    .cc-carta-demo{
-      display:flex;align-items:center;gap:24px;
-      margin:28px 0 8px 20px;
-      flex-wrap:wrap;
+    /* Demo carta */
+    .cc-demo{
+      display:flex;align-items:center;gap:20px;
+      margin:28px 0;flex-wrap:wrap;
     }
-    .cc-carta-img{
-      width:44px;height:auto;
+    .cc-demo-grupo{
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+    }
+    .cc-demo-label{
+      font-size:9px;letter-spacing:2px;text-transform:uppercase;
+      color:rgba(255,255,255,0.2);
+    }
+    .cc-demo-arrow{
+      font-size:13px;color:rgba(100,210,230,0.2);flex-shrink:0;
+      margin-top:-16px;
+    }
+    .carta-img{
+      width:46px;height:auto;
       border-radius:6px;
-      box-shadow:0 3px 12px rgba(0,0,0,0.5);
+      box-shadow:0 4px 16px rgba(0,0,0,0.6);
       border:1px solid rgba(255,255,255,0.08);
       display:block;
-      transition:all 0.4s;
-      flex-shrink:0;
     }
-    .cc-carta-img.hundida{
-      opacity:0.55;
-      filter:brightness(0.75);
-      box-shadow:0 0 8px rgba(100,210,230,0.12);
+    .carta-img.hundida{
+      opacity:0.5;
+      filter:brightness(0.7);
     }
-    .cc-carta-img.emergiendo{
-      box-shadow:0 0 16px rgba(100,210,230,0.3);
-      border-color:rgba(100,210,230,0.4);
-      filter:brightness(1.1);
+    .carta-img.emergiendo{
+      box-shadow:0 0 20px rgba(100,210,230,0.25);
+      border-color:rgba(100,210,230,0.35);
     }
-    /* Dorso CSS — igual al tutorial */
-    .cc-dorso{
-      width:44px;height:64px;border-radius:6px;
-      border:1px solid rgba(255,255,255,0.15);
-      background:linear-gradient(135deg,#1a2a35 0%,#0d1a22 100%);
-      position:relative;overflow:hidden;flex-shrink:0;
-      box-shadow:0 3px 12px rgba(0,0,0,0.5);
-    }
-    .cc-dorso::before{
-      content:'';position:absolute;inset:0;
-      background:repeating-linear-gradient(
-        -45deg,
-        transparent,transparent 4px,
-        rgba(100,210,230,0.04) 4px,rgba(100,210,230,0.04) 5px
-      );
-    }
-    .cc-dorso::after{
-      content:'';position:absolute;inset:3px;
-      border:1px solid rgba(100,210,230,0.08);border-radius:4px;
-    }
-    .cc-dorso.hundida{
-      transform:rotate(90deg);
-      opacity:0.45;
-    }
-    .cc-carta-flecha{
-      font-size:14px;color:rgba(255,255,255,0.2);flex-shrink:0;
-    }
-    .cc-carta-label{
-      font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
-      color:rgba(255,255,255,0.25);margin-top:8px;text-align:center;
-      white-space:nowrap;
-    }
-    .cc-carta-grupo{
-      display:flex;flex-direction:column;align-items:center;gap:6px;
-    }
-    /* Diagrama jugadores eliminados */
+
+    /* Diagrama eliminados */
     .cc-diagrama{
-      margin:32px 0;
-      background:rgba(255,255,255,0.015);
-      border:1px solid rgba(255,255,255,0.05);
-      border-radius:8px;
-      padding:24px 20px;
+      margin:36px 0;
+      padding:28px 24px 24px;
+      border:1px solid rgba(255,255,255,0.04);
+      border-radius:4px;
+      background:rgba(255,255,255,0.01);
+      position:relative;
+      overflow:hidden;
     }
-    .cc-diagrama-titulo{
+    .cc-diagrama::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(100,210,230,0.02),transparent 60%);
+      pointer-events:none;
+    }
+    .cc-diagrama-eyebrow{
       font-size:9px;letter-spacing:3px;text-transform:uppercase;
-      color:rgba(100,210,230,0.3);margin-bottom:20px;
-      font-family:'Tenor Sans',sans-serif;
+      color:rgba(100,210,230,0.25);margin-bottom:24px;display:block;
     }
     .cc-diagrama-fila{
       display:flex;align-items:flex-start;justify-content:center;
-      gap:6px;flex-wrap:nowrap;overflow-x:auto;
+      gap:8px;overflow-x:auto;padding-bottom:4px;
     }
     .cc-jugador{
       display:flex;flex-direction:column;align-items:center;gap:8px;
@@ -196,83 +168,86 @@
     }
     .cc-jugador-nombre{
       font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-      color:rgba(255,255,255,0.25);
-      font-family:'Tenor Sans',sans-serif;
+      color:rgba(255,255,255,0.22);font-family:'Tenor Sans',sans-serif;
     }
     .cc-jugador-nombre.eliminado{
-      color:rgba(255,80,80,0.35);
-      text-decoration:line-through;
+      color:rgba(255,70,70,0.3);text-decoration:line-through;
     }
-    .cc-jugador-cartas{
-      display:flex;flex-direction:column;align-items:center;gap:4px;
-    }
-    .cc-jugador-label{
+    .cc-jugador-sublabel{
       font-size:9px;letter-spacing:1px;text-transform:uppercase;
-      color:rgba(255,255,255,0.2);margin-top:2px;
+      color:rgba(255,255,255,0.15);
     }
     .cc-diagrama-arrow{
-      font-size:16px;color:rgba(100,210,230,0.25);
-      margin-top:36px;flex-shrink:0;
+      font-size:14px;color:rgba(100,210,230,0.2);
+      margin-top:30px;flex-shrink:0;
     }
     .cc-diagrama-nota{
       font-family:'Cormorant Garamond',serif;font-style:italic;
-      font-size:14px;color:rgba(255,255,255,0.3);
-      margin-top:16px;letter-spacing:0.3px;text-align:center;
+      font-size:14px;color:rgba(255,255,255,0.25);
+      margin-top:20px;text-align:center;letter-spacing:0.3px;
     }
 
     /* Gusano */
     .cc-gusano{
-      margin-top:56px;
-      padding:24px 26px;
-      border:1px solid rgba(255,255,255,0.06);
+      margin-top:64px;
+      padding:28px 28px 26px;
+      border:1px solid rgba(255,255,255,0.05);
       border-radius:2px;
-      background:rgba(255,255,255,0.015);
+      position:relative;
+    }
+    .cc-gusano::before{
+      content:'';position:absolute;
+      left:0;top:20%;bottom:20%;width:1px;
+      background:linear-gradient(to bottom,transparent,rgba(100,210,230,0.2),transparent);
     }
     .cc-gusano-label{
       font-size:9px;letter-spacing:4px;text-transform:uppercase;
-      color:rgba(255,255,255,0.25);margin-bottom:16px;
+      color:rgba(255,255,255,0.18);margin-bottom:20px;display:block;
     }
     .cc-gusano p{
       font-family:'Cormorant Garamond',serif;
-      font-size:16px;line-height:1.9;
-      color:rgba(255,255,255,0.55);letter-spacing:0.3px;
+      font-size:16px;line-height:1.95;
+      color:rgba(255,255,255,0.5);letter-spacing:0.3px;
+      margin-bottom:14px;
     }
+    .cc-gusano p:last-child{margin-bottom:0;}
+    .cc-gusano strong{font-weight:400;color:rgba(255,255,255,0.75);}
 
     /* Cierre */
     .cc-cierre{
-      margin-top:72px;
+      margin-top:96px;
       font-family:'Cormorant Garamond',serif;font-style:italic;
-      font-size:17px;line-height:2;
-      color:rgba(100,210,230,0.45);
-      padding:20px 24px;
-      border-left:1px solid rgba(100,210,230,0.15);
+      font-size:18px;line-height:2;
+      color:rgba(100,210,230,0.35);
       letter-spacing:0.5px;
+      text-align:center;
     }
 
     /* Footer */
     .arrecife-footer{
-      width:100%;padding:32px 24px 28px;
-      display:flex;flex-direction:column;align-items:center;gap:16px;
+      width:100%;padding:28px 24px 24px;
+      display:flex;flex-direction:column;align-items:center;gap:14px;
       border-top:1px solid rgba(255,255,255,0.04);
       margin-top:60px;position:relative;z-index:2;
     }
-    .footer-redes{display:flex;align-items:center;gap:24px;}
+    .footer-redes{display:flex;align-items:center;gap:22px;}
     .footer-link{
-      display:flex;align-items:center;gap:8px;
-      color:rgba(255,255,255,0.25);text-decoration:none;
-      font-family:'Tenor Sans',sans-serif;font-size:12px;
+      display:flex;align-items:center;gap:7px;
+      color:rgba(255,255,255,0.2);text-decoration:none;
+      font-family:'Tenor Sans',sans-serif;font-size:11px;
       letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;
     }
-    .footer-link:hover{color:rgba(100,210,230,0.7);}
-    .footer-link svg{width:16px;height:16px;fill:currentColor;}
-    .footer-sep{width:1px;height:14px;background:rgba(255,255,255,0.08);}
-    .footer-copy{font-family:'Cormorant Garamond',serif;font-size:11px;color:rgba(255,255,255,0.12);text-align:center;}
+    .footer-link:hover{color:rgba(100,210,230,0.6);}
+    .footer-link svg{width:15px;height:15px;fill:currentColor;}
+    .footer-sep{width:1px;height:13px;background:rgba(255,255,255,0.07);}
+    .footer-copy{font-family:'Cormorant Garamond',serif;font-size:11px;color:rgba(255,255,255,0.1);text-align:center;}
 
     @media(max-width:600px){
       .main{padding:100px 20px 80px;}
-      .cc-titulo{font-size:36px;}
-      .cc-intro{font-size:16px;}
-      .cc-regla p{font-size:16px;}
+      .cc-titulo{font-size:38px;}
+      .cc-intro{font-size:16px;line-height:1.95;}
+      .cc-bloque p{font-size:16px;}
+      .cc-diagrama-fila{gap:5px;}
     }
   </style>
 </head>
@@ -283,144 +258,125 @@
 
 <div class="main">
 
-  <div class="cc-eyebrow">Arrecife — Modo avanzado</div>
+  <span class="cc-eyebrow">Arrecife — Modo avanzado</span>
   <h1 class="cc-titulo">Corrientes<br>Cruzadas</h1>
-  <p class="cc-subtitulo">Para quienes ya conocen el mar.<br>Para quienes necesitan más fricción.</p>
 
-  <p class="cc-intro">
-    Existe un clima en este juego reservado para quienes ya conocen el mar.<br>
-    Si el grupo aprendió a sobrevivir, si las corrientes ya no sorprenden y las partidas empezaron a sentirse previsibles, <em>el mar responde</em>.<br><br>
-    Te invita a jugar Corrientes Cruzadas.
-  </p>
+  <div class="cc-intro">
+    <p>Cuando aprendés Arrecife, los números son tuyos.<br>
+    Siempre sabés con qué contás.<br>
+    Podés leer al grupo, anticiparte, decidir cuándo usar cada valor.</p>
+
+    <p style="margin-top:28px;">Con el tiempo, esa certeza también se aprende.<br>
+    <em>Y el mar lo sabe.</em></p>
+
+    <p style="margin-top:28px;">Corrientes Cruzadas no hace más complejo al juego.<br>
+    <strong>Le quita al jugador una única certeza:</strong><br>
+    que siempre podrá elegir con las cartas que esperaba tener.</p>
+
+    <p style="margin-top:28px;">Y alcanza con perder esa certeza<br>
+    para que todo el juego vuelva a sentirse desconocido.</p>
+  </div>
 
   <div class="cc-sep"></div>
 
-  <div class="cc-seccion-label">Las cartas de Valor</div>
+  <span class="cc-label">Las cartas de Valor</span>
 
-  <div class="cc-regla">
-    <p>En este modo, la cantidad de cartas de Valor utilizada al comienzo de la partida <strong>no vuelve a modificarse</strong>.</p>
-    <p style="margin-top:12px;">Si la partida comenzó con los valores del 1 al 5, esos cinco valores permanecerán en juego durante toda la partida, <em>sin importar cuántos jugadores queden con vida</em>.</p>
+  <div class="cc-bloque">
+    <p>La cantidad de cartas de Valor utilizada al comienzo de la partida <strong>no vuelve a modificarse</strong>. Si la partida comenzó con los valores del 1 al 5, esos cinco valores permanecen en juego durante toda la partida, sin importar cuántos jugadores queden con vida.</p>
   </div>
 
-  <div class="cc-regla">
-    <p>Al finalizar cada ronda, la carta de Valor jugada por cada jugador se coloca <strong>girada 90°</strong> junto al jugador ubicado a su <em>derecha</em>.</p>
-    <p style="margin-top:12px;">Esa carta se considera <em>hundida</em> y no podrá utilizarse durante la siguiente ronda.</p>
-    <div class="cc-carta-demo">
-      <div class="cc-carta-grupo">
-        <img class="cc-carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/>
-        <div class="cc-carta-label">jugada</div>
+  <div class="cc-bloque">
+    <p>Al finalizar cada ronda, la carta de Valor jugada por cada jugador se coloca junto al jugador ubicado a su derecha. Esa carta se considera <em>hundida</em> y no podrá utilizarse durante la siguiente ronda.</p>
+    <div class="cc-demo">
+      <div class="cc-demo-grupo">
+        <img class="carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/>
+        <span class="cc-demo-label">jugada</span>
       </div>
-      <div class="cc-carta-flecha">→</div>
-      <div class="cc-carta-grupo">
-        <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-        <div class="cc-carta-label">hundida (derecha)</div>
+      <div class="cc-demo-arrow">→</div>
+      <div class="cc-demo-grupo">
+        <img class="carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
+        <span class="cc-demo-label">hundida (derecha)</span>
       </div>
     </div>
-  </div>
-
-  <div class="cc-regla">
     <p>Mientras una carta permanece hundida, el jugador continúa la partida <strong>únicamente con las cartas de Valor que conserva en su mano</strong>.</p>
   </div>
 
-  <div class="cc-regla">
-    <p>Al finalizar la ronda siguiente, la carta de Valor recién jugada ocupa el lugar de la carta hundida. La carta que estaba hundida <em>emerge</em> y pasa a la mano del jugador ubicado a su <em>derecha</em>.</p>
-    <div class="cc-carta-demo">
-      <div class="cc-carta-grupo">
-        <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-        <div class="cc-carta-label">emerge</div>
+  <div class="cc-bloque">
+    <p>Al finalizar la ronda siguiente, la carta de Valor recién jugada ocupa el lugar de la carta hundida. La carta que estaba hundida <em>emerge</em> y pasa a la mano del jugador ubicado a su derecha.</p>
+    <div class="cc-demo">
+      <div class="cc-demo-grupo">
+        <img class="carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
+        <span class="cc-demo-label">emerge</span>
       </div>
-      <div class="cc-carta-flecha">→</div>
-      <div class="cc-carta-grupo">
-        <img class="cc-carta-img emergiendo" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3 emergiendo"/>
-        <div class="cc-carta-label">mano derecha</div>
+      <div class="cc-demo-arrow">→</div>
+      <div class="cc-demo-grupo">
+        <img class="carta-img emergiendo" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="emerge"/>
+        <span class="cc-demo-label">mano derecha</span>
       </div>
     </div>
-    <p style="margin-top:16px;">De esta manera, las cartas de Valor permanecen siempre en movimiento: una ronda se hunden, la siguiente emergen y continúan su recorrido por el mar.</p>
+    <p>De esta manera, las cartas de Valor permanecen siempre en movimiento: una ronda se hunden, la siguiente emergen y continúan su recorrido por el mar.</p>
   </div>
 
   <div class="cc-sep"></div>
 
-  <div class="cc-seccion-label">Jugadores eliminados</div>
+  <span class="cc-label">Jugadores eliminados</span>
 
-  <div class="cc-regla">
+  <div class="cc-bloque">
     <p>Cuando un jugador es eliminado, la carta hundida que permanece frente a él <strong>no abandona la partida</strong>.</p>
-  </div>
-
-  <div class="cc-regla">
-    <p>Si una carta emerge y su siguiente destino corresponde a un jugador eliminado, ocupa el lugar de la carta hundida que se encuentra frente a él, <em>empujándola nuevamente hacia la derecha</em>.</p>
-    <p style="margin-top:12px;">Este proceso continúa hasta que una carta alcanza a un jugador con vida, quien la incorpora inmediatamente a su mano.</p>
+    <p>Si una carta emerge y su siguiente destino corresponde a un jugador eliminado, ocupa el lugar de la carta hundida que se encuentra frente a él, <em>empujándola nuevamente hacia la derecha</em>. Este proceso continúa hasta que una carta alcanza a un jugador con vida, quien la incorpora inmediatamente a su mano.</p>
+    <p>Las cartas hundidas permanecen siempre en la mesa y continúan recorriendo el mar, <em>incluso después de que un jugador haya desaparecido</em>.</p>
 
     <div class="cc-diagrama">
-      <div class="cc-diagrama-titulo">Ejemplo — una carta viajando por el mar</div>
+      <span class="cc-diagrama-eyebrow">Ejemplo — una carta viajando por el mar</span>
       <div class="cc-diagrama-fila">
-
         <div class="cc-jugador">
-          <div class="cc-jugador-nombre">J1 (vivo)</div>
-          <div class="cc-jugador-cartas">
-            <img class="cc-carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/>
-            <div class="cc-jugador-label">en mano</div>
-          </div>
+          <span class="cc-jugador-nombre">J1 (vivo)</span>
+          <img class="carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_2.jpeg" alt="2"/>
+          <span class="cc-jugador-sublabel">en mano</span>
         </div>
-
         <div class="cc-diagrama-arrow">→</div>
-
         <div class="cc-jugador">
-          <div class="cc-jugador-nombre eliminado">J2 (eliminado)</div>
-          <div class="cc-jugador-cartas">
-            <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-            <div class="cc-jugador-label">hundida</div>
-          </div>
+          <span class="cc-jugador-nombre eliminado">J2 (eliminado)</span>
+          <img class="carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
+          <span class="cc-jugador-sublabel">hundida</span>
         </div>
-
         <div class="cc-diagrama-arrow">→</div>
-
         <div class="cc-jugador">
-          <div class="cc-jugador-nombre eliminado">J3 (eliminado)</div>
-          <div class="cc-jugador-cartas">
-            <img class="cc-carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-            <div class="cc-jugador-label">hundida</div>
-          </div>
+          <span class="cc-jugador-nombre eliminado">J3 (eliminado)</span>
+          <img class="carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
+          <span class="cc-jugador-sublabel">hundida</span>
         </div>
-
         <div class="cc-diagrama-arrow">→</div>
-
         <div class="cc-jugador">
-          <div class="cc-jugador-nombre">J4 (vivo)</div>
-          <div class="cc-jugador-cartas">
-            <img class="cc-carta-img" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-            <div class="cc-jugador-label">recibe la carta</div>
-          </div>
+          <span class="cc-jugador-nombre">J4 (vivo)</span>
+          <img class="carta-img emergiendo" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="recibe"/>
+          <span class="cc-jugador-sublabel">recibe la carta</span>
         </div>
-
       </div>
-      <p class="cc-diagrama-nota">La carta emerge desde J2, pasa por J3 (también eliminado) y llega a J4 que sigue con vida.</p>
+      <p class="cc-diagrama-nota">La carta emerge desde J2, pasa por J3 y llega a J4 que sigue con vida.</p>
     </div>
   </div>
 
-  <div class="cc-regla">
-    <p>Así, las cartas hundidas permanecen siempre en la mesa y continúan recorriendo el mar, <em>incluso después de que un jugador haya desaparecido</em>.</p>
+  <div class="cc-bloque">
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,255,255,0.45);line-height:2;">
+      A medida que avanza la partida, las manos comienzan a cambiar.<br>
+      Algunas cartas desaparecen por un tiempo.<br>
+      Otras llegan desde jugadores que ya no están.<br>
+      Cada decisión deja una huella sobre las rondas siguientes.<br><br>
+      Sobrevivir deja de depender de esperar el número indicado.<br>
+      <em style="color:rgba(100,210,230,0.5);">Depende de adaptarte a los números que el mar decidió dejar en tus manos.</em>
+    </p>
   </div>
 
-  <p class="cc-intro" style="margin-top:40px;margin-bottom:0;">
-    A medida que avanza la partida, las manos comienzan a cambiar.<br>
-    Algunas cartas desaparecen por un tiempo, otras llegan desde jugadores que ya no están.<br>
-    Cada decisión deja una huella sobre las rondas siguientes.<br><br>
-    Sobrevivir deja de depender de esperar el número indicado.<br>
-    <em>Depende de adaptarte a los números que el mar decidió dejar en tus manos.</em>
-  </p>
-
-  <div class="cc-sep"></div>
-
   <div class="cc-gusano">
-    <div class="cc-gusano-label">El Gusano en Corrientes Cruzadas</div>
-    <p>En este modo, el Gusano puede utilizar <strong>Morder y Chocar en la misma ronda</strong>.<br>
-    Cada habilidad debe asignarse a un jugador distinto. Ambos efectos se resuelven normalmente al finalizar la ronda.</p>
-    <p style="margin-top:16px;">Cuando comienza el Duelo Final, el Gusano recupera el mismo kit de cartas con el que terminó su vida como jugador, <strong>conservando exactamente el estado de sus cartas de Valor y la carta hundida que tiene frente a él</strong>.</p>
+    <span class="cc-gusano-label">El Gusano en Corrientes Cruzadas</span>
+    <p>En este modo, el Gusano puede utilizar <strong>Morder y Chocar en la misma ronda</strong>. Cada habilidad debe asignarse a un jugador distinto. Ambos efectos se resuelven normalmente al finalizar la ronda.</p>
+    <p>Cuando comienza el Duelo Final, el Gusano recupera el mismo kit de cartas con el que terminó su vida como jugador, <strong>conservando exactamente el estado de sus cartas de Valor y la carta hundida que tiene frente a él</strong>.</p>
   </div>
 
   <div class="cc-cierre">
-    El arrecife no cambia.<br>
-    Cambia lo que cada uno es capaz de leer en él.
+    Después de aprender a leer a los demás...<br>
+    el mar empieza a leerte a vos.
   </div>
 
 </div>
@@ -446,7 +402,7 @@
 </footer>
 
 <script>
-/* ── CANVAS TURBULENTO ── */
+/* ── CORRIENTES BAJO LA SUPERFICIE ── */
 (function(){
   const canvas = document.getElementById('cc-canvas');
   const ctx    = canvas.getContext('2d');
@@ -459,110 +415,106 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // Partículas — más densas y rápidas que el index
-  const pts = [];
-  const N   = 90;
-
-  for(let i = 0; i < N; i++){
-    pts.push({
-      x:     Math.random() * 1000,
-      y:     Math.random() * 1000,
-      vx:    (Math.random() - 0.5) * 0.55,
-      vy:    -0.12 - Math.random() * 0.28,
-      r:     0.7 + Math.random() * 1.8,
-      hue:   175 + Math.random() * 35,
-      alpha: 0.06 + Math.random() * 0.14,
-      phase: Math.random() * Math.PI * 2,
-      wobble:Math.random() * 0.025 + 0.008,
+  // Corrientes — líneas ondulantes horizontales que viajan de izquierda a derecha
+  const CORRIENTES = [];
+  const NC = 14;
+  for(let i = 0; i < NC; i++){
+    CORRIENTES.push({
+      y:      H * (0.05 + (i / NC) * 0.92),
+      offset: Math.random() * 1000,
+      speed:  0.18 + Math.random() * 0.28,
+      amp:    8 + Math.random() * 18,
+      freq:   0.003 + Math.random() * 0.004,
+      alpha:  0.018 + Math.random() * 0.032,
+      width:  0.6 + Math.random() * 0.8,
+      len:    W * (0.3 + Math.random() * 0.5),
+      x:      Math.random() * W,
     });
   }
 
-  // Corrientes — líneas diagonales que cruzan el fondo
-  const corrientes = [];
-  for(let i = 0; i < 6; i++){
-    corrientes.push({
+  // Partículas — muy sutiles, siguen las corrientes
+  const PTS = [];
+  const NP  = 45;
+  for(let i = 0; i < NP; i++){
+    PTS.push({
       x:     Math.random() * 1200,
       y:     Math.random() * 800,
-      len:   120 + Math.random() * 200,
-      angle: -0.3 + Math.random() * 0.6,
-      speed: 0.3 + Math.random() * 0.5,
-      alpha: 0.02 + Math.random() * 0.04,
+      vx:    0.08 + Math.random() * 0.2,
+      vy:    (Math.random() - 0.5) * 0.06,
+      r:     0.6 + Math.random() * 1.2,
+      alpha: 0.04 + Math.random() * 0.08,
+      phase: Math.random() * Math.PI * 2,
+      freq:  0.005 + Math.random() * 0.008,
+      hue:   180 + Math.random() * 30,
     });
   }
 
   let t = 0;
+
   function loop(){
     requestAnimationFrame(loop);
-    t += 0.008;
+    t += 0.006;
 
-    // Fondo degradado muy oscuro
+    // Fondo muy oscuro — profundidad
     const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#010509');
-    g.addColorStop(1, '#000304');
+    g.addColorStop(0,   '#010508');
+    g.addColorStop(0.5, '#010609');
+    g.addColorStop(1,   '#000305');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    // Luz cenital tenue
-    const luz = ctx.createRadialGradient(W*.5, 0, 0, W*.5, H*.3, W*.6);
-    luz.addColorStop(0, 'rgba(30,80,110,0.05)');
+    // Luz muy tenue desde arriba — como luz filtrada
+    const luz = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, H * 0.4, W * 0.55);
+    luz.addColorStop(0, 'rgba(20,60,90,0.04)');
     luz.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = luz;
     ctx.fillRect(0, 0, W, H);
 
-    // Corrientes diagonales
-    corrientes.forEach(c => {
+    // Corrientes — líneas ondulantes que viajan hacia la derecha
+    CORRIENTES.forEach(c => {
       c.x += c.speed;
       if(c.x > W + c.len) c.x = -c.len;
-      ctx.save();
-      ctx.translate(c.x, c.y);
-      ctx.rotate(c.angle);
-      const cg = ctx.createLinearGradient(0, 0, c.len, 0);
-      cg.addColorStop(0,   `rgba(100,210,230,0)`);
-      cg.addColorStop(0.4, `rgba(100,210,230,${c.alpha})`);
-      cg.addColorStop(1,   `rgba(100,210,230,0)`);
-      ctx.strokeStyle = cg;
-      ctx.lineWidth   = 0.8;
+
       ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(c.len, 0);
+      ctx.moveTo(c.x, c.y);
+
+      // Trazar la corriente como curva ondulante
+      for(let x = c.x; x < c.x + c.len; x += 4){
+        const y = c.y + Math.sin((x + c.offset + t * 60) * c.freq) * c.amp
+                      + Math.sin((x + c.offset) * c.freq * 2.3 + t * 40) * (c.amp * 0.3);
+        ctx.lineTo(x, y);
+      }
+
+      const cg = ctx.createLinearGradient(c.x, 0, c.x + c.len, 0);
+      cg.addColorStop(0,    `rgba(100,210,230,0)`);
+      cg.addColorStop(0.2,  `rgba(100,210,230,${c.alpha})`);
+      cg.addColorStop(0.8,  `rgba(100,210,230,${c.alpha})`);
+      cg.addColorStop(1,    `rgba(100,210,230,0)`);
+      ctx.strokeStyle = cg;
+      ctx.lineWidth   = c.width;
       ctx.stroke();
-      ctx.restore();
     });
 
-    // Partículas
-    pts.forEach(p => {
-      p.x += p.vx + Math.sin(t * p.wobble * 5 + p.phase) * 0.4;
-      p.y += p.vy;
-      if(p.y < -10){ p.y = H + 10; p.x = Math.random() * W; }
-      if(p.x < -10) p.x = W + 10;
-      if(p.x > W + 10) p.x = -10;
+    // Partículas sutiles que viajan con las corrientes
+    PTS.forEach(p => {
+      p.x  += p.vx;
+      p.vy  = Math.sin(t * p.freq * 100 + p.phase) * 0.12;
+      p.y  += p.vy;
+      if(p.x > W + 10){ p.x = -10; p.y = Math.random() * H; }
 
-      const pulse = 0.6 + 0.4 * Math.sin(t * 1.5 + p.phase);
+      const pulse = 0.5 + 0.5 * Math.sin(t * 2 + p.phase);
       const a     = p.alpha * pulse;
 
       const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-      rg.addColorStop(0, `hsla(${p.hue},75%,70%,${a})`);
-      rg.addColorStop(1, `hsla(${p.hue},75%,70%,0)`);
+      rg.addColorStop(0, `hsla(${p.hue}, 70%, 72%, ${a})`);
+      rg.addColorStop(1, `hsla(${p.hue}, 70%, 72%, 0)`);
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
       ctx.fillStyle = rg;
       ctx.fill();
     });
-
-    // Ruido: destellos rápidos ocasionales
-    if(Math.random() < 0.015){
-      const rx = Math.random() * W;
-      const ry = Math.random() * H;
-      const rr = 30 + Math.random() * 80;
-      const flash = ctx.createRadialGradient(rx, ry, 0, rx, ry, rr);
-      flash.addColorStop(0, 'rgba(100,210,230,0.04)');
-      flash.addColorStop(1, 'rgba(100,210,230,0)');
-      ctx.beginPath();
-      ctx.arc(rx, ry, rr, 0, Math.PI * 2);
-      ctx.fillStyle = flash;
-      ctx.fill();
-    }
   }
+
   loop();
 })();
 </script>
