@@ -13,7 +13,7 @@
   <style>
     :root{ --bg:#01070c; --cyan:rgba(100,210,230,1); }
     *{margin:0;padding:0;box-sizing:border-box;}
-    html,body{width:100%;min-height:100%;background:transparent;color:white;overflow-x:hidden;}
+    html,body{width:100%;min-height:100%;background:#01070c;color:white;overflow-x:hidden;}
     body{font-family:'Tenor Sans',sans-serif;}
 
     /* Canvas corrientes */
@@ -358,6 +358,13 @@
   </div>
 
   <div class="cc-bloque">
+    <div style="margin-top:36px;padding:22px 24px;border:1px solid rgba(255,255,255,0.05);border-radius:3px;background:rgba(255,255,255,0.01);position:relative;">
+      <span style="display:block;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.15);margin-bottom:14px;font-family:'Tenor Sans',sans-serif;">Sugerencia</span>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.95;color:rgba(255,255,255,0.45);letter-spacing:0.3px;margin-bottom:12px;">Cuando varios jugadores hayan sido eliminados, las cartas hundidas pueden reunirse en un único mazo junto al siguiente jugador con vida.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.95;color:rgba(255,255,255,0.45);letter-spacing:0.3px;margin-bottom:12px;">Cada vez que una carta emerge, se toma la carta superior de ese mazo. La nueva carta hundida se coloca debajo, manteniendo el mismo recorrido de la corriente.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.95;color:rgba(255,255,255,0.45);letter-spacing:0.3px;">Esta organización facilita el movimiento de las cartas cuando quedan pocos jugadores con vida.</p>
+    </div>
+
     <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,255,255,0.45);line-height:2;">
       A medida que avanza la partida, las manos comienzan a cambiar.<br>
       Algunas cartas desaparecen por un tiempo.<br>
@@ -425,8 +432,8 @@
       speed:  0.18 + Math.random() * 0.28,
       amp:    8 + Math.random() * 18,
       freq:   0.003 + Math.random() * 0.004,
-      alpha:  0.018 + Math.random() * 0.032,
-      width:  0.6 + Math.random() * 0.8,
+      alpha:  0.06 + Math.random() * 0.08,
+      width:  0.7 + Math.random() * 1.0,
       len:    W * (0.3 + Math.random() * 0.5),
       x:      Math.random() * W,
     });
@@ -473,7 +480,7 @@
     // Corrientes — la onda viaja hacia la derecha
     CORRIENTES.forEach(c => {
       // offset aumenta → la onda se desplaza a la derecha
-      c.offset += c.speed * 2.2;
+      c.offset += c.speed * 3.5;
 
       ctx.beginPath();
       let started = false;
