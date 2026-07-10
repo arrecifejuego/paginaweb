@@ -3,23 +3,21 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Corrientes Cruzadas — Arrecife</title>
-  <meta name="description" content="Corrientes Cruzadas es un modo avanzado de Arrecife para jugadores experimentados. Las cartas de Valor se hunden y emergen en otras manos. El mar empieza a leerte a vos."/>
+  <title>Neblina — Arrecife</title>
+  <meta name="description" content="Neblina es un modo avanzado de Arrecife para jugadores experimentados. Antes de cada ronda, el jugador a tu derecha bloquea una carta al azar de tu kit. El mar decide qué parte de vos permanece bajo la superficie."/>
   <link rel="icon" type="image/x-icon" href="https://www.arrecifejuego.com.ar/Logo-Blanco.ico">
-  <link rel="canonical" href="https://www.arrecifejuego.com.ar/arrecife-corrientes.html"/>
-  <meta property="og:title" content="Corrientes Cruzadas — Arrecife"/>
+  <link rel="canonical" href="https://www.arrecifejuego.com.ar/arrecife-neblina.html"/>
+  <meta property="og:title" content="Neblina — Arrecife"/>
+  <meta property="og:description" content="Un modo de juego para quienes ya conocen el mar. Antes de cada ronda, el mar decide qué parte de vos permanece bajo la superficie."/>
   <meta property="og:image" content="https://www.arrecifejuego.com.ar/og-image.jpg"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
   <style>
-    :root{ --bg:#01070c; --cyan:rgba(100,210,230,1); }
+    :root{ --bg:#01070c; }
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{width:100%;min-height:100%;background:#01070c;color:white;overflow-x:hidden;}
     body{font-family:'Tenor Sans',sans-serif;}
+    #nb-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-    /* Canvas corrientes */
-    #cc-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-
-    /* Volver */
     .btn-volver{
       position:fixed;top:24px;left:24px;z-index:10;
       background:transparent;border:1px solid rgba(255,255,255,0.1);
@@ -30,329 +28,236 @@
     }
     .btn-volver:hover{border-color:rgba(100,210,230,0.3);color:rgba(100,210,230,0.6);}
 
-    /* Layout */
     .main{
       position:relative;z-index:2;
-      max-width:640px;margin:0 auto;
-      padding:130px 28px 120px;
+      max-width:620px;margin:0 auto;
+      padding:130px 28px 130px;
     }
 
     /* Header */
-    .cc-eyebrow{
+    .nb-eyebrow{
       font-size:9px;letter-spacing:5px;text-transform:uppercase;
-      color:rgba(100,210,230,0.3);margin-bottom:24px;display:block;
+      color:rgba(100,210,230,0.3);margin-bottom:20px;display:block;
     }
-    .cc-titulo{
+    .nb-titulo{
       font-family:'Cormorant Garamond',serif;font-weight:300;
-      font-size:clamp(42px,8vw,64px);letter-spacing:2px;
-      line-height:1.0;margin-bottom:48px;
+      font-size:clamp(52px,10vw,80px);letter-spacing:3px;
+      line-height:1.0;margin-bottom:56px;
       color:rgba(255,255,255,0.88);
     }
 
-    /* Intro — tono de adaptación */
-    .cc-intro{
+    /* Intro */
+    .nb-intro{
       font-family:'Cormorant Garamond',serif;
       font-size:18px;line-height:2.1;
-      color:rgba(255,255,255,0.55);
+      color:rgba(255,255,255,0.5);
       letter-spacing:0.3px;
-      margin-bottom:80px;
+      margin-bottom:88px;
     }
-    .cc-intro em{
-      font-style:italic;
-      color:rgba(100,210,230,0.65);
-    }
-    .cc-intro strong{
-      font-weight:400;
-      color:rgba(255,255,255,0.8);
-    }
+    .nb-intro p+p{margin-top:24px;}
+    .nb-intro em{font-style:italic;color:rgba(100,210,230,0.6);}
 
-    /* Separador corriente */
-    .cc-sep{
+    /* Separador */
+    .nb-sep{
       width:100%;height:1px;
-      background:linear-gradient(90deg,transparent,rgba(100,210,230,0.2),transparent);
-      margin:80px 0 48px;
-      position:relative;
-      overflow:visible;
+      background:linear-gradient(90deg,transparent,rgba(100,210,230,0.18),transparent);
+      margin:72px 0 52px;position:relative;
     }
-    .cc-sep::after{
-      content:'';
-      position:absolute;
-      top:-1px;left:0;right:0;height:3px;
-      background:linear-gradient(90deg,transparent,rgba(100,210,230,0.06),transparent);
-      filter:blur(3px);
+    .nb-sep::after{
+      content:'';position:absolute;
+      top:-2px;left:0;right:0;height:5px;
+      background:linear-gradient(90deg,transparent,rgba(100,210,230,0.05),transparent);
+      filter:blur(4px);
     }
 
-    /* Label sección */
-    .cc-label{
+    /* Título sección */
+    .nb-seccion{
       font-family:'Cormorant Garamond',serif;font-weight:300;
-      font-size:clamp(20px,3vw,26px);letter-spacing:2px;
-      color:rgba(255,255,255,0.82);margin-bottom:32px;display:block;
-      position:relative;padding-bottom:14px;
+      font-size:clamp(22px,3.5vw,28px);letter-spacing:2px;
+      color:rgba(255,255,255,0.85);
+      margin-bottom:36px;display:block;
+      position:relative;padding-bottom:16px;
     }
-    .cc-label::after{
+    .nb-seccion::after{
       content:'';position:absolute;bottom:0;left:0;
-      width:28px;height:1px;
-      background:rgba(100,210,230,0.45);
+      width:24px;height:1px;background:rgba(100,210,230,0.5);
     }
 
-    /* Reglas */
-    .cc-bloque{
-      margin-bottom:52px;
-    }
-    .cc-bloque p{
+    /* Texto */
+    .nb-bloque{margin-bottom:44px;}
+    .nb-bloque p{
       font-family:'Cormorant Garamond',serif;
       font-size:17px;line-height:2;
-      color:rgba(255,255,255,0.6);
-      letter-spacing:0.3px;
-      margin-bottom:16px;
+      color:rgba(255,255,255,0.58);
+      letter-spacing:0.3px;margin-bottom:16px;
     }
-    .cc-bloque p:last-child{margin-bottom:0;}
-    .cc-bloque p strong{
-      font-weight:400;color:rgba(255,255,255,0.85);
-    }
-    .cc-bloque p em{
-      font-style:italic;color:rgba(100,210,230,0.6);
-    }
+    .nb-bloque p:last-child{margin-bottom:0;}
+    .nb-bloque strong{font-weight:400;color:rgba(255,255,255,0.85);}
+    .nb-bloque em{font-style:italic;color:rgba(100,210,230,0.6);}
 
-    /* Demo carta */
-    .cc-demo{
-      display:flex;align-items:center;gap:20px;
-      margin:28px 0;flex-wrap:wrap;
-    }
-    .cc-demo-grupo{
-      display:flex;flex-direction:column;align-items:center;gap:8px;
-    }
-    .cc-demo-label{
-      font-size:9px;letter-spacing:2px;text-transform:uppercase;
-      color:rgba(255,255,255,0.2);
-    }
-    .cc-demo-arrow{
-      font-size:13px;color:rgba(100,210,230,0.2);flex-shrink:0;
-      margin-top:-16px;
-    }
-    .carta-img{
-      width:46px;height:auto;
-      border-radius:6px;
-      box-shadow:0 4px 16px rgba(0,0,0,0.6);
-      border:1px solid rgba(255,255,255,0.08);
-      display:block;
-    }
-    .carta-img.hundida{
-      opacity:0.5;
-      filter:brightness(0.7);
-    }
-    .carta-img.emergiendo{
-      box-shadow:0 0 20px rgba(100,210,230,0.25);
-      border-color:rgba(100,210,230,0.35);
-    }
+    /* Demo */
+    .nb-demo{display:flex;align-items:center;gap:20px;margin:32px 0;flex-wrap:wrap;}
+    .nb-demo-grupo{display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .nb-demo-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);font-family:'Tenor Sans',sans-serif;}
+    .nb-demo-arrow{font-size:14px;color:rgba(100,210,230,0.2);flex-shrink:0;margin-top:-20px;}
+    .nb-cartas-boca-abajo{display:flex;gap:4px;}
+    .carta{width:46px;height:auto;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);display:block;}
+    .carta.bloqueada-highlight{opacity:0.4;filter:brightness(0.55);box-shadow:0 0 10px rgba(100,210,230,0.08);border-color:rgba(100,210,230,0.12);}
 
-    /* Diagrama eliminados */
-    .cc-diagrama{
-      margin:36px 0;
-      padding:28px 24px 24px;
-      border:1px solid rgba(255,255,255,0.04);
-      border-radius:4px;
-      background:rgba(255,255,255,0.01);
-      position:relative;
-      overflow:hidden;
+    /* Posibilidades */
+    .nb-posibilidades{
+      margin:36px 0;padding:24px 28px;
+      border:1px solid rgba(255,255,255,0.04);border-radius:3px;
+      background:rgba(255,255,255,0.012);position:relative;overflow:hidden;
     }
-    .cc-diagrama::before{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(135deg,rgba(100,210,230,0.02),transparent 60%);
-      pointer-events:none;
-    }
-    .cc-diagrama-eyebrow{
-      font-size:9px;letter-spacing:3px;text-transform:uppercase;
-      color:rgba(100,210,230,0.4);margin-bottom:24px;display:block;
-    }
-    .cc-diagrama-fila{
-      display:flex;align-items:flex-start;justify-content:center;
-      gap:8px;overflow-x:auto;padding-bottom:4px;
-    }
-    .cc-jugador{
-      display:flex;flex-direction:column;align-items:center;gap:8px;
-      flex-shrink:0;
-    }
-    .cc-jugador-nombre{
-      font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-      color:rgba(255,255,255,0.22);font-family:'Tenor Sans',sans-serif;
-    }
-    .cc-jugador-nombre.eliminado{
-      color:rgba(255,70,70,0.3);text-decoration:line-through;
-    }
-    .cc-jugador-sublabel{
-      font-size:9px;letter-spacing:1px;text-transform:uppercase;
-      color:rgba(255,255,255,0.15);
-    }
-    .cc-diagrama-arrow{
-      font-size:14px;color:rgba(100,210,230,0.2);
-      margin-top:30px;flex-shrink:0;
-    }
-    .cc-diagrama-nota{
-      font-family:'Cormorant Garamond',serif;font-style:italic;
-      font-size:14px;color:rgba(255,255,255,0.25);
-      margin-top:20px;text-align:center;letter-spacing:0.3px;
-    }
-
-    /* Gusano */
-    .cc-gusano{
-      margin-top:64px;
-      padding:28px 28px 26px;
-      border:1px solid rgba(255,255,255,0.05);
-      border-radius:2px;
-      position:relative;
-    }
-    .cc-gusano::before{
-      content:'';position:absolute;
-      left:0;top:20%;bottom:20%;width:1px;
+    .nb-posibilidades::before{
+      content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
       background:linear-gradient(to bottom,transparent,rgba(100,210,230,0.2),transparent);
     }
-    .cc-gusano-label{
+    .nb-posibilidades-label{
+      font-size:9px;letter-spacing:3px;text-transform:uppercase;
+      color:rgba(100,210,230,0.3);margin-bottom:20px;display:block;font-family:'Tenor Sans',sans-serif;
+    }
+    .nb-posibilidad{
+      display:flex;align-items:center;gap:14px;margin-bottom:16px;
+      font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.7;
+      color:rgba(255,255,255,0.42);letter-spacing:0.3px;
+    }
+    .nb-posibilidad:last-child{margin-bottom:0;}
+    .nb-posibilidad-carta{width:38px;height:auto;border-radius:5px;box-shadow:0 3px 10px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.07);flex-shrink:0;opacity:0.55;filter:brightness(0.7);}
+
+    /* Gusano */
+    .nb-gusano{
+      margin-top:72px;padding:28px 30px 26px;
+      border:1px solid rgba(255,255,255,0.05);border-radius:2px;position:relative;
+    }
+    .nb-gusano::before{
+      content:'';position:absolute;left:0;top:16%;bottom:16%;width:1px;
+      background:linear-gradient(to bottom,transparent,rgba(100,210,230,0.18),transparent);
+    }
+    .nb-gusano-titulo{
       font-family:'Cormorant Garamond',serif;font-weight:300;
-      font-size:clamp(18px,2.5vw,24px);letter-spacing:2px;
+      font-size:clamp(18px,2.5vw,22px);letter-spacing:2px;
       color:rgba(255,255,255,0.82);margin-bottom:24px;display:block;
       position:relative;padding-bottom:14px;
     }
-    .cc-gusano-label::after{
-      content:'';position:absolute;bottom:0;left:0;
-      width:28px;height:1px;
-      background:rgba(100,210,230,0.45);
-    }
-    .cc-gusano p{
-      font-family:'Cormorant Garamond',serif;
-      font-size:16px;line-height:1.95;
-      color:rgba(255,255,255,0.5);letter-spacing:0.3px;
-      margin-bottom:14px;
-    }
-    .cc-gusano p:last-child{margin-bottom:0;}
-    .cc-gusano strong{font-weight:400;color:rgba(255,255,255,0.75);}
+    .nb-gusano-titulo::after{content:'';position:absolute;bottom:0;left:0;width:24px;height:1px;background:rgba(100,210,230,0.45);}
+    .nb-gusano p{font-family:'Cormorant Garamond',serif;font-size:16px;line-height:2;color:rgba(255,255,255,0.48);letter-spacing:0.3px;}
+    .nb-gusano strong{font-weight:400;color:rgba(255,255,255,0.75);}
 
     /* Cierre */
-    .cc-cierre{
-      margin-top:96px;
+    .nb-cierre{
+      margin-top:100px;
       font-family:'Cormorant Garamond',serif;font-style:italic;
-      font-size:18px;line-height:2;
-      color:rgba(100,210,230,0.35);
-      letter-spacing:0.5px;
-      text-align:center;
+      font-size:18px;line-height:2.1;
+      color:rgba(100,210,230,0.32);letter-spacing:0.5px;text-align:center;
     }
 
     /* Footer */
-    .arrecife-footer{
-      width:100%;padding:28px 24px 24px;
-      display:flex;flex-direction:column;align-items:center;gap:14px;
-      border-top:1px solid rgba(255,255,255,0.04);
-      margin-top:60px;position:relative;z-index:2;
-    }
+    .arrecife-footer{width:100%;padding:28px 24px 28px;display:flex;flex-direction:column;align-items:center;gap:14px;border-top:1px solid rgba(255,255,255,0.04);margin-top:60px;position:relative;z-index:2;}
     .footer-redes{display:flex;align-items:center;gap:22px;}
-    .footer-link{
-      display:flex;align-items:center;gap:7px;
-      color:rgba(255,255,255,0.2);text-decoration:none;
-      font-family:'Tenor Sans',sans-serif;font-size:11px;
-      letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;
-    }
+    .footer-link{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,0.2);text-decoration:none;font-family:'Tenor Sans',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;}
     .footer-link:hover{color:rgba(100,210,230,0.6);}
     .footer-link svg{width:15px;height:15px;fill:currentColor;}
     .footer-sep{width:1px;height:13px;background:rgba(255,255,255,0.07);}
     .footer-copy{font-family:'Cormorant Garamond',serif;font-size:11px;color:rgba(255,255,255,0.1);text-align:center;}
 
     @media(max-width:600px){
-      .main{padding:100px 20px 80px;}
-      .cc-titulo{font-size:38px;}
-      .cc-intro{font-size:16px;line-height:1.95;}
-      .cc-bloque p{font-size:16px;}
-      .cc-diagrama-fila{gap:5px;}
+      .main{padding:100px 20px 90px;}
+      .nb-titulo{font-size:48px;}
+      .nb-intro{font-size:16px;line-height:1.95;margin-bottom:64px;}
+      .nb-bloque p{font-size:16px;}
     }
   </style>
 </head>
 <body>
 
-<canvas id="cc-canvas"></canvas>
+<canvas id="nb-canvas"></canvas>
 <a class="btn-volver" href="arrecife-comojugar.html"><span>←</span><span>Volver</span></a>
 
 <div class="main">
 
-  <span class="cc-eyebrow">Arrecife — Modo avanzado</span>
-  <h1 class="cc-titulo">Corrientes<br>Cruzadas</h1>
+  <span class="nb-eyebrow">Arrecife — Modo avanzado</span>
+  <h1 class="nb-titulo">Neblina</h1>
 
-  <div class="cc-intro">
-    <p>Cuando aprendés Arrecife, los números son tuyos.<br>
-    Siempre sabés con qué contás.<br>
-    Podés leer al grupo, anticiparte, decidir cuándo usar cada valor.</p>
+  <div class="nb-intro">
+    <p>Después de muchas partidas, los jugadores aprenden a leer a los demás.<br>
+    Empiezan a reconocer patrones, anticipar decisiones<br>
+    y confiar en las cartas que tienen en sus manos.</p>
 
-    <p style="margin-top:28px;">Con el tiempo, esa certeza también se aprende.<br>
-    <em>Y el mar lo sabe.</em></p>
+    <p>Pero el mar también aprende.</p>
 
-    <p style="margin-top:28px;">Corrientes Cruzadas no hace más complejo al juego.<br>
-    <strong>Le quita al jugador una única certeza:</strong><br>
-    que siempre podrá elegir con las cartas que esperaba tener.</p>
-
-    <p style="margin-top:28px;">Y alcanza con perder esa certeza<br>
-    para que todo el juego vuelva a sentirse desconocido.</p>
+    <p>En Neblina, cada ronda comienza<br>
+    antes de que alguien juegue una carta.</p>
   </div>
 
-  <div class="cc-sep"></div>
+  <div class="nb-sep"></div>
 
-  <span class="cc-label">Las cartas de Valor</span>
+  <span class="nb-seccion">La mecánica</span>
 
-  <div class="cc-bloque">
-    <p>La cantidad de cartas de Valor utilizada al comienzo de la partida <strong>no vuelve a modificarse</strong>. Si la partida comenzó con los valores del 1 al 5, esos cinco valores permanecen en juego durante toda la partida, sin importar cuántos jugadores queden con vida.</p>
-  </div>
+  <div class="nb-bloque">
+    <p>Antes de cada ronda, cada jugador sostiene todas las cartas de su kit <strong>boca abajo</strong>.</p>
+    <p>El jugador ubicado a su derecha elige una carta al azar, sin verla, y la coloca boca abajo frente a su dueño.</p>
 
-  <div class="cc-bloque">
-    <p>Al finalizar cada ronda, la carta de Valor jugada por cada jugador se coloca junto al jugador ubicado a su derecha. Esa carta se considera <em>hundida</em> y no podrá utilizarse durante la siguiente ronda.</p>
-    <div class="cc-demo">
-      <div class="cc-demo-grupo">
-        <img class="carta-img" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="3"/>
-        <span class="cc-demo-label">jugada</span>
+    <div class="nb-demo">
+      <div class="nb-demo-grupo">
+        <div class="nb-cartas-boca-abajo">
+          <img class="carta" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          <img class="carta" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          <img class="carta" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+        </div>
+        <span class="nb-demo-label">kit boca abajo</span>
       </div>
-      <div class="cc-demo-arrow">→</div>
-      <div class="cc-demo-grupo">
-        <img class="carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
-        <span class="cc-demo-label">hundida (derecha)</span>
+      <div class="nb-demo-arrow">→</div>
+      <div class="nb-demo-grupo">
+        <img class="carta bloqueada-highlight" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="bloqueada"/>
+        <span class="nb-demo-label">carta bloqueada</span>
       </div>
     </div>
-    <p>Mientras una carta permanece hundida, el jugador continúa la partida <strong>únicamente con las cartas de Valor que conserva en su mano</strong>.</p>
+
+    <p>Esa carta queda <strong>bloqueada</strong> y no podrá utilizarse durante esa ronda.<br>
+    Permanece oculta para todos los jugadores hasta que la ronda finaliza.</p>
   </div>
 
-  <div class="cc-bloque">
-    <p>Al finalizar la ronda siguiente, la carta de Valor recién jugada ocupa el lugar de la carta hundida. La carta que estaba hundida <em>emerge</em> y pasa a la mano del jugador ubicado a su derecha.</p>
-    <div class="cc-demo">
-      <div class="cc-demo-grupo">
-        <img class="carta-img hundida" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
-        <span class="cc-demo-label">emerge</span>
-      </div>
-      <div class="cc-demo-arrow">→</div>
-      <div class="cc-demo-grupo">
-        <img class="carta-img emergiendo" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="emerge"/>
-        <span class="cc-demo-label">mano derecha</span>
-      </div>
+  <div class="nb-bloque">
+    <p>Una vez resuelta la ronda, todas las cartas regresan a la mano de sus respectivos jugadores.<br>
+    El proceso se repite al inicio de la siguiente.</p>
+  </div>
+
+  <div class="nb-posibilidades">
+    <span class="nb-posibilidades-label">Cada ronda, el mar puede ocultar</span>
+    <div class="nb-posibilidad">
+      <img class="nb-posibilidad-carta" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="valor"/>
+      un Valor — y debés elegir con lo que te queda
     </div>
-    <p>De esta manera, las cartas de Valor permanecen siempre en movimiento: una ronda se hunden, la siguiente emergen y continúan su recorrido por el mar.</p>
+    <div class="nb-posibilidad">
+      <img class="nb-posibilidad-carta" src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="signo"/>
+      un Signo — y tu operación cambia sin que lo elijas
+    </div>
+    <div class="nb-posibilidad">
+      <img class="nb-posibilidad-carta" src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="equipo"/>
+      un Equipo — y quizás ya no podés elegir el lado que querías
+    </div>
   </div>
 
-  <div class="cc-bloque">
-    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,255,255,0.45);line-height:2;">
-      Cuando un jugador es eliminado, retira su kit completo de la mesa.<br>
-      La corriente continúa entre quienes siguen con vida.<br><br>
-      A medida que avanza la partida, las manos comienzan a cambiar.<br>
-      Algunas cartas desaparecen por un tiempo.<br>
-      Otras llegan desde el jugador que tenías a la izquierda.<br>
-      Cada decisión deja una huella sobre las rondas siguientes.<br><br>
-      Sobrevivir deja de depender de esperar el número indicado.<br>
-      <em style="color:rgba(100,210,230,0.5);">Depende de adaptarte a los números que el mar decidió dejar en tus manos.</em>
+  <div class="nb-bloque">
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,255,255,0.38);line-height:2.1;">
+      Y deberás sobrevivir con lo que quedó en tus manos.
     </p>
   </div>
 
-  <div class="cc-gusano">
-    <span class="cc-gusano-label">El Gusano en Corrientes Cruzadas</span>
-    <p>En este modo, el Gusano puede utilizar <strong>Morder y Chocar en la misma ronda</strong>. Cada habilidad debe asignarse a un jugador distinto. Ambos efectos se resuelven normalmente al finalizar la ronda.</p>
-    <p>Cuando comienza el Duelo Final, el Gusano recupera el mismo kit de cartas con el que terminó su vida como jugador, <strong>conservando exactamente el estado de sus cartas de Valor en ese momento</strong>.</p>
+  <div class="nb-sep"></div>
+
+  <div class="nb-gusano">
+    <span class="nb-gusano-titulo">El Gusano en Neblina</span>
+    <p>En este modo, el Gusano puede utilizar <strong>Morder y Chocar en la misma ronda</strong>.<br>
+    Cada habilidad debe asignarse a un jugador distinto.<br>
+    Ambos efectos se resuelven normalmente al finalizar la ronda.</p>
   </div>
 
-  <div class="cc-cierre">
+  <div class="nb-cierre">
     Después de aprender a leer a los demás...<br>
-    el mar empieza a leerte a vos.
+    el mar también empieza a ocultarte quién sos.
   </div>
 
 </div>
@@ -378,119 +283,69 @@
 </footer>
 
 <script>
-/* ── CORRIENTES BAJO LA SUPERFICIE ── */
 (function(){
-  const canvas = document.getElementById('cc-canvas');
+  const canvas = document.getElementById('nb-canvas');
   const ctx    = canvas.getContext('2d');
   let W, H;
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
 
-  function resize(){
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  // Corrientes — líneas ondulantes horizontales que viajan de izquierda a derecha
-  const CORRIENTES = [];
-  const NC = 14;
-  for(let i = 0; i < NC; i++){
-    CORRIENTES.push({
-      y:      H * (0.05 + (i / NC) * 0.92),
-      offset: Math.random() * 1000,
-      speed:  0.18 + Math.random() * 0.28,
-      amp:    8 + Math.random() * 18,
-      freq:   0.003 + Math.random() * 0.004,
-      alpha:  0.06 + Math.random() * 0.08,
-      width:  0.7 + Math.random() * 1.0,
-      len:    W * (0.3 + Math.random() * 0.5),
-      x:      Math.random() * W,
+  /* Velos de neblina — manchas difusas que suben muy lento */
+  const VELOS = [];
+  for(let i = 0; i < 9; i++){
+    VELOS.push({
+      x: Math.random() * 1.4 - 0.2, y: Math.random(),
+      w: 0.28 + Math.random() * 0.38, h: 0.07 + Math.random() * 0.11,
+      vx: (Math.random() - 0.5) * 0.00012, vy: -0.00007 - Math.random() * 0.0001,
+      alpha: 0.018 + Math.random() * 0.022, phase: Math.random() * Math.PI * 2,
     });
   }
 
-  // Partículas — muy sutiles, siguen las corrientes
+  /* Partículas sutiles */
   const PTS = [];
-  const NP  = 45;
-  for(let i = 0; i < NP; i++){
+  for(let i = 0; i < 50; i++){
     PTS.push({
-      x:     Math.random() * 1200,
-      y:     Math.random() * 800,
-      vx:    0.08 + Math.random() * 0.2,
-      vy:    (Math.random() - 0.5) * 0.06,
-      r:     0.6 + Math.random() * 1.2,
-      alpha: 0.04 + Math.random() * 0.08,
-      phase: Math.random() * Math.PI * 2,
-      freq:  0.005 + Math.random() * 0.008,
-      hue:   180 + Math.random() * 30,
+      x: Math.random() * 1400, y: Math.random() * 900,
+      vx: (Math.random() - 0.5) * 0.08, vy: -0.04 - Math.random() * 0.12,
+      r: 0.5 + Math.random() * 1.0, alpha: 0.03 + Math.random() * 0.06,
+      phase: Math.random() * Math.PI * 2, hue: 185 + Math.random() * 25,
     });
   }
 
   let t = 0;
-
   function loop(){
-    requestAnimationFrame(loop);
-    t += 0.006;
+    requestAnimationFrame(loop); t += 0.005;
 
-    // Fondo muy oscuro — profundidad
+    /* Fondo */
     const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0,   '#010508');
-    g.addColorStop(0.5, '#010609');
-    g.addColorStop(1,   '#000305');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
+    g.addColorStop(0, '#010609'); g.addColorStop(1, '#000304');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 
-    // Luz muy tenue desde arriba — como luz filtrada
-    const luz = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, H * 0.4, W * 0.55);
-    luz.addColorStop(0, 'rgba(20,60,90,0.04)');
-    luz.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = luz;
-    ctx.fillRect(0, 0, W, H);
-
-    // Corrientes — la onda viaja hacia la derecha
-    CORRIENTES.forEach(c => {
-      // offset aumenta → la onda se desplaza a la derecha
-      c.offset += c.speed * 3.5;
-
+    /* Velos */
+    VELOS.forEach(v => {
+      v.x += v.vx; v.y += v.vy;
+      if(v.y < -v.h){ v.y = 1 + v.h; v.x = Math.random() * 1.4 - 0.2; }
+      const a = v.alpha * (0.6 + 0.4 * Math.sin(t * 0.5 + v.phase));
+      const gv = ctx.createRadialGradient(v.x*W, v.y*H, 0, v.x*W, v.y*H, v.w*W*0.5);
+      gv.addColorStop(0, `rgba(100,210,230,${a})`);
+      gv.addColorStop(1, `rgba(100,210,230,0)`);
       ctx.beginPath();
-      let started = false;
-      for(let x = 0; x <= W; x += 3){
-        const y = c.y
-          + Math.sin((x - c.offset) * c.freq) * c.amp
-          + Math.sin((x - c.offset) * c.freq * 2.3 + 1.1) * (c.amp * 0.3);
-        if(!started){ ctx.moveTo(x, y); started = true; }
-        else ctx.lineTo(x, y);
-      }
-
-      const cg = ctx.createLinearGradient(0, 0, W, 0);
-      cg.addColorStop(0,   `rgba(100,210,230,0)`);
-      cg.addColorStop(0.08,`rgba(100,210,230,${c.alpha})`);
-      cg.addColorStop(0.92,`rgba(100,210,230,${c.alpha})`);
-      cg.addColorStop(1,   `rgba(100,210,230,0)`);
-      ctx.strokeStyle = cg;
-      ctx.lineWidth   = c.width;
-      ctx.stroke();
+      ctx.ellipse(v.x*W, v.y*H, v.w*W*0.5, v.h*H*0.5, 0, 0, Math.PI*2);
+      ctx.fillStyle = gv; ctx.fill();
     });
 
-    // Partículas sutiles que viajan con las corrientes
+    /* Partículas */
     PTS.forEach(p => {
-      p.x  += p.vx;
-      p.vy  = Math.sin(t * p.freq * 100 + p.phase) * 0.12;
-      p.y  += p.vy;
-      if(p.x > W + 10){ p.x = -10; p.y = Math.random() * H; }
-
-      const pulse = 0.5 + 0.5 * Math.sin(t * 2 + p.phase);
-      const a     = p.alpha * pulse;
-
-      const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-      rg.addColorStop(0, `hsla(${p.hue}, 70%, 72%, ${a})`);
-      rg.addColorStop(1, `hsla(${p.hue}, 70%, 72%, 0)`);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-      ctx.fillStyle = rg;
-      ctx.fill();
+      p.x += p.vx + Math.sin(t * 0.7 + p.phase) * 0.12; p.y += p.vy;
+      if(p.y < -10){ p.y = H + 10; p.x = Math.random() * W; }
+      const a = p.alpha * (0.4 + 0.6 * Math.sin(t * 1.2 + p.phase));
+      const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
+      rg.addColorStop(0, `hsla(${p.hue},70%,75%,${a})`);
+      rg.addColorStop(1, `hsla(${p.hue},70%,75%,0)`);
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r*5, 0, Math.PI*2);
+      ctx.fillStyle = rg; ctx.fill();
     });
   }
-
   loop();
 })();
 </script>
