@@ -96,13 +96,42 @@
     .nb-bloque em{font-style:italic;color:rgba(100,210,230,0.6);}
 
     /* Demo */
-    .nb-demo{display:flex;align-items:center;gap:20px;margin:32px 0;flex-wrap:wrap;}
-    .nb-demo-grupo{display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .nb-demo-abanico{display:flex;align-items:center;gap:28px;margin:32px 0;flex-wrap:wrap;}
+    .nb-demo-grupo{display:flex;flex-direction:column;align-items:center;gap:14px;}
     .nb-demo-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);font-family:'Tenor Sans',sans-serif;}
-    .nb-demo-arrow{font-size:14px;color:rgba(100,210,230,0.2);flex-shrink:0;margin-top:-20px;}
-    .nb-cartas-boca-abajo{display:flex;gap:4px;}
-    .carta{width:46px;height:auto;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);display:block;}
-    .carta.bloqueada-highlight{opacity:0.4;filter:brightness(0.55);box-shadow:0 0 10px rgba(100,210,230,0.08);border-color:rgba(100,210,230,0.12);}
+    .nb-demo-arrow{font-size:14px;color:rgba(100,210,230,0.2);flex-shrink:0;}
+    .carta{width:44px;height:auto;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);display:block;}
+
+    /* Abanico — mano completa */
+    .nb-abanico{
+      position:relative;width:110px;height:90px;
+    }
+    .nb-abanico .carta{position:absolute;bottom:0;transform-origin:bottom center;}
+    .ab-1{left:0px;  transform:rotate(-24deg);}
+    .ab-2{left:16px; transform:rotate(-12deg);}
+    .ab-3{left:32px; transform:rotate(0deg);}
+    .ab-4{left:48px; transform:rotate(12deg);}
+    .ab-5{left:64px; transform:rotate(24deg);}
+
+    /* Resultado — mano reducida + carta hundida al lado */
+    .nb-resultado{display:flex;align-items:flex-end;gap:14px;}
+    .nb-abanico-reducido{
+      position:relative;width:90px;height:80px;
+    }
+    .nb-abanico-reducido .carta{position:absolute;bottom:0;transform-origin:bottom center;}
+    .ab-r1{left:0px;  transform:rotate(-16deg);}
+    .ab-r2{left:14px; transform:rotate(-5deg);}
+    .ab-r3{left:28px; transform:rotate(5deg);}
+    .ab-r4{left:42px; transform:rotate(16deg);}
+
+    /* Carta hundida — boca abajo frente al jugador */
+    .carta.hundida-frente{
+      opacity:0.38;
+      filter:brightness(0.5);
+      border-color:rgba(100,210,230,0.1);
+      box-shadow:0 0 10px rgba(100,210,230,0.06);
+      align-self:flex-end;
+    }
 
     /* Posibilidades */
     .nb-posibilidades{
@@ -199,23 +228,33 @@
     <p>Antes de cada ronda, cada jugador sostiene todas las cartas de su kit <strong>boca abajo</strong>.</p>
     <p>El jugador ubicado a su derecha elige una carta al azar, sin verla, y la coloca boca abajo frente a su dueño.</p>
 
-    <div class="nb-demo">
+    <div class="nb-demo-abanico">
       <div class="nb-demo-grupo">
-        <div class="nb-cartas-boca-abajo">
-          <img class="carta" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-          <img class="carta" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
-          <img class="carta" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+        <div class="nb-abanico">
+          <img class="carta ab-1" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          <img class="carta ab-2" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          <img class="carta ab-3" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          <img class="carta ab-4" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          <img class="carta ab-5" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
         </div>
-        <span class="nb-demo-label">kit boca abajo</span>
+        <span class="nb-demo-label">tu mano</span>
       </div>
-      <div class="nb-demo-arrow">→</div>
+      <div class="nb-demo-arrow" style="margin-top:0;">→</div>
       <div class="nb-demo-grupo">
-        <img class="carta bloqueada-highlight" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="bloqueada"/>
-        <span class="nb-demo-label">carta bloqueada</span>
+        <div class="nb-resultado">
+          <div class="nb-abanico-reducido">
+            <img class="carta ab-r1" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+            <img class="carta ab-r2" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+            <img class="carta ab-r3" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+            <img class="carta ab-r4" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="dorso"/>
+          </div>
+          <img class="carta hundida-frente" src="https://arrecifejuego.github.io/paginaweb/Dorso_de_cartas.jpeg" alt="hundida"/>
+        </div>
+        <span class="nb-demo-label">una carta hundida</span>
       </div>
     </div>
 
-    <p>Esa carta queda <strong>bloqueada</strong> y no podrá utilizarse durante esa ronda.<br>
+    <p>Esa carta queda <strong>hundida</strong> y no podrá utilizarse durante esa ronda.<br>
     Permanece oculta para todos los jugadores hasta que la ronda finaliza.</p>
   </div>
 
@@ -228,11 +267,11 @@
     <span class="nb-posibilidades-label">Cada ronda, el mar puede ocultar</span>
     <div class="nb-posibilidad">
       <img class="nb-posibilidad-carta" src="https://arrecifejuego.github.io/paginaweb/numero_3.jpeg" alt="valor"/>
-      un Valor — y debés elegir con lo que te queda
+      un Valor — y la intensidad de lo que jugás quedará en manos del mar
     </div>
     <div class="nb-posibilidad">
       <img class="nb-posibilidad-carta" src="https://arrecifejuego.github.io/paginaweb/signo_mas.jpeg" alt="signo"/>
-      un Signo — y tu operación cambia sin que lo elijas
+      un Signo — y solo podrás moverte hacia donde la corriente decida
     </div>
     <div class="nb-posibilidad">
       <img class="nb-posibilidad-carta" src="https://arrecifejuego.github.io/paginaweb/team_algas.jpeg" alt="equipo"/>
